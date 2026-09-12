@@ -1,0 +1,56 @@
+generated: '2026-09-12'
+method: probed
+source: https://aeternity.com/.well-known/oauth-protected-resource
+name: Aeternity MCP Server
+status: published
+deployment:
+  mode: remote
+  endpoint: https://aeternity.com/wp-json/mcp/mcp-oauth-server
+  auth: oauth
+  verified: probed
+discovery:
+  protected_resource:
+    url: https://aeternity.com/.well-known/oauth-protected-resource
+    status: 200
+    file: well-known/aeternity-oauth-protected-resource.json
+    resource: https://aeternity.com/wp-json/mcp/mcp-oauth-server
+    authorization_servers:
+    - https://aeternity.com
+    bearer_methods_supported:
+    - header
+    scopes_supported:
+    - mcp
+  authorization_server:
+    url: https://aeternity.com/.well-known/oauth-authorization-server
+    status: 200
+    file: well-known/aeternity-oauth-authorization-server.json
+    issuer: https://aeternity.com
+    authorization_endpoint: https://aeternity.com/oauth/authorize
+    token_endpoint: https://aeternity.com/oauth/token
+    revocation_endpoint: https://aeternity.com/oauth/revoke
+    grant_types_supported:
+    - authorization_code
+    - refresh_token
+    code_challenge_methods_supported:
+    - S256
+    client_id_metadata_document_supported: true
+probe:
+  method: POST
+  url: https://aeternity.com/wp-json/mcp/mcp-oauth-server
+  body: '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+  accept: application/json, text/event-stream
+  http_status: 401
+  response: '{"code":"rest_not_logged_in","message":"You are not currently logged in.","data":{"status":401}}'
+  fetched: '2026-09-12'
+tools: []
+tools_note: >-
+  The tool set could not be enumerated. An anonymous tools/list returns 401 rest_not_logged_in, the
+  æternity docs host publishes no llms.txt tool list, and no MCP documentation page was found on
+  aeternity.com or docs.aeternity.com. Input schemas would require an authenticated OAuth introspection.
+  No tool list has been derived or invented here.
+note: >-
+  The endpoint is served from the aeternity.com WordPress origin (the path is a WordPress REST route,
+  /wp-json/mcp/...), so it is an MCP surface over the æternity website/content estate rather than over the
+  blockchain node or middleware APIs — those two remain REST/GraphQL/WebSocket only and are documented in
+  openapi/ and graphql/. It is nonetheless a real, first-party, remotely callable MCP endpoint advertised
+  through RFC 9728 and RFC 8414 discovery documents on the company's own registrable domain.

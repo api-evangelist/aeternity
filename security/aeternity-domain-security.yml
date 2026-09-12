@@ -1,0 +1,31 @@
+generated: '2026-09-12'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: aeternity.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Nov  2 12:57:31 2026 GMT
+  hsts: false
+- host: api-docs.aeternity.io
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Nov 21 04:22:19 2026 GMT
+  hsts: false
+- host: mainnet.aeternity.io
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Dec 31 23:59:59 2026 GMT
+  hsts: null
+domains:
+- domain: aeternity.com
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: reject
+- domain: aeternity.io
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: false

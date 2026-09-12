@@ -1,0 +1,1196 @@
+schema {
+  query: RootQueryType
+}
+
+enum ActivityType {
+  AEX141
+  AEX9
+  AEXN
+  CLAIMS
+  CONTRACT
+  SWAPS
+  TRANSACTIONS
+  TRANSFERS
+}
+
+enum Aex141ContractOrderBy {
+  """
+  Sort by creation time
+  """
+  CREATION
+  """
+  Sort by name
+  """
+  NAME
+  """
+  Sort by symbol
+  """
+  SYMBOL
+}
+
+enum Aex9BalanceOrderBy {
+  AMOUNT
+  PUBKEY
+}
+
+enum Aex9ContractOrderBy {
+  """
+  Sort by creation time
+  """
+  CREATION
+  """
+  Sort by name
+  """
+  NAME
+  """
+  Sort by symbol
+  """
+  SYMBOL
+}
+
+enum AuctionOrder {
+  EXPIRATION
+  NAME
+}
+
+enum BlockType {
+  KEY
+  MICRO
+}
+
+enum ChannelState {
+  ACTIVE
+  INACTIVE
+}
+
+enum Direction {
+  BACKWARD
+  FORWARD
+}
+
+enum NameOrder {
+  ACTIVATION
+  DEACTIVATION
+  EXPIRATION
+  NAME
+}
+
+enum NameState {
+  ACTIVE
+  INACTIVE
+}
+
+enum OracleState {
+  ACTIVE
+  INACTIVE
+}
+
+enum StatsInterval {
+  DAY
+  MONTH
+  WEEK
+}
+
+type Account {
+  balance: BigInt
+  creationTime: Int
+  id: String
+}
+
+type AccountActivity {
+  blockHash: String
+  blockTime: Int
+  height: Int
+  payload: JSON
+  type: String
+}
+
+type AccountActivityPage {
+  data: [AccountActivity]
+  nextCursor: String
+  prevCursor: String
+}
+
+type Aex141Contract {
+  baseUrl: String
+  blockHeight: Int
+  contractId: String
+  contractTxHash: String
+  creationTime: Int
+  extensions: [String]
+  invalid: Boolean
+  invalidDescription: String
+  invalidReason: String
+  limits: JSON
+  metadataType: String
+  name: String
+  nftOwners: Int
+  nftsAmount: Int
+  symbol: String
+}
+
+type Aex141ContractPage {
+  data: [Aex141Contract]
+  nextCursor: String
+  prevCursor: String
+}
+
+type Aex141Template {
+  contractId: String
+  edition: JSON
+  logIdx: Int
+  templateId: Int
+  txHash: String
+}
+
+type Aex141TemplatePage {
+  data: [Aex141Template]
+  nextCursor: String
+  prevCursor: String
+}
+
+type Aex141TemplateToken {
+  edition: String
+  logIdx: Int
+  ownerId: String
+  tokenId: Int
+  txHash: String
+}
+
+type Aex141TemplateTokenPage {
+  data: [Aex141TemplateToken]
+  nextCursor: String
+  prevCursor: String
+}
+
+type Aex141Token {
+  contractId: String
+  ownerId: String
+  tokenId: Int
+}
+
+type Aex141TokenPage {
+  data: [Aex141Token]
+  nextCursor: String
+  prevCursor: String
+}
+
+type Aex141TokenWithMetadata {
+  contractId: String
+  metadata: JSON
+  owner: String
+  tokenId: Int
+}
+
+type Aex141Transfer {
+  blockHeight: Int
+  callTxi: Int
+  contractId: String
+  logIdx: Int
+  microIndex: Int
+  microTime: Int
+  recipient: String
+  sender: String
+  tokenId: Int
+  txHash: String
+}
+
+type Aex141TransferPage {
+  data: [Aex141Transfer]
+  nextCursor: String
+  prevCursor: String
+}
+
+type Aex9AccountBalance {
+  amount: BigInt
+  blockHash: String
+  contractId: String
+  decimals: Int
+  height: Int
+  tokenName: String
+  tokenSymbol: String
+  txHash: String
+  txIndex: Int
+  txType: String
+}
+
+type Aex9AccountBalancePage {
+  data: [Aex9AccountBalance]
+  nextCursor: String
+  prevCursor: String
+}
+
+type Aex9Balance {
+  account: String
+  amount: BigInt
+  contract: String
+}
+
+type Aex9BalanceHistoryItem {
+  account: String
+  amount: BigInt
+  contract: String
+  height: Int
+}
+
+type Aex9BalanceHistoryItemPage {
+  data: [Aex9BalanceHistoryItem]
+  nextCursor: String
+  prevCursor: String
+}
+
+type Aex9Contract {
+  contractId: String
+  contractTxHash: String
+  decimals: Int
+  eventSupply: BigInt
+  extensions: [String]
+  holders: Int
+  initialSupply: BigInt
+  invalid: Boolean
+  invalidDescription: String
+  invalidReason: String
+  logsCount: Int
+  name: String
+  symbol: String
+}
+
+type Aex9ContractBalance {
+  accountId: String
+  amount: BigInt
+  blockHash: String
+  contractId: String
+  height: Int
+  lastLogIdx: Int
+  lastTxHash: String
+}
+
+type Aex9ContractBalancePage {
+  data: [Aex9ContractBalance]
+  nextCursor: String
+  prevCursor: String
+}
+
+type Aex9ContractPage {
+  data: [Aex9Contract]
+  nextCursor: String
+  prevCursor: String
+}
+
+type Aex9Transfer {
+  amount: BigInt
+  blockHeight: Int
+  contractId: String
+  logIdx: Int
+  microIndex: Int
+  microTime: Int
+  recipient: String
+  sender: String
+  txHash: String
+}
+
+type Aex9TransferPage {
+  data: [Aex9Transfer]
+  nextCursor: String
+  prevCursor: String
+}
+
+type Auction {
+  activationTime: Int
+  approximateExpireTime: Int
+  auctionEnd: Int
+  claimsCount: Int
+  lastBid: JSON
+  name: String
+  nameFee: BigInt
+}
+
+type AuctionPage {
+  data: [Auction]
+  nextCursor: String
+  prevCursor: String
+}
+
+type Channel {
+  active: Boolean
+  amount: BigInt
+  channel: String
+  channelReserve: BigInt
+  delegateIds: JSON
+  initiator: String
+  initiatorAmount: BigInt
+  lastUpdatedHeight: Int
+  lastUpdatedTime: Int
+  lastUpdatedTxHash: String
+  lastUpdatedTxType: String
+  lockPeriod: Int
+  lockedUntil: Int
+  responder: String
+  responderAmount: BigInt
+  round: Int
+  soloRound: Int
+  stateHash: String
+  updatesCount: Int
+}
+
+type ChannelPage {
+  data: [Channel]
+  nextCursor: String
+  prevCursor: String
+}
+
+type ChannelUpdate {
+  blockHash: String
+  channel: String
+  sourceTxHash: String
+  sourceTxType: String
+  tx: JSON
+  txType: String
+}
+
+type ChannelUpdatePage {
+  data: [ChannelUpdate]
+  nextCursor: String
+  prevCursor: String
+}
+
+type Contract {
+  aexnType: String
+  blockHash: String
+  contract: String
+  createTx: JSON
+  sourceTxHash: String
+  sourceTxType: String
+}
+
+type ContractCall {
+  blockHash: String
+  callTxHash: String
+  contractId: String
+  contractTxHash: String
+  function: String
+  height: Int
+  internalTx: JSON
+  localIdx: Int
+  microIndex: Int
+}
+
+type ContractCallPage {
+  data: [ContractCall]
+  nextCursor: String
+  prevCursor: String
+}
+
+type ContractLog {
+  args: [String]
+  blockHash: String
+  blockTime: Int
+  callTxHash: String
+  contractId: String
+  contractTxHash: String
+  data: String
+  eventHash: String
+  eventName: String
+  extCallerContractId: String
+  extCallerContractTxHash: String
+  height: Int
+  logIdx: Int
+  microIndex: Int
+  parentContractId: String
+}
+
+type ContractLogPage {
+  data: [ContractLog]
+  nextCursor: String
+  prevCursor: String
+}
+
+type ContractPage {
+  data: [Contract]
+  nextCursor: String
+  prevCursor: String
+}
+
+type DeltaStats {
+  auctionsStarted: Int
+  blockReward: BigInt
+  burnedInAuctions: BigInt
+  channelsClosed: Int
+  channelsOpened: Int
+  contractsCreated: Int
+  devReward: BigInt
+  height: Int
+  lastTxHash: String
+  lockedInAuctions: BigInt
+  lockedInChannels: BigInt
+  namesActivated: Int
+  namesExpired: Int
+  namesRevoked: Int
+  oraclesExpired: Int
+  oraclesRegistered: Int
+}
+
+type DeltaStatsPage {
+  data: [DeltaStats]
+  nextCursor: String
+  prevCursor: String
+}
+
+type KeyBlock {
+  beneficiary: String
+  beneficiaryReward: BigInt
+  flags: String
+  hash: String
+  height: Int
+  info: String
+  microBlocksCount: Int
+  miner: String
+  nonce: BigInt
+  pow: [Int]
+  prevHash: String
+  prevKeyHash: String
+  stateHash: String
+  target: Int
+  time: Int
+  transactionsCount: Int
+  version: Int
+}
+
+type KeyBlockPage {
+  data: [KeyBlock]
+  nextCursor: String
+  prevCursor: String
+}
+
+type MicroBlock {
+  flags: String
+  gas: Int
+  hash: String
+  height: Int
+  microBlockIndex: Int
+  pofHash: String
+  prevHash: String
+  prevKeyHash: String
+  signature: String
+  stateHash: String
+  time: Int
+  transactionsCount: Int
+  txsHash: String
+  version: Int
+}
+
+type MicroBlockPage {
+  data: [MicroBlock]
+  nextCursor: String
+  prevCursor: String
+}
+
+type MinersStats {
+  miner: String
+  totalReward: BigInt
+}
+
+type MinersStatsPage {
+  data: [MinersStats]
+  nextCursor: String
+  prevCursor: String
+}
+
+type Name {
+  active: Boolean
+  activeFrom: Int
+  approximateActivationTime: Int
+  approximateExpireTime: Int
+  auction: JSON
+  auctionTimeout: Int
+  claimsCount: Int
+  expireHeight: Int
+  hash: String
+  name: String
+  nameFee: BigInt
+  ownership: JSON
+  pointers: [JSON]
+  revoke: JSON
+  type: String
+}
+
+type NameClaim {
+  activeFrom: Int
+  blockHash: String
+  height: Int
+  internalSource: Boolean
+  sourceTxHash: String
+  sourceTxType: String
+  tx: JSON
+}
+
+type NameClaimPage {
+  data: [NameClaim]
+  nextCursor: String
+  prevCursor: String
+}
+
+type NameHistory {
+  activeFrom: Int
+  blockHash: String
+  expiredAt: Int
+  height: Int
+  internalSource: Boolean
+  sourceTxHash: String
+  sourceTxType: String
+  tx: JSON
+}
+
+type NameHistoryPage {
+  data: [NameHistory]
+  nextCursor: String
+  prevCursor: String
+}
+
+type NamePage {
+  data: [Name]
+  nextCursor: String
+  prevCursor: String
+}
+
+type NameTransfer {
+  activeFrom: Int
+  blockHash: String
+  height: Int
+  internalSource: Boolean
+  sourceTxHash: String
+  sourceTxType: String
+  tx: JSON
+}
+
+type NameTransferPage {
+  data: [NameTransfer]
+  nextCursor: String
+  prevCursor: String
+}
+
+type NameUpdate {
+  activeFrom: Int
+  blockHash: String
+  height: Int
+  internalSource: Boolean
+  sourceTxHash: String
+  sourceTxType: String
+  tx: JSON
+}
+
+type NameUpdatePage {
+  data: [NameUpdate]
+  nextCursor: String
+  prevCursor: String
+}
+
+type Oracle {
+  active: Boolean
+  activeFrom: Int
+  approximateExpireTime: Int
+  expireHeight: Int
+  format: JSON
+  oracle: String
+  queryFee: BigInt
+  register: JSON
+  registerTime: Int
+  registerTxHash: String
+}
+
+type OracleExtend {
+  blockHash: String
+  height: Int
+  sourceTxHash: String
+  sourceTxType: String
+  tx: JSON
+}
+
+type OracleExtendPage {
+  data: [OracleExtend]
+  nextCursor: String
+  prevCursor: String
+}
+
+type OraclePage {
+  data: [Oracle]
+  nextCursor: String
+  prevCursor: String
+}
+
+type OracleQuery {
+  blockHash: String
+  blockTime: Int
+  fee: BigInt
+  height: Int
+  nonce: Int
+  oracleId: String
+  query: String
+  queryFee: BigInt
+  queryId: String
+  queryTtl: JSON
+  response: OracleResponse
+  responseTtl: JSON
+  senderId: String
+  sourceTxHash: String
+  sourceTxType: String
+  ttl: Int
+}
+
+type OracleQueryPage {
+  data: [OracleQuery]
+  nextCursor: String
+  prevCursor: String
+}
+
+type OracleResponse {
+  blockHash: String
+  blockTime: Int
+  fee: BigInt
+  height: Int
+  nonce: Int
+  oracleId: String
+  queryId: String
+  response: String
+  responseTtl: JSON
+  sourceTxHash: String
+  sourceTxType: String
+  ttl: Int
+}
+
+type OracleResponsePage {
+  data: [OracleResponse]
+  nextCursor: String
+  prevCursor: String
+}
+
+type Pointee {
+  active: Boolean
+  blockHash: String
+  blockHeight: Int
+  blockTime: Int
+  key: String
+  name: String
+  sourceTxHash: String
+  sourceTxType: String
+  tx: JSON
+}
+
+type PointeePage {
+  data: [Pointee]
+  nextCursor: String
+  prevCursor: String
+}
+
+type RootQueryType {
+  """
+  Fetch a single account by id
+  """
+  account(id: String!): Account
+  """
+  Account activities
+  """
+  accountActivities(cursor: String, direction: Direction = BACKWARD, fromHeight: Int, id: String!, limit: Int, ownedOnly: Boolean, toHeight: Int, type: ActivityType): AccountActivityPage
+  """
+  Fetch account name claims
+  """
+  accountNameClaims(accountId: String!, cursor: String, direction: Direction = BACKWARD, fromHeight: Int, limit: Int, toHeight: Int): NameClaimPage
+  """
+  Fetch account name pointees
+  """
+  accountNamePointees(accountId: String!, cursor: String, direction: Direction = BACKWARD, fromHeight: Int, limit: Int, toHeight: Int): PointeePage
+  """
+  Get DEX swaps for a specific account
+  """
+  accountSwaps(accountId: String!, cursor: String, direction: Direction = BACKWARD, fromHeight: Int, limit: Int, toHeight: Int, tokenSymbol: String): SwapPage
+  """
+  Get detailed transaction counts for an account
+  """
+  accountTransactionsCount(id: String!, type: String, typeGroup: String): JSON
+  """
+  Statistics over time of active accounts count
+  """
+  activeAccountsStats(cursor: String, direction: Direction = BACKWARD, intervalBy: StatsInterval = DAY, limit: Int): StartEndCountStatsPage
+  """
+  Get all AEX141 tokens owned by an account
+  """
+  aex141AccountTokens(accountId: String!, contract: String, cursor: String, direction: Direction = BACKWARD, limit: Int): Aex141TokenPage
+  """
+  Fetch an AEX141 contract by id
+  """
+  aex141Contract(id: String!): Aex141Contract
+  """
+  Get all tokens for a specific template in an AEX141 contract
+  """
+  aex141ContractTemplateTokens(contractId: String!, cursor: String, direction: Direction = BACKWARD, limit: Int, templateId: Int!): Aex141TemplateTokenPage
+  """
+  Get all templates in an AEX141 contract
+  """
+  aex141ContractTemplates(contractId: String!, cursor: String, direction: Direction = BACKWARD, limit: Int): Aex141TemplatePage
+  """
+  Get information about the a specific AEX141 token
+  """
+  aex141ContractToken(contractId: String!, tokenId: String!): Aex141TokenWithMetadata
+  """
+  Get all tokens in an AEX141 contract
+  """
+  aex141ContractTokens(contractId: String!, cursor: String, direction: Direction = BACKWARD, limit: Int): Aex141TokenPage
+  """
+  Fetch AEX141 transfers for a specific contract
+  """
+  aex141ContractTransfers(contractId: String!, cursor: String, direction: Direction = BACKWARD, from: String, limit: Int, to: String): Aex141TransferPage
+  """
+  List AEX141 contracts
+  """
+  aex141Contracts(cursor: String, direction: Direction = BACKWARD, exact: String, limit: Int, orderBy: Aex141ContractOrderBy = CREATION, prefix: String): Aex141ContractPage
+  """
+  AEX141 contracts count
+  """
+  aex141Count: Int
+  """
+  Fetch AEX141 transfers
+  """
+  aex141Transfers(cursor: String, direction: Direction = BACKWARD, from: String, limit: Int, to: String): Aex141TransferPage
+  """
+  Get all AEX9 token balances for an account
+  """
+  aex9AccountBalances(accountId: String!, cursor: String, direction: Direction = BACKWARD, limit: Int): Aex9AccountBalancePage
+  """
+  AEX9 balance history for an account on a contract
+  """
+  aex9BalanceHistory(accountId: String!, contractId: String!, cursor: String, direction: Direction = BACKWARD, fromHeight: Int, limit: Int, toHeight: Int): Aex9BalanceHistoryItemPage
+  """
+  Fetch an AEX9 creation and meta_info information by contract id
+  """
+  aex9Contract(id: String!): Aex9Contract
+  """
+  Balances within an AEX9 contract
+  """
+  aex9ContractBalances(blockHash: String, cursor: String, direction: Direction = BACKWARD, id: String!, limit: Int, orderBy: Aex9BalanceOrderBy = PUBKEY): Aex9ContractBalancePage
+  """
+  Fetch AEX9 transfers for a specific contract
+  """
+  aex9ContractTransfers(account: String, contractId: String!, cursor: String, direction: Direction = BACKWARD, limit: Int, recipient: String, sender: String): Aex9TransferPage
+  """
+  Get AEX9 tokens sorted by creation time, name or symbol
+  """
+  aex9Contracts(cursor: String, direction: Direction = BACKWARD, exact: String, limit: Int, orderBy: Aex9ContractOrderBy = CREATION, prefix: String): Aex9ContractPage
+  """
+  AEX9 contracts count
+  """
+  aex9Count: Int
+  """
+  Get AEX9 token balance for a specific account on a contract
+  """
+  aex9TokenBalance(accountId: String!, contractId: String!, hash: String): Aex9Balance
+  """
+  Statistics over time of AEX9 transfers count
+  """
+  aex9TransfersStats(cursor: String, direction: Direction = BACKWARD, intervalBy: StatsInterval = DAY, limit: Int, maxStartDate: String, minStartDate: String): StartEndCountStatsPage
+  """
+  Fetch a single auction
+  """
+  auction(id: String!): Auction
+  """
+  Fetch auction claims
+  """
+  auctionClaims(cursor: String, direction: Direction = BACKWARD, fromHeight: Int, id: String!, limit: Int, toHeight: Int): NameClaimPage
+  """
+  Fetch auctions
+  """
+  auctions(cursor: String, direction: Direction = BACKWARD, limit: Int, orderBy: AuctionOrder = EXPIRATION): AuctionPage
+  """
+  Statistics over time of blocks count
+  """
+  blocksStats(cursor: String, direction: Direction = BACKWARD, intervalBy: StatsInterval = DAY, limit: Int, maxStartDate: String, minStartDate: String, type: BlockType): StartEndCountStatsPage
+  """
+  Fetch a single channel
+  """
+  channel(id: String!): Channel
+  """
+  Fetch all updates done to a channel
+  """
+  channelUpdates(cursor: String, direction: Direction = BACKWARD, fromHeight: Int, id: String!, limit: Int, toHeight: Int): ChannelUpdatePage
+  """
+  Get multiple channels
+  """
+  channels(cursor: String, direction: Direction = BACKWARD, fromHeight: Int, limit: Int, state: ChannelState, toHeight: Int): ChannelPage
+  """
+  Contract by id
+  """
+  contract(id: String!): Contract
+  """
+  Contract calls for a specific contract
+  """
+  contractCalls(cursor: String, direction: Direction = BACKWARD, fromHeight: Int, id: String!, limit: Int, toHeight: Int): ContractCallPage
+  """
+  Contract logs for a specific contract
+  """
+  contractLogs(aexnArgs: Boolean, cursor: String, data: String, direction: Direction = BACKWARD, event: String, fromHeight: Int, function: String, functionPrefix: String, id: String!, limit: Int, toHeight: Int): ContractLogPage
+  """
+  Get DEX swaps for a specific contract
+  """
+  contractSwaps(contractId: String!, cursor: String, direction: Direction = BACKWARD, fromHeight: Int, limit: Int, toHeight: Int): SwapPage
+  """
+  Contracts
+  """
+  contracts(cursor: String, direction: Direction = BACKWARD, fromHeight: Int, limit: Int, toHeight: Int): ContractPage
+  """
+  Contract calls
+  """
+  contractsCalls(cursor: String, direction: Direction = BACKWARD, fromHeight: Int, limit: Int, toHeight: Int): ContractCallPage
+  """
+  Contract logs
+  """
+  contractsLogs(aexnArgs: Boolean, contractId: String, cursor: String, data: String, direction: Direction = BACKWARD, event: String, fromHeight: Int, function: String, functionPrefix: String, limit: Int, toHeight: Int): ContractLogPage
+  """
+  Statistics over time of contracts count
+  """
+  contractsStats(cursor: String, direction: Direction = BACKWARD, intervalBy: StatsInterval = DAY, limit: Int, maxStartDate: String, minStartDate: String): StartEndCountStatsPage
+  """
+  Aggregated statistics for generations from tip of the chain
+  """
+  deltaStats(cursor: String, direction: Direction = BACKWARD, fromHeight: Int, limit: Int, toHeight: Int): DeltaStatsPage
+  """
+  Statistics over time of difficulty
+  """
+  difficultyStats(cursor: String, direction: Direction = BACKWARD, intervalBy: StatsInterval = DAY, limit: Int, maxStartDate: String, minStartDate: String): StartEndCountStatsPage
+  """
+  Statistics over time of hashrate
+  """
+  hashrateStats(cursor: String, direction: Direction = BACKWARD, intervalBy: StatsInterval = DAY, limit: Int, maxStartDate: String, minStartDate: String): StartEndCountStatsPage
+  """
+  Fetch a key block by height or hash (id)
+  """
+  keyBlock(id: String!): KeyBlock
+  """
+  Fetch the key block at the given height
+  """
+  keyBlockAtHeight(height: Int!): KeyBlock
+  """
+  Fetch micro blocks of a key block by height or hash (id)
+  """
+  keyBlockMicroBlocks(cursor: String, direction: Direction = BACKWARD, id: String!, limit: Int): MicroBlockPage
+  """
+  Fetch the key block with the given hash
+  """
+  keyBlockWithHash(hash: String!): KeyBlock
+  """
+  Fetch key blocks
+  """
+  keyBlocks(cursor: String, direction: Direction = BACKWARD, fromHeight: Int, limit: Int, toHeight: Int): KeyBlockPage
+  """
+  Fetch the micro block with the given hash
+  """
+  microBlock(hash: String!): MicroBlock
+  """
+  Get transactions from a micro block
+  """
+  microBlockTransactions(cursor: String, direction: Direction = BACKWARD, hash: String!, limit: Int, type: [String], typeGroup: [String]): TransactionPage
+  """
+  Fetch micro blocks of the key block at the given height
+  """
+  microBlocksOfKeyBlockAtHeight(cursor: String, direction: Direction = BACKWARD, height: Int!, limit: Int): MicroBlockPage
+  """
+  Fetch micro blocks of the key block with the given hash
+  """
+  microBlocksOfKeyBlockWithHash(cursor: String, direction: Direction = BACKWARD, hash: String!, limit: Int): MicroBlockPage
+  """
+  Total rewards for each miner
+  """
+  minersStats(cursor: String, direction: Direction = BACKWARD, limit: Int): MinersStatsPage
+  """
+  Fetch a single name or auction by plain name or name hash
+  """
+  name(id: String!): Name
+  """
+  Claims for a name
+  """
+  nameClaims(cursor: String, direction: Direction = BACKWARD, fromHeight: Int, id: String!, limit: Int, toHeight: Int): NameClaimPage
+  """
+  Fetch name history
+  """
+  nameHistory(cursor: String, direction: Direction = BACKWARD, id: String!, limit: Int): NameHistoryPage
+  """
+  Fetch name transfers
+  """
+  nameTransfers(cursor: String, direction: Direction = BACKWARD, fromHeight: Int, id: String!, limit: Int, toHeight: Int): NameTransferPage
+  """
+  Fetch name updates
+  """
+  nameUpdates(cursor: String, direction: Direction = BACKWARD, fromHeight: Int, id: String!, limit: Int, toHeight: Int): NameUpdatePage
+  """
+  Fetch names
+  """
+  names(cursor: String, direction: Direction = BACKWARD, limit: Int, orderBy: NameOrder = EXPIRATION, ownedBy: String, prefix: String, state: NameState): NamePage
+  """
+  Count names
+  """
+  namesCount(ownedBy: String): Int
+  """
+  Statistics over time of names count
+  """
+  namesStats(cursor: String, direction: Direction = BACKWARD, intervalBy: StatsInterval = DAY, limit: Int, maxStartDate: String, minStartDate: String): StartEndCountStatsPage
+  """
+  Fetch an oracle by its public key
+  """
+  oracle(id: String!): Oracle
+  """
+  Get an oracle's extensions
+  """
+  oracleExtends(cursor: String, direction: Direction = BACKWARD, id: String!, limit: Int): OracleExtendPage
+  """
+  Get an oracle's queries
+  """
+  oracleQueries(cursor: String, direction: Direction = BACKWARD, fromHeight: Int, id: String!, limit: Int, toHeight: Int): OracleQueryPage
+  """
+  Get an oracle's responses
+  """
+  oracleResponses(cursor: String, direction: Direction = BACKWARD, fromHeight: Int, id: String!, limit: Int, toHeight: Int): OracleResponsePage
+  """
+  Get multiple oracles
+  """
+  oracles(cursor: String, direction: Direction = BACKWARD, fromHeight: Int, limit: Int, state: OracleState, toHeight: Int): OraclePage
+  """
+  Pending transactions
+  """
+  pendingTransactions(cursor: String, direction: Direction = BACKWARD, limit: Int): TransactionPage
+  """
+  Count of pending transactions
+  """
+  pendingTransactionsCount: Int
+  """
+  Search names by prefix
+  """
+  searchNames(cursor: String, direction: Direction = BACKWARD, limit: Int, prefix: String!): NamePage
+  """
+  Global statistics
+  """
+  stats: Stats
+  """
+  Get middleware status
+  """
+  status: Status
+  """
+  Get all DEX swaps
+  """
+  swaps(cursor: String, direction: Direction = BACKWARD, fromHeight: Int, limit: Int, toHeight: Int): SwapPage
+  """
+  Get sync status
+  """
+  syncStatus: SyncStatus
+  """
+  Top miners in the last 24 hours statistics
+  """
+  topMiners24hStats: TopMiners24hStatsPage
+  """
+  Top miners statistics
+  """
+  topMinersStats(cursor: String, direction: Direction = BACKWARD, intervalBy: StatsInterval = DAY, limit: Int, maxStartDate: String, minStartDate: String): TopMinersStatsPage
+  """
+  Statistics over time of total accounts count
+  """
+  totalAccountsStats(cursor: String, direction: Direction = BACKWARD, intervalBy: StatsInterval = DAY, limit: Int): StartEndCountStatsPage
+  """
+  Statistics for generations from tip of the chain
+  """
+  totalStats(cursor: String, direction: Direction = BACKWARD, fromHeight: Int, limit: Int, toHeight: Int): TotalStatsPage
+  """
+  Count of transactions count over time
+  """
+  totalTransactionsStats(maxStartDate: String, minStartDate: String, txType: String): Int
+  """
+  Get a single transaction
+  """
+  transaction(hash: String, id: String): Transaction
+  """
+  Get transactions with optional filters
+  """
+  transactions(account: String, channel: String, contract: String, cursor: String, direction: Direction = BACKWARD, entrypoint: String, fromHeight: Int, limit: Int, oracle: String, recipientId: String, senderId: String, toHeight: Int, type: [String], typeGroup: [String]): TransactionPage
+  """
+  Count transactions with optional filters
+  """
+  transactionsCount(fromHeight: Int, id: String, toHeight: Int, type: String, typeGroup: String): Int
+  """
+  Statistics over time of transactions count
+  """
+  transactionsStats(cursor: String, direction: Direction = BACKWARD, intervalBy: StatsInterval = DAY, limit: Int, maxStartDate: String, minStartDate: String, txType: String): StartEndCountStatsPage
+  """
+  Get transfers with optional filters
+  """
+  transfers(account: String, cursor: String, direction: Direction = BACKWARD, fromHeight: Int, kind: String, limit: Int, toHeight: Int): TransferPage
+  """
+  Get wealth distribution (top accounts by balance)
+  """
+  wealth: WealthPage
+}
+
+type StartEndCountStats {
+  count: Int
+  endDate: String
+  startDate: String
+}
+
+type StartEndCountStatsPage {
+  data: [StartEndCountStats]
+  nextCursor: String
+  prevCursor: String
+}
+
+type Stats {
+  feesTrend: Float
+  last24hsAverageTransactionFees: Float
+  last24hsTransactions: Int
+  maxTransactionsPerSecond: Float
+  maxTransactionsPerSecondBlockHash: String
+  millisecondsPerBlock: Int
+  minersCount: Int
+  totalBlocks: Int
+  transactionsTrend: Float
+}
+
+type Status {
+  lastKeyBlockHash: String
+  lastKeyBlockTime: Int
+  lastSyncedHeight: Int
+  mdwAsyncTasks: JSON
+  mdwGensPerMinute: Float
+  mdwHeight: Int
+  mdwLastMigration: Int
+  mdwRevision: String
+  mdwSynced: Boolean
+  mdwSyncing: Boolean
+  mdwTxIndex: Int
+  mdwVersion: String
+  nodeHeight: Int
+  nodeProgress: Float
+  nodeRevision: String
+  nodeSyncing: Boolean
+  nodeVersion: String
+  partial: Boolean
+  pendingTransactions: Int
+  totalTransactions: Int
+}
+
+type Swap {
+  action: String
+  amounts: JSON
+  caller: String
+  fromAmount: BigInt
+  fromContract: String
+  fromDecimals: Int
+  fromToken: String
+  height: Int
+  logIdx: Int
+  microTime: Int
+  toAccount: String
+  toAmount: BigInt
+  toContract: String
+  toDecimals: Int
+  toToken: String
+  txHash: String
+}
+
+type SwapPage {
+  data: [Swap]
+  nextCursor: String
+  prevCursor: String
+}
+
+type SyncStatus {
+  lastSyncedHeight: Int
+  partial: Boolean
+}
+
+type TopMiners24hStats {
+  blocksMined: Int
+  miner: String
+}
+
+type TopMiners24hStatsPage {
+  data: [TopMiners24hStats]
+}
+
+type TopMinersStats {
+  blocksMined: Int
+  endDate: String
+  miner: String
+  startDate: String
+}
+
+type TopMinersStatsPage {
+  data: [TopMinersStats]
+  nextCursor: String
+  prevCursor: String
+}
+
+type TotalStats {
+  activeAuctions: Int
+  activeNames: Int
+  activeOracles: Int
+  burnedInAuctions: BigInt
+  contracts: Int
+  height: Int
+  inactiveNames: Int
+  inactiveOracles: Int
+  lastTxHash: String
+  lockedInAuctions: BigInt
+  lockedInChannels: BigInt
+  openChannels: Int
+  sumBlockReward: BigInt
+  sumDevReward: BigInt
+  totalTokenSupply: BigInt
+}
+
+type TotalStatsPage {
+  data: [TotalStats]
+  nextCursor: String
+  prevCursor: String
+}
+
+type Transaction {
+  blockHash: String
+  blockHeight: Int
+  encodedTx: String
+  hash: String
+  microIndex: Int
+  microTime: Int
+  signatures: [String]
+  tx: JSON
+  txIndex: Int
+}
+
+type TransactionPage {
+  data: [Transaction]
+  nextCursor: String
+  prevCursor: String
+}
+
+type Transfer {
+  accountId: String
+  amount: BigInt
+  height: Int
+  kind: String
+  refBlockHash: String
+  refTxHash: String
+  refTxType: String
+}
+
+type TransferPage {
+  data: [Transfer]
+  nextCursor: String
+  prevCursor: String
+}
+
+type WealthEntry {
+  account: String
+  balance: BigInt
+}
+
+type WealthPage {
+  data: [WealthEntry]
+}
+
+scalar BigInt
+
+scalar JSON

@@ -1,0 +1,44 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Aeternity Middleware API
+  version: 1.0.0
+x-provenance:
+  generated: '2026-09-12'
+  method: generated
+  source: openapi/aeternity-middleware-openapi.yml
+  extends: openapi/aeternity-middleware-openapi.yml
+  note: >-
+    The upstream document is saved verbatim at openapi/_original/aeternity-middleware-v3-openapi.json as
+    served by https://mainnet.aeternity.io/mdw/v3/api on 2026-09-12; the refined copy differs only in
+    servers[], where the relative "/mdw/v3" was resolved to the absolute mainnet and testnet gateways.
+actions:
+- target: $.info
+  update:
+    x-apievangelist-profile: https://github.com/api-evangelist/aeternity
+    x-artifact-crosswalk: mcp/aeternity-tool-crosswalk.yml
+    x-artifact-conventions: conventions/aeternity-conventions.yml
+    x-artifact-errors: errors/aeternity-problem-types.yml
+- target: $
+  update:
+    x-sibling-surfaces:
+      graphql:
+        endpoint: https://mainnet.aeternity.io/mdw/graphql
+        sdl: graphql/aeternity-middleware.graphql
+        introspection: open
+        note: 85 query fields; 74 of them map onto a REST operation in this document, 11 have no REST equivalent.
+      websocket:
+        endpoint: wss://mainnet.aeternity.io/mdw/v3/websocket
+        asyncapi: asyncapi/aeternity-middleware-websocket-asyncapi.yml
+        channels:
+        - KeyBlocks
+        - MicroBlocks
+        - Transactions
+        - Object
+    x-authentication:
+      scheme: none
+      note: Read-only index; no credential, CORS open to all origins.
+    x-domain-standards:
+      aex-9: Fungible token standard, exposed as the /aex9 resource family.
+      aex-141: Non-fungible token standard, exposed as the /aex141 resource family.
+    x-rest-only-capabilities:
+      note: The Hyperchains family (/hyperchain/epochs, /hyperchain/schedule, /hyperchain/validators) has no GraphQL equivalent.

@@ -1,0 +1,72 @@
+generated: '2026-09-12'
+method: searched
+source: >-
+  https://status.aeternity.io/, https://github.com/aeternity/aeternity/releases,
+  https://github.com/aeternity/ae_mdw/blob/master/CHANGELOG.md, openapi/aeternity-node-openapi.yml,
+  openapi/aeternity-middleware-openapi.yml, https://mainnet.aeternity.io/mdw/swagger/swagger_v2.json
+versioning:
+  scheme: semver (components) + path versioning (APIs)
+  api_versions:
+    node: /v3
+    middleware: /mdw/v3
+  policy_published: false
+  detail: >-
+    No written API versioning or support policy exists. Versions are path prefixes and old ones are simply
+    kept serving: /mdw/v2 is still live (its own swagger at /mdw/swagger/swagger_v2.json reports info.version
+    1.68.2, forty minor releases behind the v3 surface at 1.108.2), and the V1 /mdw/websocket protocol is
+    still accepted. Nothing states how long a version is supported.
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  spec_deprecated_operations: 0
+  detail: >-
+    Neither spec marks a single operation `deprecated: true`, and neither surface emits Deprecation or Sunset
+    headers. Deprecation is signalled two other ways instead, both of which an agent must read rather than
+    detect. (1) The node spec declares an `obsolete` tag in its tag list, and three operations answer 410
+    Gone when the state they need has been pruned — GetAccountByPubkeyAndHeight, GetTransactionInfoByHash and
+    GetTokenSupplyByHeight. (2) The middleware's WebSocket v1.105 change was breaking and is documented in a
+    migration guide, with WS_SUBS_FULL_LIST_REPLY as a compatibility flag explicitly "will be removed in a
+    future version" — a real deprecation notice living in a README rather than in a policy or a header.
+  breaking_change_notice:
+  - change: WebSocket Subscribe/Unsubscribe lean replies
+    version: ae_mdw 1.105.0
+    compatibility_flag: WS_SUBS_FULL_LIST_REPLY
+    flag_status: deprecated, slated for removal
+    migration_guide: https://github.com/aeternity/ae_mdw/blob/master/README.md#websocket-migration-guide-v1104--v1105
+  gone_operations:
+  - operationId: GetAccountByPubkeyAndHeight
+    status: 410
+    reason: State at that height has been garbage-collected on this node.
+  - operationId: GetTransactionInfoByHash
+    status: 410
+    reason: Transaction info pruned on this node.
+  - operationId: GetTokenSupplyByHeight
+    status: 410
+    reason: State at that height has been garbage-collected on this node.
+status_page:
+  url: https://status.aeternity.io/
+  http_status: 200
+  provider: Datadog synthetics (embedded)
+  note: >-
+    A real, branded status page served on the company's own domain; the content is a Datadog status widget
+    rendered in an iframe. status.aeternity.com resolves to the same page.
+  machine_readable: false
+sla:
+  published: false
+  detail: >-
+    No SLA, uptime commitment or support tier is published for the public mainnet.aeternity.io gateway. The
+    node is open source and self-hostable — the documented posture is "run your own node" (external HTTP API
+    on 127.0.0.1:3013), and the public gateway is a convenience the project operates rather than a contracted
+    service.
+support:
+  forum: https://forum.aeternity.com/
+  github: https://github.com/aeternity
+  discord: https://discord.com/invite/55f8F2jZq4
+release_cadence:
+  node: irregular; long RC trains (11 candidates before 7.3.0 stable)
+  middleware: continuous, multiple releases per week
+  javascript_sdk: majors tracking node protocol releases
+  python_sdk: abandoned since 2020-01-31
+  go_sdk: abandoned since 2019-03-26

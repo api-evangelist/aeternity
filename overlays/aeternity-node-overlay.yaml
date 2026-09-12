@@ -1,0 +1,61 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Aeternity Node API
+  version: 1.0.0
+x-provenance:
+  generated: '2026-09-12'
+  method: generated
+  source: openapi/aeternity-node-openapi.yml
+  extends: openapi/aeternity-node-openapi.yml
+  note: >-
+    Captures API Evangelist's additions without mutating the provider's contract. The upstream document is
+    saved verbatim at openapi/_original/aeternity-node-openapi.json exactly as served by
+    https://mainnet.aeternity.io/api on 2026-09-12; the refined copy differs from it only in servers[],
+    where the relative "/v3" was resolved to the absolute public mainnet and testnet gateways.
+actions:
+- target: $.info
+  update:
+    x-apievangelist-profile: https://github.com/api-evangelist/aeternity
+    x-artifact-conventions: conventions/aeternity-conventions.yml
+    x-artifact-errors: errors/aeternity-problem-types.yml
+    x-artifact-lifecycle: lifecycle/aeternity-lifecycle.yml
+    x-artifact-rate-limits: rate-limits/aeternity-rate-limits.yml
+    x-artifact-authentication: authentication/aeternity-authentication.yml
+- target: $
+  update:
+    x-authentication:
+      scheme: none
+      note: No securityScheme is declared and none is required; write authority is the signature inside the transaction payload.
+    x-state-version-header:
+      name: X-Ae-Height
+      note: Present on every response including errors; a lower bound on the chain height the answer reflects, comparable across nodes.
+    x-backpressure:
+      status: 503
+      header: Retry-After
+      applies_to: all operations
+- target: $.paths['/transactions'].post
+  update:
+    x-agentic-access:
+      action_class: write
+      consequence: irreversible
+      note: >-
+        The only chain-state write on this API. Once included in a micro block the effect is final — no
+        refund, void or reverse operation exists. Replay safety comes from the signed account nonce, not
+        from an Idempotency-Key. Fetch GetAccountNextNonce before signing.
+      reversal: DeleteTxFromMempool (node-operator only, and only while the transaction is still pending)
+- target: $.paths['/dry-run'].post
+  update:
+    x-agentic-access:
+      action_class: rehearsal
+      consequence: none
+      note: >-
+        Executes unsigned transactions against real state and returns a gas estimate without submitting.
+        Unsupported for GAMetaTx, PayingForTx and OffchainTx; 403 when the node's gas cap is exceeded.
+- target: $.paths['/node/operator/mempool/hash/{hash}'].delete
+  update:
+    x-agentic-access:
+      action_class: write
+      consequence: reversible-window
+      note: >-
+        Removes a pending transaction from THIS node's mempool only, and only before inclusion. Not exposed
+        on the public mainnet gateway; removing it locally does not remove it from other nodes' mempools.

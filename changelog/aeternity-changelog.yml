@@ -1,0 +1,88 @@
+generated: '2026-09-12'
+method: searched
+source: https://github.com/aeternity/ae_mdw/blob/master/CHANGELOG.md
+also:
+- https://github.com/aeternity/aeternity/releases
+- https://docs.aeternity.com/developer-documentation/aeternity/docs/release-notes
+- https://docs.aeternity.com/developer-documentation/ae_mdw/changelog
+- https://github.com/aeternity/aepp-sdk-js/releases
+note: >-
+  æternity publishes no single product changelog page. Each component keeps its own dated, per-release
+  changelog in its repository and mirrors it into the documentation hub; the middleware's is
+  Conventional-Commits generated (release-please) and is the most granular. Release cadence is materially
+  different per component — see lifecycle/aeternity-lifecycle.yml.
+scheme: semver
+components:
+- name: aeternity node
+  current_version: 7.3.0
+  released: '2026-09-06'
+  changelog: https://docs.aeternity.com/developer-documentation/aeternity/docs/release-notes
+  releases: https://github.com/aeternity/aeternity/releases
+  cadence: >-
+    Long release-candidate trains — v7.3.0 shipped 2026-09-06 after eleven release candidates dating back to
+    2025; the previous stable was v7.2.2 on 2026-07-08 and v7.2.1 on 2026-03-27.
+- name: ae_mdw middleware
+  current_version: 1.108.2
+  released: '2026-09-09'
+  changelog: https://github.com/aeternity/ae_mdw/blob/master/CHANGELOG.md
+  cadence: Continuous — several releases per week.
+- name: '@aeternity/aepp-sdk'
+  current_version: 15.0.0
+  released: '2026-09-07'
+  changelog: https://docs.aeternity.com/developer-documentation/aepp-sdk-js/docs/changelog
+  cadence: Major versions track node protocol releases; 15.0.0 landed one day after node 7.3.0.
+entries:
+- version: 1.108.2
+  component: ae_mdw
+  date: '2026-09-09'
+  breaking: false
+  highlights:
+  - 'Fix: resume mem-sync at the open generation (#2208)'
+- version: 1.108.1
+  component: ae_mdw
+  date: '2026-09-08'
+  breaking: false
+  highlights:
+  - "Fix: don't crash exec_all_mem_mutations on an empty batch (#2206)"
+- version: 1.108.0
+  component: ae_mdw
+  date: '2026-09-08'
+  breaking: false
+  additions:
+  - 'Feature: route HTTP access logs to a separate file (#2199)'
+  - 'Feature: separate access log made opt-in via ACCESS_LOG_FILE_PATH (#2205)'
+- version: 1.107.4
+  component: ae_mdw
+  date: '2026-09-07'
+  breaking: false
+  highlights:
+  - Bumped bundled node version to 7.3.0 (#2196)
+- version: 1.107.2
+  component: ae_mdw
+  date: '2026-08-26'
+  breaking: false
+  highlights:
+  - 'Fix: always re-derive aex9 balances from a dry-run instead of per-event arithmetic (#2192)'
+  - 'Fix: give the AEX-N metadata dry-runs an execution gas budget (#2185)'
+- version: 15.0.0
+  component: '@aeternity/aepp-sdk'
+  date: '2026-09-07'
+  breaking: true
+  highlights:
+  - Major SDK release published one day after node 7.3.0; migration guides are maintained per major version.
+- version: 7.3.0
+  component: aeternity node
+  date: '2026-09-06'
+  breaking: false
+  highlights:
+  - First stable 7.3.x node release, closing an eleven-candidate train.
+- version: 1.105.0
+  component: ae_mdw
+  date: '2026-07'
+  breaking: true
+  highlights:
+  - >-
+    WebSocket protocol change — Subscribe/Unsubscribe replies became lean (a single-element list instead of
+    the full accumulated subscription list). Ping gained count and has_more. A migration guide is published
+    in the README and WS_SUBS_FULL_LIST_REPLY restores the old behaviour, marked for removal.
+  migration: https://github.com/aeternity/ae_mdw/blob/master/README.md#websocket-migration-guide-v1104--v1105

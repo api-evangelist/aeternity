@@ -1,0 +1,617 @@
+generated: '2026-09-12'
+method: derived
+source: graphql/aeternity-middleware-introspection.json (live introspection of https://mainnet.aeternity.io/mdw/graphql)
+  + openapi/aeternity-middleware-openapi.yml (https://mainnet.aeternity.io/mdw/v3/api)
+note: 'Binds every æternity Middleware GraphQL query field to the REST operationId(s) that answer the same question.
+  Both surfaces were introspected live and unauthenticated, so every row is verified against a real schema rather
+  than inferred from prose. The MCP server at aeternity.com is OAuth-gated: an anonymous tools/list returned 401,
+  so no MCP tool could be enumerated and no MCP row appears here.'
+surfaces:
+  openapi:
+    url: openapi/aeternity-middleware-openapi.yml
+    endpoint: https://mainnet.aeternity.io/mdw/v3
+    gated: false
+    operations: 76
+  graphql:
+    endpoint: https://mainnet.aeternity.io/mdw/graphql
+    sdl: graphql/aeternity-middleware.graphql
+    introspection: open
+    gated: false
+    query_fields: 85
+  mcp:
+    endpoint: https://aeternity.com/wp-json/mcp/mcp-oauth-server
+    gated: true
+    note: OAuth 2.1 required; anonymous tools/list -> 401 rest_not_logged_in. Tool set unknown.
+crosswalk:
+- tool: accountActivities
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetAccountActivities
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: accountNameClaims
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetAccountNameClaims
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: accountNamePointees
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetAccountPointees
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: accountSwaps
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetAccountDexSwaps
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: accountTransactionsCount
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetAccountTransactionsCount
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: activeAccountsStats
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetActiveAccountsStats
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: aex141AccountTokens
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetAex141OwnedTokens
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: aex141Contract
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetAex141ByContract
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: aex141ContractTemplateTokens
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetAex141TemplateTokens
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: aex141ContractTemplates
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetAex141ContractTemplates
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: aex141ContractToken
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetAex141TokenOwner
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: aex141ContractTokens
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetAex141ContractTokens
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: aex141ContractTransfers
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetAex141ContractTransfers
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: aex141Contracts
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetSortedAex141Contracts
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: aex9AccountBalances
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetAex9AccountBalances
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: aex9BalanceHistory
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetAex9ContractAccountBalanceHistory
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: aex9Contract
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetAex9ByContract
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: aex9ContractBalances
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetAex9ContractBalances
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: aex9Contracts
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetSortedAex9Tokens
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: aex9Count
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetAex9TokensCount
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: aex9TokenBalance
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetAex9ContractAccountBalance
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: aex9TransfersStats
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetAex9TransfersStats
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: auction
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetNameAuction
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: auctionClaims
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetNameAuctionClaims
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: auctions
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetNamesAuctions
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: blocksStats
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetBlocksStats
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: channel
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetChannel
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: channels
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetChannels
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: contract
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetContract
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: contractCalls
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetContractCalls
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: contractLogs
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetContractLogs
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: contractSwaps
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetDexSwapsByContractId
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: contractsCalls
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetContractCalls
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: contractsLogs
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetContractLogs
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: contractsStats
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetContractsStats
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: deltaStats
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetDeltaStats
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: difficultyStats
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetDifficultyStats
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: hashrateStats
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetHashrateStats
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: keyBlock
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetKeyBlock
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: keyBlockAtHeight
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetKeyBlock
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: keyBlockMicroBlocks
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetKeyBlockMicroBlocks
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: keyBlockWithHash
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetKeyBlock
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: keyBlocks
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetKeyBlocks
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: microBlock
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetMicroBlock
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: microBlockTransactions
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetMicroBlockTransactions
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: microBlocksOfKeyBlockAtHeight
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetKeyBlockMicroBlocks
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: microBlocksOfKeyBlockWithHash
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetKeyBlockMicroBlocks
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: minersStats
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetMinerStats
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: name
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetName
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: nameClaims
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetNameClaims
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: nameTransfers
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetNameTransfers
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: nameUpdates
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetNameUpdates
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: names
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetNames
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: namesCount
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetNamesCount
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: namesStats
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetNamesStats
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: oracle
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetOracle
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: oracleExtends
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetOracleExtends
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: oracleQueries
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetOracleQueries
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: oracleResponses
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetOracleResponses
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: oracles
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetOracles
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: pendingTransactions
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetPendingTransactions
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: pendingTransactionsCount
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetPendingTransactionsCount
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: stats
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetStats
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: status
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetStatus
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: swaps
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetDexSwaps
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: topMinersStats
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetTopMinerStats
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: totalAccountsStats
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetTotalAccountsStats
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: totalStats
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetTotalStats
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: totalTransactionsStats
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetTotalTransactionsStats
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: transaction
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetTransaction
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: transactions
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetTransactions
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: transactionsCount
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetTransactionsCount
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: transactionsStats
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetTransactionsStats
+  binding: graphql-field-to-rest-operation
+  confidence: high
+- tool: transfers
+  surface: graphql
+  category: middleware-query
+  rest:
+  - GetTransfers
+  binding: graphql-field-to-rest-operation
+  confidence: high
+mcp_only: []
+graphql_only:
+- field: account
+  reason: Middleware v3 REST has no /accounts/{id} resource; the equivalent lives on the node API (GetAccountByPubkey),
+    not the middleware.
+- field: aex141Count
+  reason: No REST /aex141/count endpoint; only the AEX-9 count is exposed over REST.
+- field: aex141Transfers
+  reason: REST exposes AEX-141 transfers only per contract (/aex141/{contractId}/transfers); the chain-wide list
+    is GraphQL-only.
+- field: aex9ContractTransfers
+  reason: No REST /aex9/{contractId}/transfers endpoint in the v3 surface.
+- field: channelUpdates
+  reason: No REST endpoint for per-channel update history.
+- field: contracts
+  reason: No REST list-all-contracts endpoint; REST exposes only /contracts/{id}.
+- field: nameHistory
+  reason: No REST endpoint returning the full lifecycle history of a name.
+- field: searchNames
+  reason: No REST name-search endpoint.
+- field: syncStatus
+  reason: Sync state is folded into REST /status; GraphQL exposes it as a separate field.
+- field: topMiners24hStats
+  reason: REST exposes only /stats/miners/top (all-time); the 24h window is GraphQL-only.
+- field: wealth
+  reason: No REST /wealth endpoint; the wealth-rank index (WEALTH_RANK_SIZE, default 200) is GraphQL-only.
+rest_only:
+- operationId: GetEpochTop
+  method: GET
+  path: /hyperchain/epochs/top
+  reason: Hyperchains (epochs, schedule, validators, delegates) are exposed over REST only — the GraphQL schema
+    carries no hyperchain type.
+- operationId: GetEpochs
+  method: GET
+  path: /hyperchain/epochs
+  reason: Hyperchains (epochs, schedule, validators, delegates) are exposed over REST only — the GraphQL schema
+    carries no hyperchain type.
+- operationId: GetSchedule
+  method: GET
+  path: /hyperchain/schedule/height/{height}
+  reason: Hyperchains (epochs, schedule, validators, delegates) are exposed over REST only — the GraphQL schema
+    carries no hyperchain type.
+- operationId: GetSchedules
+  method: GET
+  path: /hyperchain/schedule
+  reason: Hyperchains (epochs, schedule, validators, delegates) are exposed over REST only — the GraphQL schema
+    carries no hyperchain type.
+- operationId: GetTopValidatorDelegates
+  method: GET
+  path: /hyperchain/validators/{validator}/delegates/top
+  reason: Hyperchains (epochs, schedule, validators, delegates) are exposed over REST only — the GraphQL schema
+    carries no hyperchain type.
+- operationId: GetValidator
+  method: GET
+  path: /hyperchain/validators/{validator}
+  reason: Hyperchains (epochs, schedule, validators, delegates) are exposed over REST only — the GraphQL schema
+    carries no hyperchain type.
+- operationId: GetValidatorDelegates
+  method: GET
+  path: /hyperchain/validators/{validator}/delegates
+  reason: Hyperchains (epochs, schedule, validators, delegates) are exposed over REST only — the GraphQL schema
+    carries no hyperchain type.
+- operationId: GetValidators
+  method: GET
+  path: /hyperchain/validators
+  reason: Hyperchains (epochs, schedule, validators, delegates) are exposed over REST only — the GraphQL schema
+    carries no hyperchain type.
+coverage:
+  graphql_fields: 85
+  rest_operations: 76
+  graphql_bound_to_rest: 74
+  graphql_only: 11
+  rest_only: 8
+  mcp_tools_enumerated: 0

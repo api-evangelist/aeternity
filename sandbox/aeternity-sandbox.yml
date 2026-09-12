@@ -1,0 +1,62 @@
+generated: '2026-09-12'
+method: probed
+source: >-
+  https://testnet.aeternity.io/v3/status, https://testnet.aeternity.io/mdw/v3/status,
+  https://faucet.aepps.com/, https://explorer.testnet.aeternity.io/,
+  https://docs.aeternity.com/aeternity-core-concepts/protocol/networks
+summary: >-
+  æternity ships a full, permanently-available public test environment that is byte-identical in API shape
+  to production: the same node version, the same OpenAPI contract, the same middleware, on a parallel host.
+  No credentials, no signup, no test-mode key — the separation is the network, not an account setting.
+modes:
+- name: mainnet
+  network_id: ae_mainnet
+  node_api: https://mainnet.aeternity.io/v3
+  middleware_api: https://mainnet.aeternity.io/mdw/v3
+  graphql: https://mainnet.aeternity.io/mdw/graphql
+  websocket: wss://mainnet.aeternity.io/mdw/v3/websocket
+  explorer: https://aescan.io/
+  node_version: 7.3.0
+  probed_status: 200
+  value_at_risk: true
+- name: testnet
+  network_id: ae_uat
+  node_api: https://testnet.aeternity.io/v3
+  middleware_api: https://testnet.aeternity.io/mdw/v3
+  websocket: wss://testnet.aeternity.io/mdw/v3/websocket
+  explorer: https://explorer.testnet.aeternity.io/
+  node_version: 7.3.0
+  probed_status: 200
+  value_at_risk: false
+  note: >-
+    Runs the identical node release as mainnet (7.3.0 on both, probed 2026-09-12) and the same protocol
+    ladder, so a client written against testnet needs only the host and network_id changed.
+mode_selector:
+  mechanism: base URL + network_id
+  detail: >-
+    There is no test/live key prefix because there are no keys. A transaction is bound to a network by the
+    network_id it is signed over — ae_mainnet vs ae_uat — so a testnet-signed transaction is cryptographically
+    invalid on mainnet and cannot be replayed there. This is a stronger separation than a key prefix.
+test_funds:
+  faucet: https://faucet.aepps.com/
+  http_status: 200
+  detail: >-
+    The Faucet æpp tops up any ae_uat account with test AE on request. Values dispensed are set by the
+    faucet operator and are not published in the docs, so none is recorded here.
+local_development:
+  detail: >-
+    A node can be run locally from a package, a Docker image or source; the external HTTP API is then served
+    on 127.0.0.1:3013 and the internal/debug API family — unavailable on the public gateways — becomes
+    reachable. docker-compose files for a local node plus middleware, a dev testnet and a hyperchain are
+    published in the ae_mdw repository.
+  docs: https://docs.aeternity.com/aeternity-user-tools-and-services/run-an-aeternity-node
+  compose:
+  - https://github.com/aeternity/ae_mdw/blob/master/docker-compose-dev.yml
+  - https://github.com/aeternity/ae_mdw/blob/master/docker-compose-dev-testnet.yml
+  - https://github.com/aeternity/ae_mdw/blob/master/docker-compose-hc.yml
+rehearsal:
+  dry_run: POST /dry-run (ProtectedDryRunTxs) — execute an unsigned transaction against real state and read the gas estimate without submitting. See conventions/aeternity-conventions.yml dry_run_mode.
+test_values_published: false
+note: >-
+  No test cards, magic identifiers, fixture tokens or test clocks exist or could exist on this API — the
+  provider publishes none and none has been invented here.

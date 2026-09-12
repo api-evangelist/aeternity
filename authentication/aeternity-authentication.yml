@@ -1,0 +1,63 @@
+generated: '2026-09-12'
+method: derived
+source: >-
+  openapi/aeternity-node-openapi.yml, openapi/aeternity-middleware-openapi.yml,
+  well-known/aeternity-oauth-authorization-server.json, well-known/aeternity-oauth-protected-resource.json,
+  live unauthenticated probes of https://mainnet.aeternity.io/v3/status and https://mainnet.aeternity.io/mdw/v3/status (2026-09-12)
+summary: >-
+  The two blockchain APIs are fully open — no key, no token, no signup. Authority on æternity is carried by
+  the cryptographic signature inside the transaction payload, not by an API credential, so read endpoints
+  need nothing and the single write endpoint (POST /transactions) accepts a transaction the caller has
+  already signed with their own private key. The only credentialed surface in this profile is the remote MCP
+  endpoint on aeternity.com, which is OAuth 2.1 gated.
+surfaces:
+- name: Aeternity Node API
+  base: https://mainnet.aeternity.io/v3
+  scheme: none
+  security_schemes_declared: 0
+  probe:
+    url: https://mainnet.aeternity.io/v3/status
+    http_status: 200
+    authenticated: false
+  detail: >-
+    No securitySchemes and no security requirement in the spec. The internal/debug endpoint family is not
+    protected by a credential either — it is simply not exposed on the public gateway, and returns 403
+    "Info not enabled" (GetPeers) where it is disabled. Running your own node is how you get that surface.
+  signing:
+    model: client-side transaction signing
+    detail: >-
+      Write authority = an Ed25519 signature over the serialized transaction, produced by the caller. The
+      node validates the signature and the account nonce; it never holds caller credentials. Obtain the next
+      nonce from GetAccountNextNonce before signing.
+- name: Aeternity Middleware API (REST + GraphQL + WebSocket)
+  base: https://mainnet.aeternity.io/mdw/v3
+  scheme: none
+  security_schemes_declared: 0
+  probe:
+    url: https://mainnet.aeternity.io/mdw/v3/status
+    http_status: 200
+    authenticated: false
+  detail: >-
+    Read-only index over the chain; no securityScheme declared, CORS wide open
+    (access-control-allow-origin *). GraphQL introspection is enabled and answered anonymously.
+- name: Aeternity MCP Server
+  base: https://aeternity.com/wp-json/mcp/mcp-oauth-server
+  scheme: oauth2
+  flow: authorization_code
+  detail: >-
+    Advertised by RFC 9728 protected-resource metadata and RFC 8414 authorization-server metadata on
+    aeternity.com. Authorization code with PKCE (S256 only), refresh_token supported, bearer token in the
+    Authorization header, a single scope (mcp), token_endpoint_auth_methods_supported "none" (public
+    clients), and dynamic registration via client-id metadata documents
+    (client_id_metadata_document_supported: true). An anonymous tools/list returns 401 rest_not_logged_in.
+  endpoints:
+    issuer: https://aeternity.com
+    authorization: https://aeternity.com/oauth/authorize
+    token: https://aeternity.com/oauth/token
+    revocation: https://aeternity.com/oauth/revoke
+  probe:
+    url: https://aeternity.com/wp-json/mcp/mcp-oauth-server
+    http_status: 401
+  see: scopes/aeternity-scopes.yml
+no_credential_required: true
+signup_required: false

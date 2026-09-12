@@ -1,0 +1,20 @@
+generated: '2026-09-12'
+method: searched
+source: https://aeternity.com/, https://docs.aeternity.com/aeternity-developer-tools, https://mainnet.aeternity.io/v3/status
+plan_count: 0
+pricing_model: none
+note: >-
+  æternity publishes no plans, tiers, pricing page or commercial offer for its APIs, and there is nothing to
+  buy: the node and middleware gateways at mainnet.aeternity.io are open and unauthenticated, the software is
+  open source and self-hostable, and no "contact sales" path exists anywhere on the site. What a caller pays
+  is on-chain gas and transaction fees denominated in the AE coin, which the protocol prices per transaction
+  type rather than the company pricing per API call — that is protocol economics, not an API plan, so it is
+  not recorded here as a tier. Searched the site navigation and footer, the documentation hub and the
+  developer-tools section; no pricing surface exists to record.
+plans: []
+usage_costs:
+- name: transaction fees
+  detail: >-
+    Paid on-chain in AE by the signer of each transaction, sized by transaction type and byte size; contract
+    calls additionally consume gas metered by the FATE VM.
+  docs: https://docs.aeternity.com/aeternity-core-concepts/protocol/transactions/transaction-fees

@@ -1,0 +1,28 @@
+generated: '2026-09-12'
+method: probed
+source: https://aeternity.com/.well-known/oauth-authorization-server
+note: >-
+  Neither OpenAPI declares an oauth2 securityScheme, so nothing was derivable from the specs
+  (derive-oauth-scopes.py found 0 oauth2 schemes). The only OAuth surface æternity publishes is the MCP
+  endpoint on aeternity.com, and its authorization-server metadata declares exactly one scope. No scope
+  reference page exists in the documentation; these values are read verbatim from the served discovery
+  documents, not inferred.
+authorization_server: https://aeternity.com
+protected_resource: https://aeternity.com/wp-json/mcp/mcp-oauth-server
+flows:
+  authorization_code:
+    authorization_endpoint: https://aeternity.com/oauth/authorize
+    token_endpoint: https://aeternity.com/oauth/token
+    revocation_endpoint: https://aeternity.com/oauth/revoke
+    pkce: S256
+    grant_types:
+    - authorization_code
+    - refresh_token
+scopes:
+- name: mcp
+  description: >-
+    The single scope advertised in scopes_supported by both the authorization-server metadata and the
+    protected-resource metadata. The documents publish no description of what it grants, and the tool set it
+    gates could not be enumerated anonymously.
+  source: https://aeternity.com/.well-known/oauth-authorization-server
+scope_count: 1

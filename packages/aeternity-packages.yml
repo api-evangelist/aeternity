@@ -1,0 +1,75 @@
+generated: '2026-09-12'
+method: searched
+source: https://registry.npmjs.org, https://pypi.org, https://proxy.golang.org, https://search.maven.org, https://github.com/aeternity, https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/sdks-and-apis
+note: >-
+  Only the JavaScript/TypeScript line is maintained. The npm SDK shipped 15.0.0 on 2026-09-07, one day
+  after node v7.3.0 — the tightest SDK/protocol coupling in this repo. Every other language binding has
+  decayed: the CLI last published 2025-01-30, the calldata library 2024-12-09, the Python SDK 2020-01-31
+  and the Go SDK 2019-03-26, and æternity's own docs file the Python/Go/Elixir/PHP bindings under
+  "Outdated SDKs". The Java SDK is community-managed (kryptokrauts), which the docs state outright.
+packages:
+- name: '@aeternity/aepp-sdk'
+  registry: npm
+  language: JavaScript/TypeScript
+  official: true
+  version: 15.0.0
+  published: '2026-09-07'
+  url: https://www.npmjs.com/package/@aeternity/aepp-sdk
+  repository: https://github.com/aeternity/aepp-sdk-js
+  docs: https://docs.aeternity.com/developer-documentation/aepp-sdk-js
+  note: The first-party SDK; tracks node releases closely.
+- name: '@aeternity/aepp-cli'
+  registry: npm
+  language: JavaScript/TypeScript
+  official: true
+  version: 7.0.0
+  published: '2025-01-30'
+  url: https://www.npmjs.com/package/@aeternity/aepp-cli
+  repository: https://github.com/aeternity/aepp-cli-js
+  note: Command-line interface; see cli/aeternity-cli.yml. 19 months behind the SDK it wraps.
+- name: '@aeternity/aepp-calldata'
+  registry: npm
+  language: JavaScript
+  official: true
+  version: 1.9.1
+  published: '2024-12-09'
+  url: https://www.npmjs.com/package/@aeternity/aepp-calldata
+  repository: https://github.com/aeternity/aepp-calldata-js
+  note: Sophia contract calldata encode/decode library, used by the SDK.
+- name: aepp-sdk
+  registry: pypi
+  language: Python
+  official: true
+  version: 7.0.0
+  published: '2020-01-31'
+  url: https://pypi.org/project/aepp-sdk/
+  repository: https://github.com/aeternity/aepp-sdk-python
+  status: abandoned
+  note: >-
+    Last release predates node v7 by four years and every protocol change since. Listed by æternity
+    under "Outdated SDKs".
+- name: github.com/aeternity/aepp-sdk-go
+  registry: go
+  language: Go
+  official: true
+  version: v1.0.2
+  published: '2019-03-26'
+  url: https://pkg.go.dev/github.com/aeternity/aepp-sdk-go
+  repository: https://github.com/aeternity/aepp-sdk-go
+  status: abandoned
+  note: Read from proxy.golang.org @latest. Listed under "Outdated SDKs".
+- name: com.kryptokrauts:aepp-sdk-java
+  registry: maven
+  language: Java
+  official: false
+  version: 3.0.1
+  published: '2022-01-11'
+  url: https://central.sonatype.com/artifact/com.kryptokrauts/aepp-sdk-java
+  repository: https://github.com/kryptokrauts/aepp-sdk-java
+  note: >-
+    Community-managed, not first-party — the æternity docs Java SDK page says "This page may not be up
+    to date as this is a community managed SDK."
+counts:
+  total: 6
+  official: 5
+  abandoned: 2

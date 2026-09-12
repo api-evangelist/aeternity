@@ -64,5 +64,21 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Aeternity is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://forgeglobal.com/aeternity_stock/
+æternity is an open-source layer-1 blockchain platform, launched in 2018 and stewarded by the Aeternity
+Foundation. It publishes two real, public, unauthenticated HTTP contracts and an open GraphQL endpoint:
+
+- **Aeternity Node API** — OpenAPI 3.0, 79 operations, live at `https://mainnet.aeternity.io/api`
+  (node 7.3.0). Chain, transactions, accounts, contracts, oracles, AENS, state channels, node operator.
+- **Aeternity Middleware API (ae_mdw)** — OpenAPI 3.0, 76 operations, live at
+  `https://mainnet.aeternity.io/mdw/v3/api` (1.108.2), plus an **open GraphQL endpoint** with 85 query
+  fields at `https://mainnet.aeternity.io/mdw/graphql` and a WebSocket subscription stream.
+- **A remote MCP endpoint** on `aeternity.com`, advertised through RFC 9728 and RFC 8414 discovery
+  documents and gated by OAuth 2.1.
+
+Links:
+
+- https://aeternity.com/
+- https://docs.aeternity.com/
+- https://api-docs.aeternity.io/
+- https://github.com/aeternity
+- https://status.aeternity.io/

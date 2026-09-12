@@ -1,0 +1,67 @@
+generated: '2026-09-12'
+method: searched
+source: https://github.com/aeternity/aepp-cli-js (README `$ aecli` help output, captured verbatim)
+also:
+- https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/clis
+- https://www.npmjs.com/package/@aeternity/aepp-cli
+- https://docs.aeternity.com/developer-documentation/aepp-cli-js/changelog
+name: aecli
+package: '@aeternity/aepp-cli'
+version: 7.0.0
+published: '2025-01-30'
+official: true
+repository: https://github.com/aeternity/aepp-cli-js
+install:
+- method: npm
+  command: npm install --global @aeternity/aepp-cli
+binary: aecli
+commands:
+- name: account
+  summary: handle wallet operations
+- name: spend
+  usage: spend [options] <wallet> <receiver> <amount>
+  summary: send coins to another account or contract
+- name: name
+  summary: manage AENS names
+- name: contract
+  summary: contract interactions
+- name: oracle
+  summary: interact with oracles
+- name: chain
+  summary: make a request to the node
+- name: inspect
+  usage: inspect [options] <identifier>
+  summary: get details of a node entity
+- name: tx
+  summary: generate transactions to sign and submit manually
+- name: config
+  summary: print the current sdk configuration
+- name: select-node
+  usage: select-node [nodeUrl]
+  summary: specify node to use in other commands
+- name: select-compiler
+  usage: select-compiler [compilerUrl]
+  summary: specify compiler to use in other commands
+key_flows:
+- name: create a wallet
+  command: aecli account create ./wallet.json
+- name: fund a testnet wallet
+  command: aecli select-node
+  detail: 'Switch to testnet, then top the address up at https://faucet.aepps.com/'
+- name: inspect an entity
+  command: aecli inspect <identifier>
+  detail: Accepts any prefixed æternity identifier and prints balance, nonce and pending transactions for an account.
+note: >-
+  Command list is the verbatim root help output published in the CLI README, not a reconstruction. The npm
+  release is 19 months older than the SDK it wraps (SDK 15.0.0 on 2026-09-07 vs CLI 7.0.0 on 2025-01-30) —
+  see packages/aeternity-packages.yml.
+other_clis:
+- name: aesophia_cli
+  purpose: Stand-alone Sophia compiler.
+  repository: https://github.com/aeternity/aesophia_cli
+- name: aerepl
+  purpose: Interactive Sophia REPL.
+  repository: https://github.com/aeternity/aerepl
+- name: aeproject
+  purpose: Project scaffolding, local environment and contract testing framework for æpps.
+  docs: https://docs.aeternity.com/developer-documentation/aeproject

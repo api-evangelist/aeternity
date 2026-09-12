@@ -1,0 +1,183 @@
+generated: '2026-09-12'
+method: derived
+source: >-
+  openapi/aeternity-node-openapi.yml (info.description + components.responses.ServiceUnavailable),
+  openapi/aeternity-middleware-openapi.yml, graphql/aeternity-middleware.graphql,
+  https://github.com/aeternity/ae_mdw/blob/master/README.md,
+  https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/middleware
+surfaces:
+- Aeternity Node API (REST, https://mainnet.aeternity.io/v3)
+- Aeternity Middleware API (REST, https://mainnet.aeternity.io/mdw/v3)
+- Aeternity Middleware GraphQL (https://mainnet.aeternity.io/mdw/graphql)
+- Aeternity Middleware WebSocket (wss://mainnet.aeternity.io/mdw/v3/websocket)
+authentication:
+  style: none
+  detail: >-
+    Neither the node OpenAPI nor the middleware OpenAPI declares a securityScheme, and neither declares a
+    top-level security requirement. Both public gateways answered unauthenticated on every probe. Authority
+    on this chain is carried by the signature inside the transaction payload, not by an API credential.
+  see: authentication/aeternity-authentication.yml
+versioning:
+  style: path
+  detail: >-
+    The version is a path prefix on each surface — /v3 for the node, /mdw/v3 for the middleware REST
+    surface, /mdw/v3/websocket for the V3 subscription stream. /mdw/v2 and /mdw/websocket (V1) are still
+    served. No version header and no version query parameter exist.
+  current:
+    node: v3 (node release 7.3.0)
+    middleware: v3 (ae_mdw release 1.108.2)
+  older_served:
+  - /mdw/v2 (swagger at https://mainnet.aeternity.io/mdw/swagger/swagger_v2.json, info.version 1.68.2)
+  - /mdw/websocket (V1 subscription protocol)
+pagination:
+  node:
+    style: cursor
+    detail: Only a few node endpoints paginate; most return a single resource or a bounded list.
+  middleware:
+    style: cursor
+    params:
+    - limit
+    - cursor
+    - direction
+    - scope
+    response_fields:
+    - data
+    - next
+    - prev
+    detail: >-
+      Middleware list endpoints return {data: [...], next: <opaque cursor URL or null>, prev: ...}. Cursors
+      are opaque and must be replayed verbatim. GraphQL list queries return an equivalent page object.
+  graphql:
+    detail: Page objects on list queries; query complexity is capped by GRAPHQL_MAX_COMPLEXITY (default 1000) and successful responses are cached in ETS for GRAPHQL_RESPONSE_CACHE_TTL_MS (default 5000ms).
+state_version:
+  header: X-Ae-Height
+  detail: >-
+    A first-class convention and the most useful runtime signal on this API. Every node response — including
+    error responses — carries X-Ae-Height, the height of the answering node's chain top when the request was
+    accepted. The body reflects a chain state at or after that height, so the value is a lower bound that is
+    comparable across nodes: a client querying a pool behind a load balancer can discard an answer from a
+    node that is behind a state it has already observed instead of retrying blindly. A 404 for a not-yet-mined
+    transaction therefore tells the client how far behind the answering node actually is. Resolution is one
+    generation, so micro blocks within the current generation do not change it, which keeps it cache-friendly.
+    The header is omitted while the node's chain is not readable yet.
+  source: openapi/aeternity-node-openapi.yml info.description
+request_id:
+  header: x-request-id
+  surface: middleware
+  detail: The middleware returns an x-request-id header on every response (observed on GET /mdw/v3/status, 2026-09-12). The node does not.
+error_envelope:
+  node: '{"reason": string, "error_code": string?}'
+  middleware: '{"error": string}'
+  rfc9457: false
+  see: errors/aeternity-problem-types.yml
+rate_limit_signaling:
+  headers: []
+  backpressure:
+    status: 503
+    header: Retry-After
+    detail: >-
+      No X-RateLimit-*/RateLimit-* headers are returned on either surface. The node instead declares a 503
+      Service Unavailable response with a Retry-After header (integer seconds) on ALL 79 operations —
+      overload protection is applied to every endpoint. That is the only published throttling signal.
+  see: rate-limits/aeternity-rate-limits.yml
+idempotency:
+  coverage: partial
+  mechanism: transaction-nonce
+  header: null
+  scope:
+  - PostTransaction
+  detail: >-
+    There is no Idempotency-Key header anywhere on either surface. The one chain-state write, POST
+    /transactions (PostTransaction), is nonetheless replay-safe by protocol rather than by API convention:
+    the client signs a transaction that carries an account nonce, and the signed bytes hash to a
+    deterministic transaction hash. Re-posting the identical signed payload cannot apply the effect twice —
+    it either returns the same hash while pending or is rejected once that nonce is consumed. This protects
+    the single mutating operation and nothing else, which is why coverage is partial rather than full: it is
+    a property of the payload the caller constructs, not a mechanism the API offers, and it does not extend
+    to the node-operator DELETE or to PostKeyBlock. Agents must fetch GetAccountNextNonce before signing and
+    must not reuse a nonce across two differing payloads.
+  nonce_operation: GetAccountNextNonce (GET /accounts/{pubkey}/next-nonce)
+dry_run_mode:
+  supported: true
+  grade: verified
+  operations:
+  - ProtectedDryRunTxs
+  - DryRunTxs
+  detail: >-
+    POST /dry-run executes unsigned transactions against the state on top of a given block and returns the
+    result plus a gas estimate, without submitting anything to the chain. This is a genuine rehearsal
+    surface: an agent can evaluate a contract call before it spends anything. Documented limits, verbatim
+    from the spec — all transaction types are supported except GAMetaTx, PayingForTx and OffchainTx; gas
+    defaults to 1,000,000 when unset; total gas per request is capped by a node-configured limit and
+    exceeding it returns 403; reported gas is an estimate, never below the on-chain cost at the currently
+    activated protocol, because each repriced FATE storage register read is floored at that charge.
+reversibility:
+  grade: documented
+  detail: >-
+    Once a transaction is included in a micro block it is final — æternity publishes no refund, void, cancel
+    or reverse operation, and none exists in either contract. There is exactly one reversal path, and it
+    applies only before inclusion.
+  reversals:
+  - write_operation: PostTransaction
+    reversal_operation: DeleteTxFromMempool
+    reversal_path: DELETE /node/operator/mempool/hash/{hash}
+    window: >-
+      Only while the transaction is still pending in that node's mempool — the spec's own 404 is
+      "Transaction not in mempool". The docs state no duration for that window, and it is not a promise: once
+      any node includes the transaction in a micro block the effect is permanent.
+    availability: >-
+      node-operator API only. This endpoint is tagged internal/node-operator and is not exposed on the public
+      mainnet.aeternity.io gateway, so it is reachable only by whoever runs the node, and removing a
+      transaction from one mempool does not remove it from the network's other mempools.
+    confidence: medium
+    source: openapi/aeternity-node-openapi.yml DeleteTxFromMempool
+  - write_operation: PostTransaction (AENS NameClaimTx)
+    reversal_operation: PostNameRevoke
+    reversal_path: POST /debug/names/revoke
+    window: >-
+      Any time while the name is owned; revocation releases the name rather than undoing the claim, and the
+      fees spent are not returned. The docs state no time limit.
+    confidence: low
+    note: >-
+      Listed for completeness — this is a forward protocol action with a similar effect, not a reversal of
+      the earlier transaction.
+  not_reversible:
+  - Coin transfers (SpendTx) once mined
+  - Contract calls and their state effects once mined
+  - Gas and fees spent by any included transaction
+  no_window_asserted: >-
+    No inclusion-time or finality window is asserted here because æternity's own documentation states none
+    for this API. Bitcoin-NG key-block cadence is roughly three minutes, but that is a protocol statistic,
+    not a reversal guarantee, and it must not be read as one.
+expansion:
+  supported: false
+  detail: REST has no field-expansion or sparse-fieldset parameters. The GraphQL surface is the field-selection mechanism — that is the documented reason it exists alongside REST.
+metadata:
+  supported: false
+  detail: No user-defined metadata fields; all fields are protocol-defined.
+identifiers:
+  style: prefixed-base58check
+  detail: >-
+    Every entity identifier is a self-describing prefixed string, which makes id validation possible
+    client-side before a call is made.
+  prefixes:
+    ak_: account public key
+    th_: transaction hash
+    kh_: key block hash
+    mh_: micro block hash
+    ct_: contract
+    ok_: oracle
+    oq_: oracle query
+    nm_: AENS name
+    ch_: state channel
+    cb_: contract bytecode
+    tx_: encoded transaction
+    sg_: signature
+    ba_: byte array / payload
+cross_links:
+  errors: errors/aeternity-problem-types.yml
+  lifecycle: lifecycle/aeternity-lifecycle.yml
+  authentication: authentication/aeternity-authentication.yml
+  rate_limits: rate-limits/aeternity-rate-limits.yml
+  sandbox: sandbox/aeternity-sandbox.yml
+  crosswalk: mcp/aeternity-tool-crosswalk.yml

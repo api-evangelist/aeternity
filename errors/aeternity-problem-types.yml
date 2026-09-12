@@ -1,0 +1,93 @@
+generated: '2026-09-12'
+method: derived
+source: openapi/aeternity-node-openapi.yml, openapi/aeternity-middleware-openapi.yml
+format: vendor-json
+rfc9457: false
+note: >-
+  Neither surface uses RFC 9457 application/problem+json. Both return a flat JSON object with a single
+  human-readable string, on content-type application/json. The node envelope is {"reason": string,
+  "error_code": string?} (reason required, error_code optional and used sparsely); the middleware envelope
+  is {"error": string}. No published error-code registry or enumerated code list exists for either surface,
+  so the catalog below is the status-code contract the specs actually declare, not an invented code table.
+envelopes:
+- surface: Aeternity Node API
+  schema: '#/components/schemas/Error'
+  shape:
+    reason: string (required) — human-readable explanation
+    error_code: string (optional) — machine token, present on a small subset of node errors
+  content_type: application/json
+- surface: Aeternity Middleware API
+  schema: '#/components/schemas/ErrorResponse'
+  shape:
+    error: string (required) — the message of the error raised
+  content_type: application/json
+  example: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+problem_types:
+- status: 400
+  title: Bad request
+  surface: node
+  occurrences: 54
+  schema: Error
+  meaning: Malformed parameter, unparseable identifier, or a transaction/contract payload the node rejects.
+  remediation: Validate the encoded identifier prefix (ak_/th_/ct_/ok_/nm_/ch_/kh_/mh_) and re-encode the payload before retrying; retrying unchanged will fail identically.
+- status: 403
+  title: Forbidden
+  surface: node
+  occurrences: 3
+  schema: Error
+  meaning: The operation is disabled on this node — the internal/debug endpoints are not exposed on the public gateway.
+  remediation: Run your own node and enable the internal API, or use an endpoint on the external API.
+- status: 404
+  title: Not found
+  surface: node
+  occurrences: 53
+  schema: Error
+  meaning: The account, transaction, block, contract, oracle, name or channel does not exist at the queried state.
+  remediation: A 404 for a just-submitted transaction may only mean the answering node is behind — compare the X-Ae-Height response header before concluding the object is absent.
+- status: 410
+  title: Gone
+  surface: node
+  occurrences: 3
+  schema: Error
+  meaning: The state or data required for this answer has been garbage-collected or pruned on this node.
+  remediation: Query an archive node, or use the middleware (ae_mdw), which retains historical state.
+  operations:
+  - GetAccountByPubkeyAndHeight
+  - GetTransactionInfoByHash
+  - GetTokenSupplyByHeight
+- status: 500
+  title: Internal server error
+  surface: node
+  occurrences: 1
+  schema: Error
+  meaning: Unhandled node-side failure.
+  remediation: Retry; if persistent, report on the node repository.
+- status: 503
+  title: Service unavailable
+  surface: node
+  occurrences: 79
+  schema: Error
+  headers:
+  - Retry-After
+  meaning: >-
+    Declared on EVERY node operation. The node's request queues are saturated (overload protection, which
+    is applied to every endpoint) or the node has not yet reached a stable mode.
+  remediation: Honour the Retry-After header (integer seconds) and back off before retrying. This is the node's only published backpressure signal.
+- status: 400
+  title: Error response
+  surface: middleware
+  occurrences: 67
+  schema: ErrorResponse
+  meaning: Invalid identifier, cursor, range, scope or query parameter.
+  remediation: Re-check the id encoding and the pagination cursor; middleware cursors are opaque and must be used verbatim from a previous response.
+- status: 404
+  title: Not found response
+  surface: middleware
+  occurrences: 17
+  schema: NotFoundResponse
+  meaning: The indexed resource is not present in the middleware database.
+  remediation: Check /status (mdw_synced, mdw_height vs node_height) — a resource newer than mdw_height is not yet indexed.
+counts:
+  node_error_responses: 193
+  middleware_error_responses: 84
+  enumerated_error_codes: 0

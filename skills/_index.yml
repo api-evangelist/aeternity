@@ -1,0 +1,28 @@
+generated: '2026-09-12'
+method: generated
+source: openapi/aeternity-node-openapi.yml, openapi/aeternity-middleware-openapi.yml, asyncapi/aeternity-middleware-websocket-asyncapi.yml, conventions/aeternity-conventions.yml
+note: >-
+  æternity publishes no skills, AGENTS.md or agent instructions of its own (searched the docs hub, the
+  GitHub org and docs.aeternity.com/llms.txt). These four are generated from the harvested contracts, and
+  every operationId referenced was verified to exist in the spec before it was written down.
+skills:
+- name: aeternity-submit-transaction
+  file: skills/aeternity-submit-transaction.md
+  api: Aeternity Node API
+  summary: Sign, dry-run, broadcast and confirm the one chain-state write this API exposes — and understand why it cannot be taken back.
+  operations: 8
+- name: aeternity-read-account-history
+  file: skills/aeternity-read-account-history.md
+  api: Aeternity Middleware API
+  summary: Read an account's full history from the index — activities, token balances, NFTs, names, DEX swaps — including when to fall back to GraphQL.
+  operations: 8
+- name: aeternity-watch-chain-events
+  file: skills/aeternity-watch-chain-events.md
+  api: Aeternity Middleware API (WebSocket)
+  summary: Subscribe to live chain events, deduplicate the deliberate double delivery, and survive the lean-reply and per-IP connection limits.
+  operations: 3
+- name: aeternity-inspect-token-contract
+  file: skills/aeternity-inspect-token-contract.md
+  api: Aeternity Middleware API
+  summary: Read AEX-9 and AEX-141 token state through the contract's own standard-aware endpoints instead of calling the contract.
+  operations: 14

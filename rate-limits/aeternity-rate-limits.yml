@@ -1,0 +1,79 @@
+generated: '2026-09-12'
+method: probed
+source: >-
+  openapi/aeternity-node-openapi.yml (components.responses.ServiceUnavailable),
+  https://github.com/aeternity/ae_mdw/blob/master/README.md,
+  live header inspection of https://mainnet.aeternity.io/v3/status and https://mainnet.aeternity.io/mdw/v3/status (2026-09-12)
+summary: >-
+  No numeric request quota is published for either public gateway, and no rate-limit headers are returned.
+  What the provider does publish is a backpressure contract — a 503 with Retry-After declared on every node
+  operation — and a set of documented WebSocket connection ceilings for the middleware.
+response_headers:
+  rate_limit_headers: []
+  observed:
+  - x-ae-height
+  - x-request-id
+  detail: >-
+    Live responses from both gateways carry no X-RateLimit-*, RateLimit-* or Retry-After header at rest. The
+    Retry-After header appears only on the 503 overload response.
+exhaustion:
+  status: 503
+  header: Retry-After
+  schema: integer seconds, minimum 0, example 3
+  applies_to: all 79 node operations
+  quote: >-
+    "The node is temporarily unable to handle the request: either its request queues are saturated (overload
+    protection) or it has not yet reached a stable mode. Overload protection is applied to every endpoint, so
+    this response can be returned by any operation. The Retry-After header tells the client how long to back
+    off before retrying."
+  source: openapi/aeternity-node-openapi.yml components.responses.ServiceUnavailable
+rate_limits:
+- scope: per-connection (middleware WebSocket)
+  limit: 100000
+  unit: subscriptions per connection
+  setting: MAX_SUBS_PER_CONN
+  note: Documented default in the ae_mdw README configuration table; operator-configurable, and the value in force on the public gateway is not separately published.
+  source: https://github.com/aeternity/ae_mdw/blob/master/README.md
+- scope: per-deployment (middleware WebSocket)
+  limit: 1000
+  unit: concurrent WebSocket connections
+  setting: MAX_WS_CONNECTIONS
+  source: https://github.com/aeternity/ae_mdw/blob/master/README.md
+- scope: per-ip (middleware WebSocket)
+  limit: 50
+  unit: concurrent WebSocket connections from one IP
+  setting: MAX_WS_CONNECTIONS_PER_IP
+  behaviour: >-
+    "Connections may now be rejected at the WebSocket handshake stage if server-configured limits are
+    exceeded (total connections, connections per IP). The server closes the socket with a normal closure in
+    this case. Clients should handle CLOSE frames and apply exponential back-off before reconnecting."
+  source: https://github.com/aeternity/ae_mdw/blob/master/README.md
+- scope: per-deployment (middleware WebSocket)
+  limit: 2000000
+  unit: total subscriptions across all connections
+  setting: MAX_TOTAL_WS_SUBS
+  source: https://github.com/aeternity/ae_mdw/blob/master/README.md
+- scope: per-connection (middleware WebSocket)
+  limit: 2000
+  unit: queued messages per client before shedding
+  setting: MAX_WS_CLIENT_BACKLOG
+  source: https://github.com/aeternity/ae_mdw/blob/master/README.md
+- scope: per-request (middleware GraphQL)
+  limit: 1000
+  unit: Absinthe query complexity score; queries exceeding it are rejected
+  setting: GRAPHQL_MAX_COMPLEXITY
+  source: https://github.com/aeternity/ae_mdw/blob/master/docs/graphql.md
+- scope: per-request (node dry-run)
+  limit: null
+  unit: total gas per dry-run request, capped by a node-configured limit
+  behaviour: Exceeding it returns 403 "Over the gas limit".
+  note: The cap is node-configured and its value on the public gateway is not published.
+  source: openapi/aeternity-node-openapi.yml ProtectedDryRunTxs
+limit_count: 7
+http_limit_count: 0
+note: >-
+  http_limit_count is 0 on purpose: æternity publishes no request-per-second/per-hour HTTP quota for
+  mainnet.aeternity.io, no terms of use for the public gateway, and no header from which one could be read.
+  Every limit recorded above is a WebSocket/GraphQL/gas ceiling documented as a configuration default in the
+  provider's own repository, not a quota the gateway advertises at runtime. An agent should treat 503 +
+  Retry-After as the only authoritative throttling signal.

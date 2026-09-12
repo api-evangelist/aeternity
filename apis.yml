@@ -1,18 +1,147 @@
 aid: aeternity
 name: Aeternity
-description: 'Aeternity is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  æternity is an open-source layer-1 blockchain platform, launched in 2018 and stewarded by the Aeternity
+  Foundation, whose protocol ships two public, unauthenticated HTTP APIs: the æternity node API (OpenAPI 3.0,
+  79 operations across chain, transaction, account, contract, oracle, naming-system, state-channel and
+  node-operator surfaces) and the æternity Middleware (ae_mdw) API (OpenAPI 3.0, 76 REST operations plus an
+  open GraphQL endpoint with 85 query fields and a WebSocket subscription stream). The platform adds the
+  Sophia smart-contract language, the FATE virtual machine, state channels, protocol-native oracles, the
+  æternity Naming System (AENS) and Hyperchains, and is consumed through first-party JavaScript/TypeScript,
+  CLI and calldata SDKs published to npm, plus the æScan explorer, ÆStudio IDE and Superhero wallet/DEX.
 url: https://raw.githubusercontent.com/api-evangelist/aeternity/refs/heads/main/apis.yml
+image: https://aeternity.com/wp-content/uploads/2022/05/aeternity-social-thumb.webp
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
-specificationVersion: '0.20'
+specificationVersion: '0.23'
 created: '2026-09-12'
 modified: '2026-09-12'
+position: Producing
 tags:
-- Company
-apis: []
+- Blockchain
+- Layer 1
+- Smart Contracts
+- Cryptocurrency
+- Web3
+- Distributed Ledger
+- Open Source
+- GraphQL
+- State Channels
+- Oracles
+- Naming System
+- Developer Tools
+tags_raw:
+- blockchain
+- layer-1
+- smart-contracts
+- cryptocurrency
+- web3
+- distributed-ledger
+- open-source
+- graphql
+- state-channels
+- oracles
+- naming-system
+- developer-tools
+apis:
+- name: Aeternity Node API
+  description: >-
+    The public HTTP API of the æternity node (v7.3.0) — 79 unauthenticated operations covering chain and
+    generation queries, transaction submission and inspection, account state and nonces, contract calls and
+    dry-run, oracles, the æternity Naming System, state channels, node status/peers and node-operator
+    endpoints. Every response carries an X-Ae-Height header naming the chain top the answer reflects.
+  humanURL: https://api-docs.aeternity.io/
+  baseURL: https://mainnet.aeternity.io/v3
+  tags:
+  - Blockchain
+  - Layer 1
+  - Smart Contracts
+  - State Channels
+  - Oracles
+  - Naming System
+  tags_raw:
+  - blockchain
+  - layer-1
+  - smart-contracts
+  - state-channels
+  - oracles
+  - naming-system
+  properties:
+  - type: OpenAPI
+    url: openapi/aeternity-node-openapi.yml
+  - type: Documentation
+    url: https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/sdks-and-apis/node-api-reference
+  - type: APIReference
+    url: https://api-docs.aeternity.io/
+  - type: Authentication
+    url: authentication/aeternity-authentication.yml
+  - type: Conventions
+    url: conventions/aeternity-conventions.yml
+  - type: Idempotency
+    url: conventions/aeternity-conventions.yml
+  - type: ErrorCatalog
+    url: errors/aeternity-problem-types.yml
+  - type: DataModel
+    url: data-model/aeternity-data-model.yml
+  - type: Overlay
+    url: overlays/aeternity-node-overlay.yaml
+- name: Aeternity Middleware API
+  description: >-
+    ae_mdw, the æternity middleware (v1.108.2) — an indexing layer over the node exposing 76 unauthenticated
+    REST operations for transactions, blocks, accounts, activities, AEX-9/AEX-141 tokens, DEX swaps, names
+    and auctions, oracles, channels, transfers, wealth ranking and statistics, plus an open GraphQL endpoint
+    (85 query fields, introspection enabled) and a WebSocket subscription stream for KeyBlocks, MicroBlocks,
+    Transactions and per-object events.
+  humanURL: https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/middleware
+  baseURL: https://mainnet.aeternity.io/mdw/v3
+  tags:
+  - Blockchain
+  - Layer 1
+  - GraphQL
+  - Developer Tools
+  - Distributed Ledger
+  tags_raw:
+  - blockchain
+  - layer-1
+  - graphql
+  - developer-tools
+  - distributed-ledger
+  properties:
+  - type: OpenAPI
+    url: openapi/aeternity-middleware-openapi.yml
+  - type: GraphQL
+    url: graphql/aeternity-middleware.graphql
+  - type: AsyncAPI
+    url: asyncapi/aeternity-middleware-websocket-asyncapi.yml
+  - type: Documentation
+    url: https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/middleware
+  - type: APIReference
+    url: https://mainnet.aeternity.io/mdw/swagger
+  - type: ChangeLog
+    url: https://github.com/aeternity/ae_mdw/blob/master/CHANGELOG.md
+  - type: Overlay
+    url: overlays/aeternity-middleware-overlay.yaml
+- name: Aeternity MCP Server
+  description: >-
+    A remote Model Context Protocol endpoint published on aeternity.com and advertised through RFC 9728
+    protected-resource metadata and RFC 8414 authorization-server metadata. The endpoint is OAuth 2.1 gated
+    (authorization_code + PKCE S256, single `mcp` scope, dynamic client registration via client-id metadata
+    documents); an anonymous tools/list returns 401, so the tool set could not be enumerated.
+  humanURL: https://aeternity.com/
+  baseURL: https://aeternity.com/wp-json/mcp/mcp-oauth-server
+  tags:
+  - MCP
+  - Agents
+  - Blockchain
+  tags_raw:
+  - mcp
+  - agents
+  - blockchain
+  properties:
+  - type: MCPServer
+    url: mcp/aeternity-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/aeternity-tool-crosswalk.yml
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -20,4 +149,75 @@ maintainers:
   email: info@apis.io
 common:
 - type: Website
-  url: https://forgeglobal.com/aeternity_stock/
+  url: https://aeternity.com/
+- type: DeveloperPortal
+  url: https://docs.aeternity.com/aeternity-developer-tools
+- type: Documentation
+  url: https://docs.aeternity.com/
+- type: APIReference
+  url: https://api-docs.aeternity.io/
+- type: GettingStarted
+  url: https://docs.aeternity.com/aeternity-developer-tools/quick-start-guide
+- type: GitHubOrganization
+  url: https://github.com/aeternity
+- type: Blog
+  url: https://blog.aeternity.com/
+- type: Support
+  url: https://forum.aeternity.com/
+- type: TermsOfService
+  url: https://aeternity.com/legal-privacy
+- type: PrivacyPolicy
+  url: https://aeternity.com/legal-privacy
+- type: StatusPage
+  url: https://status.aeternity.io/
+- type: Lifecycle
+  url: lifecycle/aeternity-lifecycle.yml
+- type: ChangeLog
+  url: changelog/aeternity-changelog.yml
+- type: Packages
+  url: packages/aeternity-packages.yml
+- type: SDKs
+  url: packages/aeternity-packages.yml
+- type: CLI
+  url: cli/aeternity-cli.yml
+- type: Sandbox
+  url: sandbox/aeternity-sandbox.yml
+- type: LLMsTxt
+  url: llms/aeternity-llms.txt
+- type: WellKnown
+  url: well-known/aeternity-well-known.yml
+- type: Conformance
+  url: conformance/aeternity-conformance.yml
+- type: DomainSecurity
+  url: security/aeternity-domain-security.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: OAuthScopes
+  url: scopes/aeternity-scopes.yml
+- type: RateLimits
+  url: rate-limits/aeternity-rate-limits.yml
+- type: Plans
+  url: plans/aeternity-plans-pricing.yml
+- type: Authentication
+  url: authentication/aeternity-authentication.yml
+- type: Idempotency
+  url: conventions/aeternity-conventions.yml
+- type: Conventions
+  url: conventions/aeternity-conventions.yml
+- type: ErrorCatalog
+  url: errors/aeternity-problem-types.yml
+- type: DataModel
+  url: data-model/aeternity-data-model.yml
+- type: MCPServer
+  url: mcp/aeternity-mcp.yml
+- type: AsyncAPI
+  url: asyncapi/aeternity-middleware-websocket-asyncapi.yml
+- type: Overlay
+  url: overlays/aeternity-node-overlay.yaml
+- type: Overlay
+  url: overlays/aeternity-middleware-overlay.yaml
+x-enrichment:
+  date: '2026-09-12'
+  status: enriched
+  artifacts_added: 34
+  pass: local-v3

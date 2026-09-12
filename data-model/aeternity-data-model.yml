@@ -1,0 +1,211 @@
+generated: '2026-09-12'
+method: derived
+source: >-
+  openapi/aeternity-node-openapi.yml (119 component schemas), openapi/aeternity-middleware-openapi.yml
+  (130 component schemas), graphql/aeternity-middleware.graphql (103 types)
+note: >-
+  The entity graph below is derived from the schemas and from the prefixed-identifier scheme both contracts
+  use — every reference field is a self-describing base58check string, so relationships are readable from the
+  identifier prefix alone (ak_ account, th_ transaction, kh_/mh_ blocks, ct_ contract, ok_ oracle, oq_ oracle
+  query, nm_ name, ch_ channel). Chain data is append-only: there are no update or delete relationships.
+identifier_prefixes:
+  ak_: account
+  th_: transaction
+  kh_: key block
+  mh_: micro block
+  ct_: contract
+  ok_: oracle
+  oq_: oracle query
+  nm_: AENS name
+  ch_: state channel
+  cb_: contract bytecode
+  tx_: serialized transaction
+  sg_: signature
+  pp_: peer public key
+  ba_: byte array payload
+entities:
+- name: KeyBlock
+  schema: KeyBlock
+  id: kh_
+  description: A Bitcoin-NG key block, produced by mining; opens a generation.
+  relationships:
+  - has_many: MicroBlock
+    via: prev_key_hash
+  - belongs_to: KeyBlock
+    via: prev_key_hash
+    note: previous key block
+  - has_one: Account
+    via: miner
+  - has_one: Account
+    via: beneficiary
+- name: MicroBlock
+  schema: MicroBlockHeader
+  id: mh_
+  description: Carries transactions inside a generation.
+  relationships:
+  - belongs_to: KeyBlock
+    via: prev_key_hash
+  - has_many: SignedTx
+    via: micro-block transactions
+- name: Generation
+  schema: Generation
+  description: One key block plus the micro blocks applied on top of it; the unit of X-Ae-Height resolution.
+  relationships:
+  - has_one: KeyBlock
+    via: key_block
+  - has_many: MicroBlock
+    via: micro_blocks
+- name: SignedTx
+  schema: SignedTx
+  id: th_
+  description: A transaction plus its signatures. The single mutating entry point, POST /transactions, accepts one.
+  relationships:
+  - has_one: Tx
+    via: tx
+  - has_many: Signature
+    via: signatures
+  - belongs_to: MicroBlock
+    via: block_hash
+  - has_one: Account
+    via: 'tx.sender_id / tx.account_id / tx.owner_id'
+- name: Tx
+  schema: Tx
+  description: >-
+    The polymorphic transaction body. The contract enumerates every concrete type as its own schema —
+    SpendTx, ContractCreateTx, ContractCallTx, OracleRegisterTx, OracleQueryTx, OracleRespondTx,
+    OracleExtendTx, NamePreclaimTx, NameClaimTx, NameUpdateTx, NameTransferTx, NameRevokeTx, the nine
+    Channel*Tx types, GAAttachTx, GAMetaTx, PayingForTx and PinningTx — which makes the write surface fully
+    typed even though only one HTTP operation posts them.
+- name: Account
+  schema: Account
+  id: ak_
+  description: Balance, nonce and optional generalized-account contract.
+  relationships:
+  - has_many: SignedTx
+    via: sender_id/recipient_id
+  - has_one: ContractObject
+    via: GAObject (generalized account)
+  - has_many: NameEntry
+    via: owner
+  - has_many: RegisteredOracle
+    via: oracle id derived from the account key
+- name: ContractObject
+  schema: ContractObject
+  id: ct_
+  description: A deployed Sophia contract and its metadata.
+  relationships:
+  - belongs_to: Account
+    via: owner_id
+  - has_one: ByteCode
+    via: code
+  - has_many: ContractCallObject
+    via: contract_id
+  - has_one: ContractVersion
+    via: vm_version/abi_version
+- name: ContractCallObject
+  schema: ContractCallObject
+  description: The result of a contract call, including gas used, return value and emitted events.
+  relationships:
+  - belongs_to: ContractObject
+    via: contract_id
+  - belongs_to: SignedTx
+    via: transaction hash
+  - has_many: Event
+    via: log
+- name: RegisteredOracle
+  schema: RegisteredOracle
+  id: ok_
+  description: A protocol-native oracle with typed query and response formats and a TTL.
+  relationships:
+  - belongs_to: Account
+    via: id
+  - has_many: OracleQuery
+    via: oracle_id
+- name: OracleQuery
+  schema: OracleQuery
+  id: oq_
+  description: A question posted to an oracle, with the response once answered.
+  relationships:
+  - belongs_to: RegisteredOracle
+    via: oracle_id
+  - belongs_to: Account
+    via: sender_id
+- name: NameEntry
+  schema: NameEntry
+  id: nm_
+  description: An AENS name with its pointers and TTL.
+  relationships:
+  - belongs_to: Account
+    via: owner
+  - has_many: NamePointer
+    via: pointers
+  - has_one: AuctionEntry
+    via: name during auction
+- name: AuctionEntry
+  schema: AuctionEntry
+  description: An open AENS name auction with the current highest bid.
+  relationships:
+  - has_one: NameEntry
+    via: name
+  - has_one: Account
+    via: highest bidder
+- name: Channel
+  schema: Channel
+  id: ch_
+  description: A state channel between two participants, with off-chain updates settled on chain.
+  relationships:
+  - has_one: Account
+    via: initiator_id
+  - has_one: Account
+    via: responder_id
+  - has_many: OffChainUpdate
+    via: 'off-chain updates (OffChainTransfer, OffChainDeposit, OffChainWithdrawal, OffChainNewContract, OffChainCallContract)'
+- name: Aex9Contract
+  surface: middleware
+  description: A contract implementing the AEX-9 fungible token standard, indexed with balances and transfer history.
+  relationships:
+  - belongs_to: ContractObject
+    via: contract_id
+  - has_many: Aex9Balance
+    via: 'contract_id (per account, with history)'
+  - has_many: Aex9Transfer
+    via: contract_id
+- name: Aex141Contract
+  surface: middleware
+  description: A contract implementing the AEX-141 NFT standard, with tokens, templates and transfers.
+  relationships:
+  - belongs_to: ContractObject
+    via: contract_id
+  - has_many: Aex141Token
+    via: contract_id
+  - has_many: Aex141Template
+    via: contract_id
+  - has_many: Aex141Transfer
+    via: contract_id
+- name: Activity
+  surface: middleware
+  description: The middleware's unified per-account event feed, spanning transactions, transfers, swaps, claims and token events.
+  relationships:
+  - belongs_to: Account
+    via: accountId
+- name: DexSwap
+  surface: middleware
+  description: A Superhero DEX swap indexed by the middleware, per account or per contract.
+  relationships:
+  - belongs_to: Account
+    via: accountId
+  - belongs_to: ContractObject
+    via: contract_id
+- name: Validator
+  surface: middleware
+  description: A Hyperchains validator, its delegates and epoch schedule. REST-only — absent from the GraphQL schema.
+  relationships:
+  - has_many: Delegate
+    via: validator
+  - has_many: Epoch
+    via: schedule
+counts:
+  node_schemas: 119
+  middleware_schemas: 130
+  graphql_types: 103
+  transaction_types_declared: 24

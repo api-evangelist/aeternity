@@ -1,0 +1,243 @@
+asyncapi: 3.0.0
+info:
+  title: Aeternity Middleware WebSocket API
+  version: 1.108.2
+  description: >-
+    The æternity middleware (ae_mdw) WebSocket subscription stream. Clients subscribe to chain events and
+    receive an asynchronous notification each time one occurs. Every event is published TWICE — once when
+    the node has synced the block or transaction, and again once AeMdw indexation is complete; the `source`
+    field on the published message ("node" or "mdw") is how a consumer tells the two apart.
+
+
+    PROVENANCE: æternity publishes no AsyncAPI document. This description was generated from the provider's
+    own protocol documentation — the "Websocket interface" section of the ae_mdw README — and its operations,
+    channel names, message shapes and field values are taken from that text and its worked examples. Nothing
+    here was invented; where the README does not specify a payload schema (the chain objects are the same
+    objects the REST surface returns) the message payload is typed as the corresponding REST response rather
+    than guessed.
+  externalDocs:
+    description: ae_mdw README, Websocket interface
+    url: https://github.com/aeternity/ae_mdw/blob/master/README.md#websocket-interface
+  x-provenance:
+    generated: '2026-09-12'
+    method: generated
+    source: https://github.com/aeternity/ae_mdw/blob/master/README.md#websocket-interface
+    verbatim: false
+servers:
+  mainnet:
+    host: mainnet.aeternity.io
+    pathname: /mdw/v3/websocket
+    protocol: wss
+    description: Mainnet V3 subscription stream. Published messages with source "mdw" carry the same rendered object the /mdw/v3 REST endpoints return.
+  mainnetV1:
+    host: mainnet.aeternity.io
+    pathname: /mdw/websocket
+    protocol: wss
+    description: Legacy V1 stream, still served. Same operations and lean-reply protocol; differs in the rendering of mdw-sourced payloads.
+  testnet:
+    host: testnet.aeternity.io
+    pathname: /mdw/v3/websocket
+    protocol: wss
+    description: Testnet (ae_uat) V3 subscription stream.
+channels:
+  KeyBlocks:
+    address: KeyBlocks
+    description: Every new key block, as produced by mining.
+    messages:
+      keyBlockEvent:
+        $ref: '#/components/messages/PublishedMessage'
+  MicroBlocks:
+    address: MicroBlocks
+    description: Every new micro block inside the current generation.
+    messages:
+      microBlockEvent:
+        $ref: '#/components/messages/PublishedMessage'
+  Transactions:
+    address: Transactions
+    description: Every transaction as it is synced and then indexed.
+    messages:
+      transactionEvent:
+        $ref: '#/components/messages/PublishedMessage'
+  Object:
+    address: Object
+    description: >-
+      All transactions that reference one æternity entity. Subscribing takes a further `target` field, which
+      may be any æternity object — an account (ak_), oracle (ok_), contract (ct_), name (nm_) or channel
+      (ch_). The README's worked example is an oracle owner subscribing to their own oracle in order to be
+      notified of incoming queries.
+    messages:
+      objectEvent:
+        $ref: '#/components/messages/PublishedMessage'
+  control:
+    address: /
+    description: The control channel — the same socket carries Subscribe, Unsubscribe and Ping commands and their replies.
+    messages:
+      subscribe:
+        $ref: '#/components/messages/SubscriptionCommand'
+      subscriptionReply:
+        $ref: '#/components/messages/SubscriptionReply'
+      pong:
+        $ref: '#/components/messages/PongReply'
+operations:
+  subscribe:
+    action: send
+    channel:
+      $ref: '#/channels/control'
+    summary: Subscribe to a channel. The reply is a single-element list containing only the newly subscribed channel.
+    messages:
+    - $ref: '#/channels/control/messages/subscribe'
+  unsubscribe:
+    action: send
+    channel:
+      $ref: '#/channels/control'
+    summary: Unsubscribe from a channel. The reply is a single-element list containing only the removed channel.
+  ping:
+    action: send
+    channel:
+      $ref: '#/channels/control'
+    summary: >-
+      Liveness and subscription-count check; takes no payload field. The Pong reply always carries `count`
+      (the true total) and a fixed-size sample of up to MAX_PING_LIMIT (default 1000) subscriptions, with
+      `has_more: true` when truncated. There is no cursor or offset — the full subscription list cannot be
+      enumerated, by design. Long-running clients should Ping roughly every 10 minutes to keep the proxy and
+      server connection alive.
+  receiveKeyBlocks:
+    action: receive
+    channel:
+      $ref: '#/channels/KeyBlocks'
+  receiveMicroBlocks:
+    action: receive
+    channel:
+      $ref: '#/channels/MicroBlocks'
+  receiveTransactions:
+    action: receive
+    channel:
+      $ref: '#/channels/Transactions'
+  receiveObject:
+    action: receive
+    channel:
+      $ref: '#/channels/Object'
+components:
+  messages:
+    SubscriptionCommand:
+      name: SubscriptionCommand
+      title: Subscribe / Unsubscribe / Ping
+      payload:
+        type: object
+        required:
+        - op
+        properties:
+          op:
+            type: string
+            enum:
+            - Subscribe
+            - Unsubscribe
+            - Ping
+          payload:
+            type: string
+            description: Required for Subscribe and Unsubscribe; not used by Ping.
+            enum:
+            - KeyBlocks
+            - MicroBlocks
+            - Transactions
+            - Object
+          target:
+            type: string
+            description: Only with payload "Object" — the æternity entity to follow, e.g. ak_KHfXhF2J6VBt3sUgFygdbpEkWi6AKBkr9jNKUCHbpwwagzHUs.
+      examples:
+      - name: subscribeKeyBlocks
+        payload:
+          op: Subscribe
+          payload: KeyBlocks
+      - name: subscribeObject
+        payload:
+          op: Subscribe
+          payload: Object
+          target: ak_KHfXhF2J6VBt3sUgFygdbpEkWi6AKBkr9jNKUCHbpwwagzHUs
+    SubscriptionReply:
+      name: SubscriptionReply
+      title: Subscribe / Unsubscribe reply
+      summary: Since v1.105.0 the reply is lean — a single-element list naming only the channel just added or removed. WS_SUBS_FULL_LIST_REPLY restores the pre-1.105 full-list behaviour and is slated for removal.
+      payload:
+        type: array
+        items:
+          type: string
+      examples:
+      - name: subscribed
+        payload:
+        - KeyBlocks
+    PongReply:
+      name: PongReply
+      title: Pong
+      payload:
+        type: object
+        required:
+        - subscriptions
+        - count
+        - payload
+        properties:
+          subscriptions:
+            type: array
+            items:
+              type: string
+            description: A fixed-size sample of up to MAX_PING_LIMIT entries (default 1000).
+          count:
+            type: integer
+            description: The true total number of active subscriptions.
+          has_more:
+            type: boolean
+            description: Present and true when the sample is truncated.
+          payload:
+            type: string
+            const: Pong
+      examples:
+      - name: pong
+        payload:
+          subscriptions:
+          - KeyBlocks
+          - Transactions
+          count: 2
+          payload: Pong
+    PublishedMessage:
+      name: PublishedMessage
+      title: Published chain event
+      payload:
+        type: object
+        required:
+        - payload
+        - source
+        - subscription
+        properties:
+          subscription:
+            type: string
+            enum:
+            - KeyBlocks
+            - MicroBlocks
+            - Transactions
+            - Object
+          source:
+            type: string
+            enum:
+            - node
+            - mdw
+            description: >-
+              "node" means the node has synced the block or transaction but AeMdw has not indexed it yet;
+              "mdw" means it is already available through the AeMdw API. Every event is delivered twice, once
+              with each source.
+          payload:
+            type: object
+            description: >-
+              The chain object itself. On the V3 stream, when source is "mdw" this is the same rendered
+              representation the corresponding /mdw/v3 REST endpoint returns (e.g. a Transactions event
+              carries the object returned by /v3/transactions).
+x-connection-limits:
+  note: Documented defaults from the ae_mdw configuration table; see rate-limits/aeternity-rate-limits.yml.
+  MAX_SUBS_PER_CONN: 100000
+  MAX_WS_CONNECTIONS: 1000
+  MAX_WS_CONNECTIONS_PER_IP: 50
+  MAX_TOTAL_WS_SUBS: 2000000
+  MAX_WS_CLIENT_BACKLOG: 2000
+  handshake_rejection: >-
+    Connections may be rejected at the WebSocket handshake stage when server-configured limits are exceeded;
+    the server closes the socket with a normal closure. Clients should handle CLOSE frames and apply
+    exponential back-off before reconnecting.

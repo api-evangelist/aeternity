@@ -1,0 +1,109 @@
+generated: '2026-09-12'
+method: derived
+source: >-
+  openapi/aeternity-node-openapi.yml, openapi/aeternity-middleware-openapi.yml,
+  graphql/aeternity-middleware.graphql, well-known/aeternity-oauth-authorization-server.json,
+  well-known/aeternity-oauth-protected-resource.json,
+  https://docs.aeternity.com/developer-documentation/aexs
+note: >-
+  Assertions below are read from the contracts themselves, not from marketing copy. Where a standard is not
+  implemented the entry records conforms: false rather than being omitted, so the absence is legible.
+conformance:
+- id: openapi-3.0
+  conforms: true
+  evidence: >-
+    Both published contracts declare openapi: 3.0.0 — the node API (info.version 7.3.0, 79 operations,
+    119 component schemas) at https://mainnet.aeternity.io/api and the middleware (info.version 1.108.2,
+    76 operations, 130 component schemas) at https://mainnet.aeternity.io/mdw/v3/api.
+- id: graphql
+  conforms: true
+  evidence: >-
+    https://mainnet.aeternity.io/mdw/graphql answered a full anonymous introspection on 2026-09-12 —
+    RootQueryType with 85 query fields over 103 types, no mutations, no subscriptions. SDL saved to
+    graphql/aeternity-middleware.graphql.
+- id: oauth2
+  conforms: true
+  evidence: >-
+    https://aeternity.com/.well-known/oauth-authorization-server (HTTP 200) declares authorization_code +
+    refresh_token grants with PKCE S256 for the MCP endpoint. Applies only to that endpoint; the blockchain
+    APIs use no OAuth.
+- id: rfc8414-oauth-authorization-server-metadata
+  conforms: true
+  evidence: 'https://aeternity.com/.well-known/oauth-authorization-server — HTTP 200, issuer https://aeternity.com'
+- id: rfc9728-oauth-protected-resource-metadata
+  conforms: true
+  evidence: 'https://aeternity.com/.well-known/oauth-protected-resource — HTTP 200, resource https://aeternity.com/wp-json/mcp/mcp-oauth-server'
+- id: mcp
+  conforms: true
+  evidence: >-
+    A remote MCP endpoint is advertised through the two discovery documents above; an anonymous
+    JSON-RPC tools/list returned 401 rest_not_logged_in, confirming the endpoint exists and is OAuth-gated.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: >-
+    No application/problem+json anywhere in either spec. Errors are flat vendor objects — {"reason", "error_code"?}
+    on the node, {"error"} on the middleware.
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: No Sunset or Deprecation header is declared or returned on either surface; no operation is marked deprecated.
+- id: rfc9116-security-txt
+  conforms: false
+  evidence: '/.well-known/security.txt returns 404 on all seven probed hosts (see well-known/aeternity-well-known.yml).'
+- id: idempotency-key
+  conforms: false
+  evidence: >-
+    No Idempotency-Key header on any operation. Replay safety on the single chain-state write comes from the
+    signed transaction nonce instead — see conventions/aeternity-conventions.yml idempotency.
+- id: pagination
+  conforms: true
+  evidence: >-
+    Cursor pagination across the middleware list surface — limit/cursor/direction/scope parameters and
+    {data, next, prev} envelopes, mirrored by page objects in the GraphQL schema.
+- id: openid-connect
+  conforms: false
+  evidence: '/.well-known/openid-configuration returns 404 on every probed host.'
+- id: a2a-agent-card
+  conforms: false
+  evidence: '/.well-known/agent-card.json and /.well-known/agent.json return 404 on all seven probed hosts.'
+domain_standards:
+- id: aex-9
+  name: 'AEX-9: Fungible Token Standard'
+  conforms: true
+  role: author-and-implementer
+  evidence: >-
+    The middleware contract exposes AEX-9 as a first-class resource family in the contract itself, not as
+    prose: GET /aex9, /aex9/count, /aex9/{id}, /aex9/{contractId}/balances,
+    /aex9/{contractId}/balances/{accountId}, /aex9/{contractId}/balances/{accountId}/history,
+    /accounts/{accountId}/aex9/balances and /stats/aex9-transfers, with matching aex9* fields in the GraphQL
+    schema. AEX-9 is æternity's own fungible-token standard (the ERC-20 analogue), published through the
+    æternity Expansions (AEX) process at https://docs.aeternity.com/developer-documentation/aexs.
+  spec_location: openapi/aeternity-middleware-openapi.yml paths /aex9*
+- id: aex-141
+  name: 'AEX-141: Non-Fungible Token Standard'
+  conforms: true
+  role: author-and-implementer
+  evidence: >-
+    Declared in the contract as GET /aex141, /aex141/{id}, /aex141/{contractId}/tokens,
+    /aex141/{contractId}/tokens/{tokenId}, /aex141/{contractId}/templates,
+    /aex141/{contractId}/templates/{templateId}/tokens, /aex141/{contractId}/transfers and
+    /accounts/{accountId}/aex141/tokens, with matching aex141* GraphQL fields and an Aex141ContractOrderBy
+    enum. AEX-141 is æternity's NFT standard (the ERC-721 analogue) including the template extension.
+  spec_location: openapi/aeternity-middleware-openapi.yml paths /aex141*
+- id: aex-process
+  name: æternity Expansions (AEX)
+  conforms: true
+  role: standards-body
+  evidence: >-
+    æternity runs its own numbered standards process with a public repository of AEX documents (AEX-1
+    governance, AEX-2 wallet interface, AEX-9/AEX-11 fungible tokens, AEX-130 æpp metadata, AEX-141 NFTs)
+    at https://docs.aeternity.com/developer-documentation/aexs — this provider authors the domain standard
+    its own contract implements rather than adopting someone else's.
+- id: erc-20
+  conforms: false
+  evidence: æternity is not EVM-based; AEX-9 is the equivalent standard on FATE, not an ERC-20 implementation.
+certifications: []
+compliance_programs: []
+compliance_note: >-
+  No SOC 2, ISO 27001, PCI, HIPAA or FedRAMP claim is published, and no trust center exists
+  (probe-security-programs.py 2026-09-12: vdp=none trust=none). This is a public, permissionless blockchain
+  protocol with no customer accounts to certify, so no Compliance pointer is emitted.
