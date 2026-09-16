@@ -24,7 +24,7 @@ tags:
 - Cryptocurrency
 - Web3
 - Distributed Ledger
-- Open Source
+- Open-Source
 - GraphQL
 - State Channels
 - Oracles
@@ -44,89 +44,12 @@ tags_raw:
 - naming-system
 - developer-tools
 apis:
-- name: Aeternity Node API
-  description: >-
-    The public HTTP API of the æternity node (v7.3.0) — 79 unauthenticated operations covering chain and
-    generation queries, transaction submission and inspection, account state and nonces, contract calls and
-    dry-run, oracles, the æternity Naming System, state channels, node status/peers and node-operator
-    endpoints. Every response carries an X-Ae-Height header naming the chain top the answer reflects.
-  humanURL: https://api-docs.aeternity.io/
-  baseURL: https://mainnet.aeternity.io/v3
-  tags:
-  - Blockchain
-  - Layer 1
-  - Smart Contracts
-  - State Channels
-  - Oracles
-  - Naming System
-  tags_raw:
-  - blockchain
-  - layer-1
-  - smart-contracts
-  - state-channels
-  - oracles
-  - naming-system
-  properties:
-  - type: OpenAPI
-    url: openapi/aeternity-node-openapi.yml
-  - type: Documentation
-    url: https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/sdks-and-apis/node-api-reference
-  - type: APIReference
-    url: https://api-docs.aeternity.io/
-  - type: Authentication
-    url: authentication/aeternity-authentication.yml
-  - type: Conventions
-    url: conventions/aeternity-conventions.yml
-  - type: Idempotency
-    url: conventions/aeternity-conventions.yml
-  - type: ErrorCatalog
-    url: errors/aeternity-problem-types.yml
-  - type: DataModel
-    url: data-model/aeternity-data-model.yml
-  - type: Overlay
-    url: overlays/aeternity-node-overlay.yaml
-- name: Aeternity Middleware API
-  description: >-
-    ae_mdw, the æternity middleware (v1.108.2) — an indexing layer over the node exposing 76 unauthenticated
-    REST operations for transactions, blocks, accounts, activities, AEX-9/AEX-141 tokens, DEX swaps, names
-    and auctions, oracles, channels, transfers, wealth ranking and statistics, plus an open GraphQL endpoint
-    (85 query fields, introspection enabled) and a WebSocket subscription stream for KeyBlocks, MicroBlocks,
-    Transactions and per-object events.
-  humanURL: https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/middleware
-  baseURL: https://mainnet.aeternity.io/mdw/v3
-  tags:
-  - Blockchain
-  - Layer 1
-  - GraphQL
-  - Developer Tools
-  - Distributed Ledger
-  tags_raw:
-  - blockchain
-  - layer-1
-  - graphql
-  - developer-tools
-  - distributed-ledger
-  properties:
-  - type: OpenAPI
-    url: openapi/aeternity-middleware-openapi.yml
-  - type: GraphQL
-    url: graphql/aeternity-middleware.graphql
-  - type: AsyncAPI
-    url: asyncapi/aeternity-middleware-websocket-asyncapi.yml
-  - type: Documentation
-    url: https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/middleware
-  - type: APIReference
-    url: https://mainnet.aeternity.io/mdw/swagger
-  - type: ChangeLog
-    url: https://github.com/aeternity/ae_mdw/blob/master/CHANGELOG.md
-  - type: Overlay
-    url: overlays/aeternity-middleware-overlay.yaml
 - name: Aeternity MCP Server
   description: >-
     A remote Model Context Protocol endpoint published on aeternity.com and advertised through RFC 9728
-    protected-resource metadata and RFC 8414 authorization-server metadata. The endpoint is OAuth 2.1 gated
-    (authorization_code + PKCE S256, single `mcp` scope, dynamic client registration via client-id metadata
-    documents); an anonymous tools/list returns 401, so the tool set could not be enumerated.
+    protected-resource metadata and RFC 8414 authorization-server metadata. The endpoint is OAuth 2.1
+    gated (authorization_code + PKCE S256, single `mcp` scope, dynamic client registration via client-id
+    metadata documents); an anonymous tools/list returns 401, so the tool set could not be enumerated.
   humanURL: https://aeternity.com/
   baseURL: https://aeternity.com/wp-json/mcp/mcp-oauth-server
   tags:
@@ -142,6 +65,618 @@ apis:
     url: mcp/aeternity-mcp.yml
   - type: ToolCrosswalk
     url: mcp/aeternity-tool-crosswalk.yml
+- aid: aeternity:aeternity-accounts-api
+  name: Aeternity Accounts API
+  description: The Accounts API from Aeternity — 7 operation(s) for accounts.
+  humanURL: https://api-docs.aeternity.io/
+  baseURL: https://mainnet.aeternity.io/v3
+  tags:
+  - Accounts
+  properties:
+  - type: OpenAPI
+    url: openapi/aeternity-accounts-api-openapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/sdks-and-apis/node-api-reference
+  - type: APIReference
+    url: https://api-docs.aeternity.io/
+  - type: Authentication
+    url: authentication/aeternity-authentication.yml
+  - type: Conventions
+    url: conventions/aeternity-conventions.yml
+  - type: Idempotency
+    url: conventions/aeternity-conventions.yml
+  - type: ErrorCatalog
+    url: errors/aeternity-problem-types.yml
+  - type: DataModel
+    url: data-model/aeternity-data-model.yml
+  - type: GraphQL
+    url: graphql/aeternity-middleware.graphql
+  - type: AsyncAPI
+    url: asyncapi/aeternity-middleware-websocket-asyncapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/middleware
+  - type: APIReference
+    url: https://mainnet.aeternity.io/mdw/swagger
+  - type: ChangeLog
+    url: https://github.com/aeternity/ae_mdw/blob/master/CHANGELOG.md
+- aid: aeternity:aeternity-aex141-api
+  name: Aeternity Aex141 API
+  description: The Aex141 API from Aeternity — 7 operation(s) for aex141.
+  humanURL: https://api-docs.aeternity.io/
+  baseURL: https://mainnet.aeternity.io/v3
+  tags:
+  - Aex141
+  properties:
+  - type: OpenAPI
+    url: openapi/aeternity-aex141-api-openapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/sdks-and-apis/node-api-reference
+  - type: APIReference
+    url: https://api-docs.aeternity.io/
+  - type: Authentication
+    url: authentication/aeternity-authentication.yml
+  - type: Conventions
+    url: conventions/aeternity-conventions.yml
+  - type: Idempotency
+    url: conventions/aeternity-conventions.yml
+  - type: ErrorCatalog
+    url: errors/aeternity-problem-types.yml
+  - type: DataModel
+    url: data-model/aeternity-data-model.yml
+  - type: GraphQL
+    url: graphql/aeternity-middleware.graphql
+  - type: AsyncAPI
+    url: asyncapi/aeternity-middleware-websocket-asyncapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/middleware
+  - type: APIReference
+    url: https://mainnet.aeternity.io/mdw/swagger
+  - type: ChangeLog
+    url: https://github.com/aeternity/ae_mdw/blob/master/CHANGELOG.md
+- aid: aeternity:aeternity-aex9-api
+  name: Aeternity Aex9 API
+  description: The Aex9 API from Aeternity — 6 operation(s) for aex9.
+  humanURL: https://api-docs.aeternity.io/
+  baseURL: https://mainnet.aeternity.io/v3
+  tags:
+  - Aex9
+  properties:
+  - type: OpenAPI
+    url: openapi/aeternity-aex9-api-openapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/sdks-and-apis/node-api-reference
+  - type: APIReference
+    url: https://api-docs.aeternity.io/
+  - type: Authentication
+    url: authentication/aeternity-authentication.yml
+  - type: Conventions
+    url: conventions/aeternity-conventions.yml
+  - type: Idempotency
+    url: conventions/aeternity-conventions.yml
+  - type: ErrorCatalog
+    url: errors/aeternity-problem-types.yml
+  - type: DataModel
+    url: data-model/aeternity-data-model.yml
+  - type: GraphQL
+    url: graphql/aeternity-middleware.graphql
+  - type: AsyncAPI
+    url: asyncapi/aeternity-middleware-websocket-asyncapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/middleware
+  - type: APIReference
+    url: https://mainnet.aeternity.io/mdw/swagger
+  - type: ChangeLog
+    url: https://github.com/aeternity/ae_mdw/blob/master/CHANGELOG.md
+- aid: aeternity:aeternity-channels-api
+  name: Aeternity Channels API
+  description: The Channels API from Aeternity — 2 operation(s) for channels.
+  humanURL: https://api-docs.aeternity.io/
+  baseURL: https://mainnet.aeternity.io/v3
+  tags:
+  - Channels
+  properties:
+  - type: OpenAPI
+    url: openapi/aeternity-channels-api-openapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/sdks-and-apis/node-api-reference
+  - type: APIReference
+    url: https://api-docs.aeternity.io/
+  - type: Authentication
+    url: authentication/aeternity-authentication.yml
+  - type: Conventions
+    url: conventions/aeternity-conventions.yml
+  - type: Idempotency
+    url: conventions/aeternity-conventions.yml
+  - type: ErrorCatalog
+    url: errors/aeternity-problem-types.yml
+  - type: DataModel
+    url: data-model/aeternity-data-model.yml
+  - type: GraphQL
+    url: graphql/aeternity-middleware.graphql
+  - type: AsyncAPI
+    url: asyncapi/aeternity-middleware-websocket-asyncapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/middleware
+  - type: APIReference
+    url: https://mainnet.aeternity.io/mdw/swagger
+  - type: ChangeLog
+    url: https://github.com/aeternity/ae_mdw/blob/master/CHANGELOG.md
+- aid: aeternity:aeternity-contracts-api
+  name: Aeternity Contracts API
+  description: The Contracts API from Aeternity — 3 operation(s) for contracts.
+  humanURL: https://api-docs.aeternity.io/
+  baseURL: https://mainnet.aeternity.io/v3
+  tags:
+  - Contracts
+  properties:
+  - type: OpenAPI
+    url: openapi/aeternity-contracts-api-openapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/sdks-and-apis/node-api-reference
+  - type: APIReference
+    url: https://api-docs.aeternity.io/
+  - type: Authentication
+    url: authentication/aeternity-authentication.yml
+  - type: Conventions
+    url: conventions/aeternity-conventions.yml
+  - type: Idempotency
+    url: conventions/aeternity-conventions.yml
+  - type: ErrorCatalog
+    url: errors/aeternity-problem-types.yml
+  - type: DataModel
+    url: data-model/aeternity-data-model.yml
+  - type: GraphQL
+    url: graphql/aeternity-middleware.graphql
+  - type: AsyncAPI
+    url: asyncapi/aeternity-middleware-websocket-asyncapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/middleware
+  - type: APIReference
+    url: https://mainnet.aeternity.io/mdw/swagger
+  - type: ChangeLog
+    url: https://github.com/aeternity/ae_mdw/blob/master/CHANGELOG.md
+- aid: aeternity:aeternity-dex-api
+  name: Aeternity Dex API
+  description: The Dex API from Aeternity — 2 operation(s) for dex.
+  humanURL: https://api-docs.aeternity.io/
+  baseURL: https://mainnet.aeternity.io/v3
+  tags:
+  - Dex
+  properties:
+  - type: OpenAPI
+    url: openapi/aeternity-dex-api-openapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/sdks-and-apis/node-api-reference
+  - type: APIReference
+    url: https://api-docs.aeternity.io/
+  - type: Authentication
+    url: authentication/aeternity-authentication.yml
+  - type: Conventions
+    url: conventions/aeternity-conventions.yml
+  - type: Idempotency
+    url: conventions/aeternity-conventions.yml
+  - type: ErrorCatalog
+    url: errors/aeternity-problem-types.yml
+  - type: DataModel
+    url: data-model/aeternity-data-model.yml
+  - type: GraphQL
+    url: graphql/aeternity-middleware.graphql
+  - type: AsyncAPI
+    url: asyncapi/aeternity-middleware-websocket-asyncapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/middleware
+  - type: APIReference
+    url: https://mainnet.aeternity.io/mdw/swagger
+  - type: ChangeLog
+    url: https://github.com/aeternity/ae_mdw/blob/master/CHANGELOG.md
+- aid: aeternity:aeternity-external-api
+  name: Aeternity External API
+  description: External API
+  humanURL: https://api-docs.aeternity.io/
+  baseURL: https://mainnet.aeternity.io/v3
+  tags:
+  - external
+  properties:
+  - type: OpenAPI
+    url: openapi/aeternity-external-api-openapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/sdks-and-apis/node-api-reference
+  - type: APIReference
+    url: https://api-docs.aeternity.io/
+  - type: Authentication
+    url: authentication/aeternity-authentication.yml
+  - type: Conventions
+    url: conventions/aeternity-conventions.yml
+  - type: Idempotency
+    url: conventions/aeternity-conventions.yml
+  - type: ErrorCatalog
+    url: errors/aeternity-problem-types.yml
+  - type: DataModel
+    url: data-model/aeternity-data-model.yml
+  - type: GraphQL
+    url: graphql/aeternity-middleware.graphql
+  - type: AsyncAPI
+    url: asyncapi/aeternity-middleware-websocket-asyncapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/middleware
+  - type: APIReference
+    url: https://mainnet.aeternity.io/mdw/swagger
+  - type: ChangeLog
+    url: https://github.com/aeternity/ae_mdw/blob/master/CHANGELOG.md
+- aid: aeternity:aeternity-hyperchain-api
+  name: Aeternity Hyperchain API
+  description: The Hyperchain API from Aeternity — 8 operation(s) for hyperchain.
+  humanURL: https://api-docs.aeternity.io/
+  baseURL: https://mainnet.aeternity.io/v3
+  tags:
+  - Hyperchain
+  properties:
+  - type: OpenAPI
+    url: openapi/aeternity-hyperchain-api-openapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/sdks-and-apis/node-api-reference
+  - type: APIReference
+    url: https://api-docs.aeternity.io/
+  - type: Authentication
+    url: authentication/aeternity-authentication.yml
+  - type: Conventions
+    url: conventions/aeternity-conventions.yml
+  - type: Idempotency
+    url: conventions/aeternity-conventions.yml
+  - type: ErrorCatalog
+    url: errors/aeternity-problem-types.yml
+  - type: DataModel
+    url: data-model/aeternity-data-model.yml
+  - type: GraphQL
+    url: graphql/aeternity-middleware.graphql
+  - type: AsyncAPI
+    url: asyncapi/aeternity-middleware-websocket-asyncapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/middleware
+  - type: APIReference
+    url: https://mainnet.aeternity.io/mdw/swagger
+  - type: ChangeLog
+    url: https://github.com/aeternity/ae_mdw/blob/master/CHANGELOG.md
+- aid: aeternity:aeternity-internal-api
+  name: Aeternity Internal API
+  description: Internal API
+  humanURL: https://api-docs.aeternity.io/
+  baseURL: https://mainnet.aeternity.io/v3
+  tags:
+  - internal
+  properties:
+  - type: OpenAPI
+    url: openapi/aeternity-internal-api-openapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/sdks-and-apis/node-api-reference
+  - type: APIReference
+    url: https://api-docs.aeternity.io/
+  - type: Authentication
+    url: authentication/aeternity-authentication.yml
+  - type: Conventions
+    url: conventions/aeternity-conventions.yml
+  - type: Idempotency
+    url: conventions/aeternity-conventions.yml
+  - type: ErrorCatalog
+    url: errors/aeternity-problem-types.yml
+  - type: DataModel
+    url: data-model/aeternity-data-model.yml
+  - type: GraphQL
+    url: graphql/aeternity-middleware.graphql
+  - type: AsyncAPI
+    url: asyncapi/aeternity-middleware-websocket-asyncapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/middleware
+  - type: APIReference
+    url: https://mainnet.aeternity.io/mdw/swagger
+  - type: ChangeLog
+    url: https://github.com/aeternity/ae_mdw/blob/master/CHANGELOG.md
+- aid: aeternity:aeternity-key-blocks-api
+  name: Aeternity Key Blocks API
+  description: The Key Blocks API from Aeternity — 3 operation(s) for key blocks.
+  humanURL: https://api-docs.aeternity.io/
+  baseURL: https://mainnet.aeternity.io/v3
+  tags:
+  - Key Blocks
+  properties:
+  - type: OpenAPI
+    url: openapi/aeternity-key-blocks-api-openapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/sdks-and-apis/node-api-reference
+  - type: APIReference
+    url: https://api-docs.aeternity.io/
+  - type: Authentication
+    url: authentication/aeternity-authentication.yml
+  - type: Conventions
+    url: conventions/aeternity-conventions.yml
+  - type: Idempotency
+    url: conventions/aeternity-conventions.yml
+  - type: ErrorCatalog
+    url: errors/aeternity-problem-types.yml
+  - type: DataModel
+    url: data-model/aeternity-data-model.yml
+  - type: GraphQL
+    url: graphql/aeternity-middleware.graphql
+  - type: AsyncAPI
+    url: asyncapi/aeternity-middleware-websocket-asyncapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/middleware
+  - type: APIReference
+    url: https://mainnet.aeternity.io/mdw/swagger
+  - type: ChangeLog
+    url: https://github.com/aeternity/ae_mdw/blob/master/CHANGELOG.md
+- aid: aeternity:aeternity-micro-blocks-api
+  name: Aeternity Micro Blocks API
+  description: The Micro Blocks API from Aeternity — 2 operation(s) for micro blocks.
+  humanURL: https://api-docs.aeternity.io/
+  baseURL: https://mainnet.aeternity.io/v3
+  tags:
+  - Micro Blocks
+  properties:
+  - type: OpenAPI
+    url: openapi/aeternity-micro-blocks-api-openapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/sdks-and-apis/node-api-reference
+  - type: APIReference
+    url: https://api-docs.aeternity.io/
+  - type: Authentication
+    url: authentication/aeternity-authentication.yml
+  - type: Conventions
+    url: conventions/aeternity-conventions.yml
+  - type: Idempotency
+    url: conventions/aeternity-conventions.yml
+  - type: ErrorCatalog
+    url: errors/aeternity-problem-types.yml
+  - type: DataModel
+    url: data-model/aeternity-data-model.yml
+  - type: GraphQL
+    url: graphql/aeternity-middleware.graphql
+  - type: AsyncAPI
+    url: asyncapi/aeternity-middleware-websocket-asyncapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/middleware
+  - type: APIReference
+    url: https://mainnet.aeternity.io/mdw/swagger
+  - type: ChangeLog
+    url: https://github.com/aeternity/ae_mdw/blob/master/CHANGELOG.md
+- aid: aeternity:aeternity-names-api
+  name: Aeternity Names API
+  description: The Names API from Aeternity — 9 operation(s) for names.
+  humanURL: https://api-docs.aeternity.io/
+  baseURL: https://mainnet.aeternity.io/v3
+  tags:
+  - Names
+  properties:
+  - type: OpenAPI
+    url: openapi/aeternity-names-api-openapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/sdks-and-apis/node-api-reference
+  - type: APIReference
+    url: https://api-docs.aeternity.io/
+  - type: Authentication
+    url: authentication/aeternity-authentication.yml
+  - type: Conventions
+    url: conventions/aeternity-conventions.yml
+  - type: Idempotency
+    url: conventions/aeternity-conventions.yml
+  - type: ErrorCatalog
+    url: errors/aeternity-problem-types.yml
+  - type: DataModel
+    url: data-model/aeternity-data-model.yml
+  - type: GraphQL
+    url: graphql/aeternity-middleware.graphql
+  - type: AsyncAPI
+    url: asyncapi/aeternity-middleware-websocket-asyncapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/middleware
+  - type: APIReference
+    url: https://mainnet.aeternity.io/mdw/swagger
+  - type: ChangeLog
+    url: https://github.com/aeternity/ae_mdw/blob/master/CHANGELOG.md
+- aid: aeternity:aeternity-oracles-api
+  name: Aeternity Oracles API
+  description: The Oracles API from Aeternity — 5 operation(s) for oracles.
+  humanURL: https://api-docs.aeternity.io/
+  baseURL: https://mainnet.aeternity.io/v3
+  tags:
+  - Oracles
+  properties:
+  - type: OpenAPI
+    url: openapi/aeternity-oracles-api-openapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/sdks-and-apis/node-api-reference
+  - type: APIReference
+    url: https://api-docs.aeternity.io/
+  - type: Authentication
+    url: authentication/aeternity-authentication.yml
+  - type: Conventions
+    url: conventions/aeternity-conventions.yml
+  - type: Idempotency
+    url: conventions/aeternity-conventions.yml
+  - type: ErrorCatalog
+    url: errors/aeternity-problem-types.yml
+  - type: DataModel
+    url: data-model/aeternity-data-model.yml
+  - type: GraphQL
+    url: graphql/aeternity-middleware.graphql
+  - type: AsyncAPI
+    url: asyncapi/aeternity-middleware-websocket-asyncapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/middleware
+  - type: APIReference
+    url: https://mainnet.aeternity.io/mdw/swagger
+  - type: ChangeLog
+    url: https://github.com/aeternity/ae_mdw/blob/master/CHANGELOG.md
+- aid: aeternity:aeternity-stats-api
+  name: Aeternity Stats API
+  description: The Stats API from Aeternity — 15 operation(s) for stats.
+  humanURL: https://api-docs.aeternity.io/
+  baseURL: https://mainnet.aeternity.io/v3
+  tags:
+  - Stats
+  properties:
+  - type: OpenAPI
+    url: openapi/aeternity-stats-api-openapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/sdks-and-apis/node-api-reference
+  - type: APIReference
+    url: https://api-docs.aeternity.io/
+  - type: Authentication
+    url: authentication/aeternity-authentication.yml
+  - type: Conventions
+    url: conventions/aeternity-conventions.yml
+  - type: Idempotency
+    url: conventions/aeternity-conventions.yml
+  - type: ErrorCatalog
+    url: errors/aeternity-problem-types.yml
+  - type: DataModel
+    url: data-model/aeternity-data-model.yml
+  - type: GraphQL
+    url: graphql/aeternity-middleware.graphql
+  - type: AsyncAPI
+    url: asyncapi/aeternity-middleware-websocket-asyncapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/middleware
+  - type: APIReference
+    url: https://mainnet.aeternity.io/mdw/swagger
+  - type: ChangeLog
+    url: https://github.com/aeternity/ae_mdw/blob/master/CHANGELOG.md
+- aid: aeternity:aeternity-status-api
+  name: Aeternity Status API
+  description: The Status API from Aeternity — 1 operation(s) for status.
+  humanURL: https://api-docs.aeternity.io/
+  baseURL: https://mainnet.aeternity.io/v3
+  tags:
+  - Status
+  properties:
+  - type: OpenAPI
+    url: openapi/aeternity-status-api-openapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/sdks-and-apis/node-api-reference
+  - type: APIReference
+    url: https://api-docs.aeternity.io/
+  - type: Authentication
+    url: authentication/aeternity-authentication.yml
+  - type: Conventions
+    url: conventions/aeternity-conventions.yml
+  - type: Idempotency
+    url: conventions/aeternity-conventions.yml
+  - type: ErrorCatalog
+    url: errors/aeternity-problem-types.yml
+  - type: DataModel
+    url: data-model/aeternity-data-model.yml
+  - type: GraphQL
+    url: graphql/aeternity-middleware.graphql
+  - type: AsyncAPI
+    url: asyncapi/aeternity-middleware-websocket-asyncapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/middleware
+  - type: APIReference
+    url: https://mainnet.aeternity.io/mdw/swagger
+  - type: ChangeLog
+    url: https://github.com/aeternity/ae_mdw/blob/master/CHANGELOG.md
+- aid: aeternity:aeternity-transactions-api
+  name: Aeternity Transactions API
+  description: The Transactions API from Aeternity — 5 operation(s) for transactions.
+  humanURL: https://api-docs.aeternity.io/
+  baseURL: https://mainnet.aeternity.io/v3
+  tags:
+  - Transactions
+  properties:
+  - type: OpenAPI
+    url: openapi/aeternity-transactions-api-openapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/sdks-and-apis/node-api-reference
+  - type: APIReference
+    url: https://api-docs.aeternity.io/
+  - type: Authentication
+    url: authentication/aeternity-authentication.yml
+  - type: Conventions
+    url: conventions/aeternity-conventions.yml
+  - type: Idempotency
+    url: conventions/aeternity-conventions.yml
+  - type: ErrorCatalog
+    url: errors/aeternity-problem-types.yml
+  - type: DataModel
+    url: data-model/aeternity-data-model.yml
+  - type: GraphQL
+    url: graphql/aeternity-middleware.graphql
+  - type: AsyncAPI
+    url: asyncapi/aeternity-middleware-websocket-asyncapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/middleware
+  - type: APIReference
+    url: https://mainnet.aeternity.io/mdw/swagger
+  - type: ChangeLog
+    url: https://github.com/aeternity/ae_mdw/blob/master/CHANGELOG.md
+- aid: aeternity:aeternity-transfers-api
+  name: Aeternity Transfers API
+  description: The Transfers API from Aeternity — 1 operation(s) for transfers.
+  humanURL: https://api-docs.aeternity.io/
+  baseURL: https://mainnet.aeternity.io/v3
+  tags:
+  - Transfers
+  properties:
+  - type: OpenAPI
+    url: openapi/aeternity-transfers-api-openapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/sdks-and-apis/node-api-reference
+  - type: APIReference
+    url: https://api-docs.aeternity.io/
+  - type: Authentication
+    url: authentication/aeternity-authentication.yml
+  - type: Conventions
+    url: conventions/aeternity-conventions.yml
+  - type: Idempotency
+    url: conventions/aeternity-conventions.yml
+  - type: ErrorCatalog
+    url: errors/aeternity-problem-types.yml
+  - type: DataModel
+    url: data-model/aeternity-data-model.yml
+  - type: GraphQL
+    url: graphql/aeternity-middleware.graphql
+  - type: AsyncAPI
+    url: asyncapi/aeternity-middleware-websocket-asyncapi.yml
+  - type: Documentation
+    url: >-
+      https://docs.aeternity.com/aeternity-developer-tools/development-infrastructure/middleware
+  - type: APIReference
+    url: https://mainnet.aeternity.io/mdw/swagger
+  - type: ChangeLog
+    url: https://github.com/aeternity/ae_mdw/blob/master/CHANGELOG.md
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
