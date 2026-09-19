@@ -17,6 +17,9 @@ specificationVersion: '0.23'
 created: '2026-09-12'
 modified: '2026-09-12'
 position: Producing
+x-docs-platform: gitbook
+x-docs-platform-confidence: medium
+x-docs-platform-checked: 2026-09-17
 tags:
 - Blockchain
 - Layer 1
@@ -27,7 +30,7 @@ tags:
 - Open-Source
 - GraphQL
 - State Channels
-- Oracles
+- Oracle
 - Naming System
 - Developer Tools
 tags_raw:
@@ -71,6 +74,8 @@ apis:
   humanURL: https://api-docs.aeternity.io/
   baseURL: https://mainnet.aeternity.io/v3
   tags:
+  - Account
+  tags_raw:
   - Accounts
   properties:
   - type: OpenAPI
@@ -251,6 +256,8 @@ apis:
   humanURL: https://api-docs.aeternity.io/
   baseURL: https://mainnet.aeternity.io/v3
   tags:
+  - DEX
+  tags_raw:
   - Dex
   properties:
   - type: OpenAPI
@@ -287,6 +294,8 @@ apis:
   humanURL: https://api-docs.aeternity.io/
   baseURL: https://mainnet.aeternity.io/v3
   tags:
+  - External
+  tags_raw:
   - external
   properties:
   - type: OpenAPI
@@ -359,6 +368,8 @@ apis:
   humanURL: https://api-docs.aeternity.io/
   baseURL: https://mainnet.aeternity.io/v3
   tags:
+  - Internal
+  tags_raw:
   - internal
   properties:
   - type: OpenAPI
@@ -467,6 +478,8 @@ apis:
   humanURL: https://api-docs.aeternity.io/
   baseURL: https://mainnet.aeternity.io/v3
   tags:
+  - Name
+  tags_raw:
   - Names
   properties:
   - type: OpenAPI
@@ -503,6 +516,8 @@ apis:
   humanURL: https://api-docs.aeternity.io/
   baseURL: https://mainnet.aeternity.io/v3
   tags:
+  - Oracle
+  tags_raw:
   - Oracles
   properties:
   - type: OpenAPI
@@ -611,6 +626,8 @@ apis:
   humanURL: https://api-docs.aeternity.io/
   baseURL: https://mainnet.aeternity.io/v3
   tags:
+  - Transaction
+  tags_raw:
   - Transactions
   properties:
   - type: OpenAPI
