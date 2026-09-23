@@ -1,0 +1,1115 @@
+openapi: 3.2.0
+info:
+  description: API for Aeternity Middleware
+  title: Aeternity Middleware Stats API
+  version: 1.108.2
+servers:
+- url: https://mainnet.aeternity.io/mdw/v3
+  description: Mainnet middleware
+- url: https://testnet.aeternity.io/mdw/v3
+  description: Testnet middleware
+tags:
+- name: Stats
+paths:
+  /stats:
+    get:
+      deprecated: false
+      description: Get stats.
+      operationId: GetStats
+      responses:
+        '200':
+          description: Returns paginated stats per generation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Stats'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Stats
+      summary: Get stats
+      x-summary-source: derived
+  /stats/active-accounts:
+    get:
+      deprecated: false
+      description: Get active accounts stats.
+      operationId: GetActiveAccountsStats
+      parameters:
+      - name: interval_by
+        description: The interval in which to return the stats.
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - day
+          - week
+          - month
+          example: week
+      - $ref: '#/components/parameters/StatsLimitParam'
+      - $ref: '#/components/parameters/DirectionParam'
+      responses:
+        '200':
+          description: Returns paginated active accounts stats
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Stat'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Stats
+      summary: Get active accounts stats
+      x-summary-source: derived
+  /stats/aex9-transfers:
+    get:
+      deprecated: false
+      description: Get total AEx9 token transfers.
+      operationId: GetAex9TransfersStats
+      parameters:
+      - name: interval_by
+        description: The interval in which to return the stats.
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - day
+          - week
+          - month
+          example: week
+      - name: min_start_date
+        description: The minimum start date in YYYY-MM-DD format.
+        in: query
+        required: false
+        schema:
+          type: string
+          example: '2023-01-01'
+      - name: max_start_date
+        description: The maximum start date in YYYY-MM-DD format.
+        in: query
+        required: false
+        schema:
+          type: string
+          example: '2024-01-01'
+      - $ref: '#/components/parameters/StatsLimitParam'
+      - $ref: '#/components/parameters/DirectionParam'
+      responses:
+        '200':
+          description: Returns paginated AEx9 transfer stats
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Stat'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Stats
+      summary: Get aex9 transfers stats
+      x-summary-source: derived
+  /stats/blocks:
+    get:
+      deprecated: false
+      description: Get total blocks count stats.
+      operationId: GetBlocksStats
+      parameters:
+      - name: interval_by
+        description: The interval in which to return the stats.
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - day
+          - week
+          - month
+          example: week
+      - name: min_start_date
+        description: The minimum start date in YYYY-MM-DD format.
+        in: query
+        required: false
+        schema:
+          type: string
+          example: '2023-01-01'
+      - name: max_start_date
+        description: The maximum start date in YYYY-MM-DD format.
+        in: query
+        required: false
+        schema:
+          type: string
+          example: '2024-01-01'
+      - name: type
+        description: The type of block.
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - key
+          - micro
+          example: micro
+      - $ref: '#/components/parameters/StatsLimitParam'
+      - $ref: '#/components/parameters/DirectionParam'
+      responses:
+        '200':
+          description: Returns paginated total stats per generation
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Stat'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Stats
+      summary: Get blocks stats
+      x-summary-source: derived
+  /stats/contracts:
+    get:
+      deprecated: false
+      description: Get the created contracts count per interval.
+      operationId: GetContractsStats
+      parameters:
+      - name: interval_by
+        description: The interval in which to return the stats.
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - day
+          - week
+          - month
+          example: week
+      - name: min_start_date
+        description: The minimum start date in YYYY-MM-DD format.
+        in: query
+        required: false
+        schema:
+          type: string
+          example: '2023-01-01'
+      - name: max_start_date
+        description: The maximum start date in YYYY-MM-DD format.
+        in: query
+        required: false
+        schema:
+          type: string
+          example: '2024-01-01'
+      - $ref: '#/components/parameters/StatsLimitParam'
+      - $ref: '#/components/parameters/DirectionParam'
+      responses:
+        '200':
+          description: Returns paginated total stats per generation
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Stat'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Stats
+      summary: Get contracts stats
+      x-summary-source: derived
+  /stats/delta:
+    get:
+      deprecated: false
+      description: Get delta stats.
+      operationId: GetDeltaStats
+      parameters:
+      - $ref: '#/components/parameters/StatsLimitParam'
+      - $ref: '#/components/parameters/ScopeParam'
+      - $ref: '#/components/parameters/DirectionParam'
+      responses:
+        '200':
+          description: Returns paginated delta stats per generation
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/DeltaStat'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Stats
+      summary: Get delta stats
+      x-summary-source: derived
+  /stats/difficulty:
+    get:
+      deprecated: false
+      description: Get total blocks difficulty stats.
+      operationId: GetDifficultyStats
+      parameters:
+      - name: interval_by
+        description: The interval in which to return the stats.
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - day
+          - week
+          - month
+          example: week
+      - name: min_start_date
+        description: The minimum start date in YYYY-MM-DD format.
+        in: query
+        required: false
+        schema:
+          type: string
+          example: '2023-01-01'
+      - name: max_start_date
+        description: The maximum start date in YYYY-MM-DD format.
+        in: query
+        required: false
+        schema:
+          type: string
+          example: '2024-01-01'
+      - $ref: '#/components/parameters/StatsLimitParam'
+      - $ref: '#/components/parameters/DirectionParam'
+      responses:
+        '200':
+          description: Returns paginated total stats per generation
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Stat'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Stats
+      summary: Get difficulty stats
+      x-summary-source: derived
+  /stats/hashrate:
+    get:
+      deprecated: false
+      description: Get total blocks hashrate stats.
+      operationId: GetHashrateStats
+      parameters:
+      - name: interval_by
+        description: The interval in which to return the stats.
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - day
+          - week
+          - month
+          example: week
+      - name: min_start_date
+        description: The minimum start date in YYYY-MM-DD format.
+        in: query
+        required: false
+        schema:
+          type: string
+          example: '2023-01-01'
+      - name: max_start_date
+        description: The maximum start date in YYYY-MM-DD format.
+        in: query
+        required: false
+        schema:
+          type: string
+          example: '2024-01-01'
+      - $ref: '#/components/parameters/StatsLimitParam'
+      - $ref: '#/components/parameters/DirectionParam'
+      responses:
+        '200':
+          description: Returns paginated total stats per generation
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Stat'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Stats
+      summary: Get hashrate stats
+      x-summary-source: derived
+  /stats/miners:
+    get:
+      deprecated: false
+      description: Get miners list with total rewards obtained through mining.
+      operationId: GetMinerStats
+      parameters:
+      - $ref: '#/components/parameters/StatsLimitParam'
+      - $ref: '#/components/parameters/DirectionParam'
+      responses:
+        '200':
+          description: Returns paginated total stats per generation
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Miner'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Stats
+      summary: Get miner stats
+      x-summary-source: derived
+  /stats/miners/top:
+    get:
+      deprecated: false
+      description: Get a list of top miners by blocks mined.
+      operationId: GetTopMinerStats
+      parameters:
+      - name: interval_by
+        description: The interval in which to return the stats.
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - day
+          - week
+          - month
+          example: week
+      - name: min_start_date
+        description: The minimum start date in YYYY-MM-DD format.
+        in: query
+        required: false
+        schema:
+          type: string
+          example: '2023-01-01'
+      - name: max_start_date
+        description: The maximum start date in YYYY-MM-DD format.
+        in: query
+        required: false
+        schema:
+          type: string
+          example: '2024-01-01'
+      - name: type
+        description: The type of block.
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - key
+          - micro
+          example: micro
+      - $ref: '#/components/parameters/StatsLimitParam'
+      - $ref: '#/components/parameters/DirectionParam'
+      responses:
+        '200':
+          description: Returns paginated total stats per generation
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/TopMinerStat'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Stats
+      summary: Get top miner stats
+      x-summary-source: derived
+  /stats/names:
+    get:
+      deprecated: false
+      description: Get total names count stats.
+      operationId: GetNamesStats
+      parameters:
+      - name: interval_by
+        description: The interval in which to return the stats.
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - day
+          - week
+          - month
+          example: week
+      - name: min_start_date
+        description: The minimum start date in YYYY-MM-DD format.
+        in: query
+        required: false
+        schema:
+          type: string
+          example: '2023-01-01'
+      - name: max_start_date
+        description: The maximum start date in YYYY-MM-DD format.
+        in: query
+        required: false
+        schema:
+          type: string
+          example: '2024-01-01'
+      - $ref: '#/components/parameters/StatsLimitParam'
+      - $ref: '#/components/parameters/DirectionParam'
+      responses:
+        '200':
+          description: Returns paginated total stats per generation
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Stat'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Stats
+      summary: Get names stats
+      x-summary-source: derived
+  /stats/total:
+    get:
+      deprecated: false
+      description: Get total accumulated stats.
+      operationId: GetTotalStats
+      parameters:
+      - $ref: '#/components/parameters/StatsLimitParam'
+      - $ref: '#/components/parameters/ScopeParam'
+      - $ref: '#/components/parameters/DirectionParam'
+      responses:
+        '200':
+          description: Returns paginated total stats per generation
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/TotalStat'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Stats
+      summary: Get total stats
+      x-summary-source: derived
+  /stats/total-accounts:
+    get:
+      deprecated: false
+      description: Get total accounts created per interval stats.
+      operationId: GetTotalAccountsStats
+      parameters:
+      - name: interval_by
+        description: The interval in which to return the stats.
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - day
+          - week
+          - month
+          example: week
+      - $ref: '#/components/parameters/StatsLimitParam'
+      - $ref: '#/components/parameters/DirectionParam'
+      responses:
+        '200':
+          description: Returns paginated total accounts stats
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Stat'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Stats
+      summary: Get total accounts stats
+      x-summary-source: derived
+  /stats/transactions:
+    get:
+      deprecated: false
+      description: Get total transactions count stats.
+      operationId: GetTransactionsStats
+      parameters:
+      - name: interval_by
+        description: The interval in which to return the stats.
+        in: query
+        required: false
+        schema:
+          type: string
+          enum:
+          - day
+          - week
+          - month
+          example: week
+      - name: min_start_date
+        description: The minimum start date in YYYY-MM-DD format.
+        in: query
+        required: false
+        schema:
+          type: string
+          example: '2023-01-01'
+      - name: max_start_date
+        description: The maximum start date in YYYY-MM-DD format.
+        in: query
+        required: false
+        schema:
+          type: string
+          example: '2024-01-01'
+      - name: tx_type
+        description: The type of the transactions
+        in: query
+        required: false
+        schema:
+          type: string
+          example: contract_call
+      - $ref: '#/components/parameters/StatsLimitParam'
+      - $ref: '#/components/parameters/DirectionParam'
+      responses:
+        '200':
+          description: Returns paginated total stats per generation
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Stat'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Stats
+      summary: Get transactions stats
+      x-summary-source: derived
+  /stats/transactions/total:
+    get:
+      deprecated: false
+      description: Get the total count of transactions for the given period.
+      operationId: GetTotalTransactionsStats
+      parameters:
+      - name: min_start_date
+        description: The minimum start date in YYYY-MM-DD format.
+        in: query
+        required: false
+        schema:
+          type: string
+          example: '2023-01-01'
+      - name: max_start_date
+        description: The maximum start date in YYYY-MM-DD format.
+        in: query
+        required: false
+        schema:
+          type: string
+          example: '2024-01-01'
+      - name: tx_type
+        description: The type of the transactions
+        in: query
+        required: false
+        schema:
+          type: string
+          example: contract_call
+      responses:
+        '200':
+          description: Returns the count of transactions for the given period
+          content:
+            application/json:
+              schema:
+                type: integer
+                example: 100
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Stats
+      summary: Get total transactions stats
+      x-summary-source: derived
+components:
+  schemas:
+    TransactionHash:
+      description: Transaction hash
+      type: string
+      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^th_\w{38,50}$
+    AccountAddress:
+      description: Account address
+      type: string
+      example: ak_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^ak_\w{38,50}$
+    DeltaStat:
+      description: DeltaStat
+      type: object
+      required:
+      - height
+      - auctions_started
+      - block_reward
+      - burned_in_auctions
+      - channels_closed
+      - channels_opened
+      - contracts_created
+      - dev_reward
+      - names_activated
+      - names_expired
+      - names_revoked
+      - oracles_expired
+      - oracles_registered
+      - last_tx_hash
+      - locked_in_auctions
+      - locked_in_channels
+      properties:
+        height:
+          description: The generation
+          type: integer
+        auctions_started:
+          description: The number of auctions started
+          type: integer
+        block_reward:
+          description: The block reward
+          type: integer
+        burned_in_auctions:
+          description: The amount burned in auctions
+          type: integer
+        channels_closed:
+          description: The number of channels closed
+          type: integer
+        channels_opened:
+          description: The number of channels opened
+          type: integer
+        contracts_created:
+          description: The number of contracts created
+          type: integer
+        dev_reward:
+          description: The dev reward
+          type: integer
+        names_activated:
+          description: The number of names activated
+          type: integer
+        names_expired:
+          description: The number of names expired
+          type: integer
+        names_revoked:
+          description: The number of names revoked
+          type: integer
+        oracles_expired:
+          description: The number of oracles expired
+          type: integer
+        oracles_registered:
+          description: The number of oracles registered
+          type: integer
+        last_tx_hash:
+          description: The last transaction hash for this height
+          $ref: '#/components/schemas/TransactionHash'
+        locked_in_auctions:
+          description: The amount locked in auctions
+          type: integer
+        locked_in_channels:
+          description: The amount locked in channels
+          type: integer
+        accounts:
+          description: The number of new accounts created in this generation
+          type: integer
+      example:
+        auctions_started: 0
+        block_reward: 269973000000000000000
+        burned_in_auctions: 0
+        channels_closed: 0
+        channels_opened: 0
+        contracts_created: 0
+        dev_reward: 33027000000000000000
+        height: 121804
+        names_activated: 0
+        names_expired: 0
+        names_revoked: 0
+        oracles_expired: 0
+        oracles_registered: 0
+        last_tx_hash: th_2FHxDzpQMRTiRfpYRV3eCcsheHr1sjf9waxk7z6JDTVcgqZRXR
+        locked_in_auctions: 0
+        locked_in_channels: 0
+        accounts: 0
+    Miner:
+      type: object
+      description: Miner
+      required:
+      - miner
+      - total_reward
+      properties:
+        miner:
+          description: The miner (beneficiary) address
+          $ref: '#/components/schemas/AccountAddress'
+        total_reward:
+          description: The accumulated reward on the miner (beneficiary) address
+          type: integer
+      example:
+        miner: ak_2whjDhTTmbN13vU7gAUsRbosBhmycho4h8LqHVqKwyGofDetQ9
+        total_reward: 945000000000000000000
+    TotalStat:
+      type: object
+      description: TotalStat
+      required:
+      - height
+      - contracts
+      - locked_in_auctions
+      - burned_in_auctions
+      - locked_in_channels
+      - active_auctions
+      - active_names
+      - inactive_names
+      - active_oracles
+      - inactive_oracles
+      - open_channels
+      - sum_block_reward
+      - sum_dev_reward
+      - total_token_supply
+      - last_tx_hash
+      properties:
+        height:
+          description: The generation
+          type: integer
+        contracts:
+          description: The number of contracts
+          type: integer
+        locked_in_auctions:
+          description: The amount locked in auctions
+          type: integer
+        burned_in_auctions:
+          description: The amount burned in auctions
+          type: integer
+        locked_in_channels:
+          description: The amount locked in channels
+          type: integer
+        active_auctions:
+          description: The number of active auctions
+          type: integer
+        active_names:
+          description: The number of active names
+          type: integer
+        inactive_names:
+          description: The number of inactive names
+          type: integer
+        active_oracles:
+          description: The number of active oracles
+          type: integer
+        inactive_oracles:
+          description: The number of inactive oracles
+          type: integer
+        open_channels:
+          description: The number of open channels
+          type: integer
+        sum_block_reward:
+          description: The sum of block rewards
+          type: integer
+        sum_dev_reward:
+          description: The sum of dev rewards
+          type: integer
+        total_token_supply:
+          description: The total token supply
+          type: integer
+        last_tx_hash:
+          description: The last transaction hash for this height
+          $ref: '#/components/schemas/TransactionHash'
+        accounts:
+          description: The cumulative total number of accounts up to this generation
+          type: integer
+      example:
+        height: 121804
+        contracts: 0
+        locked_in_auctions: 0
+        burned_in_auctions: 0
+        locked_in_channels: 0
+        active_auctions: 0
+        active_names: 0
+        inactive_names: 0
+        active_oracles: 0
+        inactive_oracles: 0
+        open_channels: 0
+        sum_block_reward: 269973000000000000000
+        sum_dev_reward: 33027000000000000000
+        total_token_supply: 10000000000000000000000000000
+        last_tx_hash: th_2FHxDzpQMRTiRfpYRV3eCcsheHr1sjf9waxk7z6JDTVcgqZRXR
+        accounts: 0
+    ErrorResponse:
+      description: Error response from the API
+      type: object
+      example:
+        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Error response
+    TopMinerStat:
+      type: object
+      description: TopMinerStat
+      required:
+      - miner
+      - blocks_mined
+      - start_date
+      - end_date
+      properties:
+        miner:
+          description: The miner (beneficiary) address
+          $ref: '#/components/schemas/AccountAddress'
+        blocks_mined:
+          description: The number of blocks mined
+          type: integer
+        start_date:
+          description: The statistic start date
+          type: string
+        end_date:
+          description: The statistic end date
+          type: string
+      example:
+        miner: ak_2whjDhTTmbN13vU7gAUsRbosBhmycho4h8LqHVqKwyGofDetQ9
+        blocks_mined: 945
+        start_date: '2024-02-28'
+        end_date: '2024-02-29'
+    PaginatedResponse:
+      type: object
+      properties:
+        next:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=123
+        prev:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=234
+      required:
+      - next
+      - prev
+    KeyBlockHash:
+      description: Key block hash
+      type: string
+      example: kh_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^kh_\w{38,50}$
+    Stats:
+      type: object
+      description: Stats
+      properties:
+        miners_count:
+          description: The number of miners
+          type: integer
+        fees_trend:
+          description: The fees trend
+          type: number
+        last_24hs_average_transaction_fees:
+          description: The last 24hs average transaction fees
+          type: number
+        last_24hs_transactions:
+          description: The last 24hs transactions
+          type: integer
+        max_transactions_per_second:
+          description: The max transactions per second
+          type: number
+        max_transactions_per_second_block_hash:
+          description: The max transactions per second block hash
+          $ref: '#/components/schemas/KeyBlockHash'
+        transactions_trend:
+          description: The transactions trend
+          type: number
+      example:
+        miners_count: 228
+        fees_trend: 0
+        last_24hs_average_transaction_fees: 46159816223980.98
+        last_24hs_transactions: 11143
+        max_transactions_per_second: 147.26
+        max_transactions_per_second_block_hash: kh_27UooKSFP8qYaymFiUvhrMfAsCUeTon48s52gfdmF8iruoi6cS
+        transactions_trend: 0
+    Stat:
+      type: object
+      description: Stat
+      required:
+      - count
+      - start_date
+      - end_date
+      properties:
+        count:
+          description: The statistic count
+          type: integer
+        start_date:
+          description: The statistic start date
+          type: string
+        end_date:
+          description: The statistic end date (not taken into account)
+          type: string
+      example:
+        count: 7701
+        end_date: '2024-02-29'
+        start_date: '2024-02-28'
+  parameters:
+    DirectionParam:
+      in: query
+      name: direction
+      description: Sorts results in forwards or backwards direction
+      schema:
+        type: string
+        enum:
+        - forward
+        - backward
+    ScopeParam:
+      in: query
+      name: scope
+      description: Scopes results in a generation range
+      schema:
+        type: string
+        pattern: (gen):\d+(-\d+)?
+    StatsLimitParam:
+      in: query
+      name: limit
+      description: Limit paginated resources (max 1000)
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 1000
+        default: 10

@@ -1,0 +1,116 @@
+openapi: 3.2.0
+info:
+  description: API for Aeternity Middleware
+  title: Aeternity Middleware Status API
+  version: 1.108.2
+servers:
+- url: https://mainnet.aeternity.io/mdw/v3
+  description: Mainnet middleware
+- url: https://testnet.aeternity.io/mdw/v3
+  description: Testnet middleware
+tags:
+- name: Status
+paths:
+  /status:
+    get:
+      description: Gets the current syncing status of both middleware and the node
+      operationId: GetStatus
+      responses:
+        '200':
+          description: Returns a map of status items
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Status'
+      tags:
+      - Status
+      summary: Get status
+      x-summary-source: derived
+components:
+  schemas:
+    Status:
+      type: object
+      properties:
+        mdw_async_tasks:
+          type: object
+          properties:
+            long_tasks:
+              type: integer
+              example: 1
+            producer_buffer:
+              type: integer
+              example: 2
+            total_pending:
+              type: integer
+              example: 3
+          required:
+          - long_tasks
+          - producer_buffer
+          - total_pending
+        mdw_gens_per_minute:
+          description: The approximate number of generations synced per minute on middleware
+          type: number
+          example: 54.75
+        mdw_height:
+          description: The top generation up to which the middleware was synced
+          type: integer
+          example: 564291
+        mdw_last_migration:
+          description: The last middleware migration ran
+          type: integer
+          example: 20230519120000
+        mdw_revision:
+          description: The middleware's git revision of the latest commit applied
+          type: string
+          example: 2d3ae3d
+        mdw_synced:
+          description: true if middleware was synced up to the latest node block
+          type: boolean
+          example: true
+        mdw_syncing:
+          description: true if middleware is syncing (i.e. it didn't stop due to an error)
+          type: boolean
+          example: true
+        mdw_tx_index:
+          description: index of the latest synced transaction
+          type: integer
+          example: 45208121
+        mdw_version:
+          description: The middleware's version
+          type: string
+          example: 1.49.0
+        node_height:
+          description: The node generation of the last block synced
+          type: integer
+          example: 391040
+        node_progress:
+          description: The percentage of generations synced on the node
+          type: number
+          example: 98.67
+        node_revision:
+          description: The node's git revision of the latest commit applied
+          type: string
+          example: a42c1b1e84dabdad350005213a2a9334113a6832
+        node_syncing:
+          description: If true, the node is still processing additional blocks to reach the latest one
+          type: boolean
+          example: true
+        node_version:
+          description: The node's version
+          type: string
+          example: 6.8.1
+      required:
+      - mdw_async_tasks
+      - mdw_gens_per_minute
+      - mdw_height
+      - mdw_last_migration
+      - mdw_revision
+      - mdw_synced
+      - mdw_syncing
+      - mdw_tx_index
+      - mdw_version
+      - node_height
+      - node_progress
+      - node_revision
+      - node_syncing
+      - node_version

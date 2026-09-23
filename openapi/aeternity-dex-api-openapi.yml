@@ -1,0 +1,225 @@
+openapi: 3.2.0
+info:
+  description: API for Aeternity Middleware
+  title: Aeternity Middleware Dex API
+  version: 1.108.2
+servers:
+- url: https://mainnet.aeternity.io/mdw/v3
+  description: Mainnet middleware
+- url: https://testnet.aeternity.io/mdw/v3
+  description: Testnet middleware
+tags:
+- name: DEX
+paths:
+  /dex/swaps:
+    get:
+      deprecated: false
+      description: Get DEX swap tokens
+      operationId: GetDexSwaps
+      parameters:
+      - $ref: '#/components/parameters/DirectionParam'
+      responses:
+        '200':
+          description: Returns paginated list of DEX swaps
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/DexSwap'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - DEX
+      summary: Get dex swaps
+      x-summary-source: derived
+  /dex/{contract_id}/swaps:
+    get:
+      deprecated: false
+      description: Get DEX swap tokens
+      operationId: GetDexSwapsByContractId
+      parameters:
+      - $ref: '#/components/parameters/DirectionParam'
+      - in: path
+        name: contract_id
+        required: true
+        description: The contract id
+        schema:
+          $ref: '#/components/schemas/ContractAddress'
+      responses:
+        '200':
+          description: Returns paginated list of DEX swaps
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/DexSwap'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - DEX
+      summary: Get dex swaps by contract id
+      x-summary-source: derived
+components:
+  schemas:
+    TransactionHash:
+      description: Transaction hash
+      type: string
+      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^th_\w{38,50}$
+    AccountAddress:
+      description: Account address
+      type: string
+      example: ak_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^ak_\w{38,50}$
+    DexSwap:
+      description: DEX swap
+      type: object
+      properties:
+        amounts:
+          type: object
+          required:
+          - amount0_in
+          - amount1_in
+          - amount0_out
+          - amount1_out
+          properties:
+            amount0_in:
+              type: integer
+              example: 1000050
+            amount1_in:
+              type: integer
+              example: 1000060
+            amount0_out:
+              type: integer
+              example: 1000070
+            amount1_out:
+              type: integer
+              example: 1000080
+        action:
+          type: string
+          enum:
+          - SWAP
+          - BUY
+          - SELL
+          example: SWAP
+        caller:
+          $ref: '#/components/schemas/AccountAddress'
+        from_token:
+          type: string
+          example: TK1
+        to_token:
+          type: string
+          example: TK2
+        log_idx:
+          type: integer
+          example: 0
+        to_account:
+          $ref: '#/components/schemas/AccountAddress'
+        tx_hash:
+          $ref: '#/components/schemas/TransactionHash'
+        from_contract:
+          $ref: '#/components/schemas/ContractAddress'
+        to_contract:
+          $ref: '#/components/schemas/ContractAddress'
+        from_amount:
+          type: integer
+          example: 1000050
+        to_amount:
+          type: integer
+          example: 1000060
+        from_decimals:
+          type: integer
+          example: 18
+        to_decimals:
+          type: integer
+          example: 18
+        micro_time:
+          type: integer
+          example: 1629820800000
+        height:
+          type: integer
+          example: 123456
+      required:
+      - amounts
+      - action
+      - caller
+      - from_token
+      - to_token
+      - log_idx
+      - to_account
+      - tx_hash
+      - from_contract
+      - to_contract
+      - from_amount
+      - to_amount
+      - from_decimals
+      - to_decimals
+      - micro_time
+      - height
+    ContractAddress:
+      description: Contract address
+      type: string
+      example: ct_2t7TnocFw7oCYSS7g2yGutZMpGEJta6dq2DTX38SmuqmwtN6Ch
+      pattern: ^ct_\w{38,50}$
+    ErrorResponse:
+      description: Error response from the API
+      type: object
+      example:
+        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Error response
+    PaginatedResponse:
+      type: object
+      properties:
+        next:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=123
+        prev:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=234
+      required:
+      - next
+      - prev
+  parameters:
+    DirectionParam:
+      in: query
+      name: direction
+      description: Sorts results in forwards or backwards direction
+      schema:
+        type: string
+        enum:
+        - forward
+        - backward

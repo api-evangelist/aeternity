@@ -1,0 +1,853 @@
+openapi: 3.2.0
+info:
+  description: API for Aeternity Middleware
+  title: Aeternity Middleware Oracles API
+  version: 1.108.2
+servers:
+- url: https://mainnet.aeternity.io/mdw/v3
+  description: Mainnet middleware
+- url: https://testnet.aeternity.io/mdw/v3
+  description: Testnet middleware
+tags:
+- name: Oracles
+paths:
+  /oracles:
+    get:
+      deprecated: false
+      description: Get multiple oracles.
+      operationId: GetOracles
+      parameters:
+      - name: state
+        in: query
+        description: oracle state (active or inactive)
+        required: false
+        schema:
+          type: string
+          example: active
+      - $ref: '#/components/parameters/LimitParam'
+      - $ref: '#/components/parameters/ScopeParam'
+      - $ref: '#/components/parameters/DirectionParam'
+      responses:
+        '200':
+          description: Returns paginated oracles
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Oracle'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Oracles
+      summary: Get oracles
+      x-summary-source: derived
+  /oracles/{id}:
+    get:
+      deprecated: false
+      description: Get a single oracle.
+      operationId: GetOracle
+      parameters:
+      - name: id
+        in: path
+        description: The oracle
+        required: true
+        schema:
+          $ref: '#/components/schemas/OracleAddress'
+      responses:
+        '200':
+          description: Returns single oracle
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Oracle'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+      tags:
+      - Oracles
+      summary: Get oracle
+      x-summary-source: derived
+  /oracles/{id}/extends:
+    get:
+      deprecated: false
+      description: Get an oracle's extensions.
+      operationId: GetOracleExtends
+      parameters:
+      - name: id
+        in: path
+        description: The oracle
+        required: true
+        schema:
+          $ref: '#/components/schemas/OracleAddress'
+      responses:
+        '200':
+          description: Returns paginated oracle extensions
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/OracleExtend'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+      tags:
+      - Oracles
+      summary: Get oracle extends
+      x-summary-source: derived
+  /oracles/{id}/queries:
+    get:
+      deprecated: false
+      description: Get an oracle's queries.
+      operationId: GetOracleQueries
+      parameters:
+      - name: id
+        in: path
+        description: The oracle
+        required: true
+        schema:
+          $ref: '#/components/schemas/OracleAddress'
+      responses:
+        '200':
+          description: Returns paginated oracle queries
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        allOf:
+                        - $ref: '#/components/schemas/OracleQuery'
+                        - type: object
+                          properties:
+                            response:
+                              $ref: '#/components/schemas/OracleResponse'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+      tags:
+      - Oracles
+      summary: Get oracle queries
+      x-summary-source: derived
+  /oracles/{id}/responses:
+    get:
+      deprecated: false
+      description: Get an oracle's responses.
+      operationId: GetOracleResponses
+      parameters:
+      - name: id
+        in: path
+        description: The oracle
+        required: true
+        schema:
+          $ref: '#/components/schemas/OracleAddress'
+      responses:
+        '200':
+          description: Returns paginated oracle responses
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        allOf:
+                        - $ref: '#/components/schemas/OracleResponse'
+                        - type: object
+                          properties:
+                            query:
+                              $ref: '#/components/schemas/OracleQuery'
+                          required:
+                          - query
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+      tags:
+      - Oracles
+      summary: Get oracle responses
+      x-summary-source: derived
+components:
+  schemas:
+    OracleExtend:
+      example:
+        height: 961963
+        block_hash: mh_j3kociQVYDLkCsxdPVU8J9qPFLxUzrMnoSMuLp38yubDpuTyR
+        tx:
+          fee: 16132000000000
+          nonce: 4357
+          oracle_id: ok_Gb6cD91w29v8csjAxyyBmfAQmdNo1aUedWkhn9HxqiXeVuGcj
+          oracle_ttl:
+            type: delta
+            value: 500
+          ttl: 0
+        source_tx_hash: th_NgGUA81Cy2VkwStujdyKQxBW9DTnEVJo3eHh7do3oAn4Zymmu
+        source_tx_type: OracleExtendTx
+      properties:
+        block_hash:
+          description: The hash of the block in which it occurred
+          $ref: '#/components/schemas/MicroBlockHash'
+        height:
+          description: The block height
+          type: integer
+        source_tx_hash:
+          description: The hash of the transaction in which the extend was done
+          $ref: '#/components/schemas/TransactionHash'
+        source_tx_type:
+          description: The type of the transaction in which the extend was done, it can be either via a contract call or an extend transaction
+          type: string
+          enum:
+          - ContractCallTx
+          - OracleExtendTx
+        tx:
+          oneOf:
+          - $ref: '#/components/schemas/OracleExtendTx'
+          - $ref: '#/components/schemas/ContractCallTx'
+      required:
+      - block_hash
+      - height
+      - source_tx_hash
+      - source_tx_type
+      - tx
+      type: object
+    ContractCallTx:
+      type: object
+      properties:
+        caller_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        contract_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        abi_version:
+          $ref: '#/components/schemas/UInt16'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        amount:
+          $ref: '#/components/schemas/UInt'
+        gas:
+          $ref: '#/components/schemas/UInt64'
+        gas_price:
+          $ref: '#/components/schemas/UInt'
+        call_data:
+          $ref: '#/components/schemas/EncodedContractByteArray'
+      required:
+      - caller_id
+      - contract_id
+      - abi_version
+      - fee
+      - amount
+      - gas
+      - gas_price
+      - call_data
+    OracleQuery:
+      example:
+        block_hash: mh_211yFeU3yxKgqXAaRyyxrALMDPxxTyYkrs6TwN9hWnxMHQk8Nc
+        block_time: 1595571314482
+        height: 289005
+        query_id": oq_su6wv4MZsnJfopjAhd1Sx7HuBBtqhdHhahkoTPWk7bg24UWNR
+        source_tx_hash: th_gsaRRLnysE4pFH1DqY731F6LBEjhdDwnzoDyBnZjBUygoSvpJ
+        source_tx_type: OracleQueryTx
+        fee: 17199000000000
+        nonce: 57
+        oracle_id: ok_qJZPXvWPC7G9kFVEqNjj9NAmwMsQcpRu6E3SSCvCQuwfqpMtN
+        query: YmFpeGluIHF1ZXJ5
+        query_fee: 2000000000000000
+        query_ttl:
+          type: delta
+          value: 100
+        response_ttl:
+          type: delta
+          value: 100
+        sender_id: ak_CNcf2oywqbgmVg3FfKdbHQJfB959wrVwqfzSpdWVKZnep7nj4
+        ttl: 289505
+      properties:
+        block_hash:
+          description: The hash of the block in which it occurred
+          $ref: '#/components/schemas/MicroBlockHash'
+        block_time:
+          description: The time of the block
+          type: integer
+        height:
+          description: The block height
+          type: integer
+        query_id:
+          $ref: '#/components/schemas/OracleQueryId'
+        source_tx_hash:
+          description: The hash of the transaction in which the query was created
+          $ref: '#/components/schemas/TransactionHash'
+        source_tx_type:
+          type: string
+          description: The type of the transaction in which the query was created, it can be either via a contract call or a query transaction
+          enum:
+          - ContractCallTx
+          - OracleQueryTx
+        fee:
+          description: The transaction fee
+          type: integer
+        nonce:
+          description: The nonce
+          type: integer
+        oracle_id:
+          description: The oracle ID of this query
+          $ref: '#/components/schemas/OracleAddress'
+        query:
+          description: Base64 encoding of the query
+          type: string
+        query_fee:
+          description: The query fee
+          type: integer
+        query_ttl:
+          description: Expiration of the query
+          type: object
+        response_ttl:
+          description: Expiration of the response
+          type: object
+        sender_id:
+          description: The creator of the query
+          $ref: '#/components/schemas/AccountAddress'
+        ttl:
+          description: Transaction TTL
+          type: integer
+      required:
+      - block_hash
+      - block_time
+      - height
+      - query_id
+      - source_tx_hash
+      - source_tx_type
+      - fee
+      - nonce
+      - oracle_id
+      - query
+      - query_fee
+      - query_ttl
+      - response_ttl
+      - sender_id
+      - ttl
+      type: object
+    ErrorResponse:
+      description: Error response from the API
+      type: object
+      example:
+        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Error response
+    OracleExtendTx:
+      type: object
+      properties:
+        fee:
+          $ref: '#/components/schemas/UInt'
+        oracle_ttl:
+          $ref: '#/components/schemas/RelativeTTL'
+        oracle_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - fee
+      - oracle_ttl
+      - oracle_id
+    TransactionHash:
+      description: Transaction hash
+      type: string
+      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^th_\w{38,50}$
+    MicroBlockHash:
+      description: Micro block hash
+      type: string
+      example: mh_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^mh_\w{38,50}$
+    AccountAddress:
+      description: Account address
+      type: string
+      example: ak_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^ak_\w{38,50}$
+    TransactionEncoded:
+      description: Encoded transaction
+      type: string
+      example: tx_+E8hAaEB4TK48d23oE5jt/qWR5pUu8UlpTGn8bwM5JISGQMGf7ABoQOvDVCf43V7alNbsUvTarXaCf7rjtWX36YLS4+JTa4jn4YPHaUyOAAAxRZ6Sg==
+      pattern: ^tx_\w+$
+    NotFoundResponse:
+      description: Resource not found on the API
+      type: object
+      example:
+        error: 'not found: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Not found response
+    OracleQueryId:
+      description: Oracle query ID
+      type: string
+      example: oq_2t7TnocFw7oCYSS7g2yGutZMpGEJta6dq2DTX38SmuqmwtN6Ch
+      pattern: ^oq_\w{38,50}$
+    OracleAddress:
+      description: Oracle address
+      type: string
+      example: ok_2t7TnocFw7oCYSS7g2yGutZMpGEJta6dq2DTX38SmuqmwtN6Ch
+      pattern: ^ok_\w{38,50}$
+    TTL:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - delta
+          - block
+        value:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - type
+      - value
+    ContractCreateTx:
+      type: object
+      properties:
+        owner_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        code:
+          $ref: '#/components/schemas/EncodedContractByteArray'
+        vm_version:
+          $ref: '#/components/schemas/UInt16'
+        abi_version:
+          $ref: '#/components/schemas/UInt16'
+        deposit:
+          $ref: '#/components/schemas/UInt'
+        amount:
+          $ref: '#/components/schemas/UInt'
+        gas:
+          $ref: '#/components/schemas/UInt64'
+        gas_price:
+          $ref: '#/components/schemas/UInt'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        call_data:
+          $ref: '#/components/schemas/EncodedContractByteArray'
+      required:
+      - owner_id
+      - code
+      - vm_version
+      - abi_version
+      - deposit
+      - amount
+      - gas
+      - gas_price
+      - fee
+      - call_data
+    Signature:
+      description: Signature
+      type: string
+      example: sg_8hhU15cVMbukFj4FbdrFwwYnbzXYPnstu9PDnWZGbfQNpeHcB6tK1F3wvG1MPYySARgDRJYUh3YPJD3HctFwg6Y4rUGSR
+      pattern: ^sg_\w+$
+    EncodedPubkey:
+      description: Base58Check encoded tagged pubkey
+      type: string
+    OracleResponse:
+      example:
+        block_hash: mh_211yFeU3yxKgqXAaRyyxrALMDPxxTyYkrs6TwN9hWnxMHQk8Nc
+        block_time: 1595571314482
+        height: 289005
+        query_id: oq_su6wv4MZsnJfopjAhd1Sx7HuBBtqhdHhahkoTPWk7bg24UWNR
+        source_tx_hash: th_gsaRRLnysE4pFH1DqY731F6LBEjhdDwnzoDyBnZjBUygoSvpJ
+        source_tx_type: OracleRespondTx
+        fee: 17199000000000
+        nonce: 57
+        oracle_id: ok_qJZPXvWPC7G9kFVEqNjj9NAmwMsQcpRu6E3SSCvCQuwfqpMtN
+        query_fee: 2000000000000000
+        response_ttl:
+          type: delta
+          value: 100
+        ttl: 289505
+      properties:
+        block_hash:
+          description: The hash of the block in which it occurred
+          $ref: '#/components/schemas/MicroBlockHash'
+        block_time:
+          description: The time of the block
+          type: integer
+        height:
+          description: The block height
+          type: integer
+        query_id:
+          $ref: '#/components/schemas/OracleQueryId'
+        source_tx_hash:
+          description: The hash of the transaction in which the response was created
+          $ref: '#/components/schemas/TransactionHash'
+        source_tx_type:
+          type: string
+          description: The type of the transaction in which the response was created, it can be either via a contract call or a respond transaction
+          enum:
+          - ContractCallTx
+          - OracleRespondTx
+        fee:
+          description: The transaction fee
+          type: integer
+        nonce:
+          description: The nonce
+          type: integer
+        oracle_id:
+          description: The oracle ID of this response
+          $ref: '#/components/schemas/OracleAddress'
+        response:
+          description: Base64 encoding of the response
+          type: string
+        response_ttl:
+          description: Expiration of the response
+          type: object
+        ttl:
+          description: Transaction TTL
+          type: integer
+      required:
+      - block_hash
+      - block_time
+      - height
+      - query_id
+      - source_tx_hash
+      - source_tx_type
+      - fee
+      - nonce
+      - oracle_id
+      - response
+      - response_ttl
+      - ttl
+      type: object
+    UInt:
+      oneOf:
+      - type: integer
+        minimum: 0
+      - type: string
+    EncodedContractByteArray:
+      description: Base64Check encoded contract byte array
+      type: string
+      example: cb_AAAAAfy4hFE=
+      pattern: ^cb_[0-9A-Za-z+/=]+$
+    UInt16:
+      oneOf:
+      - type: integer
+        minimum: 0
+        maximum: 65535
+      - type: string
+    RelativeTTL:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - delta
+        value:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - type
+      - value
+    OracleTx:
+      type: object
+      required:
+      - block_hash
+      - block_height
+      - hash
+      - tx_hash
+      - micro_index
+      - micro_time
+      - signatures
+      - encoded_tx
+      - tx
+      properties:
+        block_hash:
+          $ref: '#/components/schemas/MicroBlockHash'
+        block_height:
+          type: integer
+        hash:
+          $ref: '#/components/schemas/TransactionHash'
+        micro_index:
+          type: integer
+        micro_time:
+          type: integer
+        signatures:
+          type: array
+          items:
+            $ref: '#/components/schemas/Signature'
+        encoded_tx:
+          $ref: '#/components/schemas/TransactionEncoded'
+        tx:
+          allOf:
+          - type: object
+            required:
+            - version
+            - type
+            properties:
+              version:
+                type: integer
+              type:
+                type: string
+          - oneOf:
+            - title: OracleRegisterTx
+              allOf:
+              - $ref: '#/components/schemas/OracleRegisterTx'
+              - type: object
+                required:
+                - oracle_id
+                properties:
+                  oracle_id:
+                    deprecated: true
+                    description: use `account_id` instead (the same value with a different prefix)
+                    $ref: '#/components/schemas/OracleAddress'
+            - $ref: '#/components/schemas/ContractCallTx'
+            - $ref: '#/components/schemas/ContractCreateTx'
+            discriminator:
+              propertyName: type
+              mapping:
+                OracleRegisterTx: '#/components/schemas/OracleRegisterTx'
+                ContractCallTx: '#/components/schemas/ContractCallTx'
+                ContractCreateTx: '#/components/schemas/ContractCreateTx'
+    OracleRegisterTx:
+      type: object
+      properties:
+        query_format:
+          type: string
+        response_format:
+          type: string
+        query_fee:
+          $ref: '#/components/schemas/UInt'
+        oracle_ttl:
+          $ref: '#/components/schemas/TTL'
+        account_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        abi_version:
+          $ref: '#/components/schemas/UInt16'
+      required:
+      - query_format
+      - response_format
+      - query_fee
+      - fee
+      - oracle_ttl
+      - account_id
+    Oracle:
+      example:
+        active: false
+        active_from: 4660
+        approximate_expire_time: 1587577871376
+        expire_height: 6894
+        format:
+          query: string
+          response: string
+        oracle: ok_R7cQfVN15F5ek1wBSYaMRjW2XbMRKx7VDQQmbtwxspjZQvmPM
+        query_fee: 20000
+        register:
+          block_hash: mh_2JZPXvWPC7G9kFVEqNjj9NAmwMsQcpRu6E3SSCvCQuwfqpMtN
+          block_height: 4660
+          encoded_tx: tx_+JELAfhCuEBX6CvfGClpszz2kg4qjUL8BtvNE0JpCtuwBHbZwGfTd6O6cQ9fr723QhuML50EIzZlFafB6UUi1y5S6RpZH2wJuEn4RxYBoQFtrWD1RJ5rxuHksnEXADAPHPT2jRT6uqVIr8X45BNYqgGFcXVlcnmIcmVzcG9uc2UAAIOYloCHBowmEhDKAIMEauEAmOjXSw==
+          hash: th_2JZPXvWPC7G9kFVEqNjj9NAmwMsQcpRu6E3SSCvCQuwfqpMtN
+          micro_index: 0
+          micro_time: 1587577771376
+          signatures:
+          - sg_2JZPXvWPC7G9kFVEqNjj9NAmwMsQcpRu6E3SSCvCQuwfqpMtN
+          tx:
+            abi_version: 0
+            account_id: ak_R7cQfVN15F5ek1wBSYaMRjW2XbMRKx7VDQQmbtwxspjZQvmPM
+            fee: 20000
+            nonce: 1
+            oracle_id: ok_R7cQfVN15F5ek1wBSYaMRjW2XbMRKx7VDQQmbtwxspjZQvmPM
+            oracle_ttl:
+              type: delta
+              value: 100
+            query_fee: 20000
+            query_format: query
+            response_format: response
+            ttl: 1587577871376
+            type: OracleRegisterTx
+            version: 1
+          tx_hash: th_2JZPXvWPC7G9kFVEqNjj9NAmwMsQcpRu6E3SSCvCQuwfqpMtN
+        register_time: 1587577771376
+        register_tx_hash: th_2JZPXvWPC7G9kFVEqNjj9NAmwMsQcpRu6E3SSCvCQuwfqpMtN
+      properties:
+        active:
+          description: The oracle active status
+          type: boolean
+        active_from:
+          description: The block height when the oracle became active
+          type: integer
+        approximate_expire_time:
+          description: The approximate time when the oracle expires
+          type: integer
+        expire_height:
+          description: The block height when the oracle expires
+          type: integer
+        register_time:
+          deprecated: true
+          description: The block time in which the oracle was registered, use `register.micro_time` instead
+          type: integer
+        register_tx_hash:
+          deprecated: true
+          description: The transaction hash in which the oracle was registered, use `register.hash` instead
+          $ref: '#/components/schemas/TransactionHash'
+        format:
+          type: object
+          description: The oracle's query and response formats
+          example:
+            query: string
+            response: string
+          properties:
+            query:
+              description: The query format
+              type: string
+            response:
+              description: The response format
+              type: string
+          required:
+          - response
+          - query
+        oracle:
+          $ref: '#/components/schemas/OracleAddress'
+        query_fee:
+          description: The query fee
+          type: integer
+        register:
+          $ref: '#/components/schemas/OracleTx'
+      required:
+      - register
+      - register_time
+      - register_tx_hash
+      - query_fee
+      - oracle
+      - format
+      - extends
+      - expire_height
+      - approximate_expire_time
+      - active_from
+      - active
+      type: object
+    PaginatedResponse:
+      type: object
+      properties:
+        next:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=123
+        prev:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=234
+      required:
+      - next
+      - prev
+    UInt64:
+      oneOf:
+      - type: integer
+        minimum: 0
+        maximum: 18446744073709552000
+      - type: string
+  parameters:
+    ScopeParam:
+      in: query
+      name: scope
+      description: Scopes results in a generation range
+      schema:
+        type: string
+        pattern: (gen):\d+(-\d+)?
+    DirectionParam:
+      in: query
+      name: direction
+      description: Sorts results in forwards or backwards direction
+      schema:
+        type: string
+        enum:
+        - forward
+        - backward
+    LimitParam:
+      in: query
+      name: limit
+      description: Limit paginated resources (max 100)
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10

@@ -1,0 +1,793 @@
+openapi: 3.2.0
+info:
+  description: API for Aeternity Middleware
+  title: Aeternity Middleware Contracts API
+  version: 1.108.2
+servers:
+- url: https://mainnet.aeternity.io/mdw/v3
+  description: Mainnet middleware
+- url: https://testnet.aeternity.io/mdw/v3
+  description: Testnet middleware
+tags:
+- name: Contracts
+paths:
+  /contracts/calls:
+    get:
+      deprecated: false
+      description: Get contract calls.
+      operationId: GetContractCalls
+      parameters:
+      - $ref: '#/components/parameters/LimitParam'
+      - $ref: '#/components/parameters/ScopeParam'
+      - $ref: '#/components/parameters/DirectionParam'
+      responses:
+        '200':
+          description: Returns paginated contracts logs
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/ContractCall'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Contracts
+      summary: Get contract calls
+      x-summary-source: derived
+  /contracts/logs:
+    get:
+      deprecated: false
+      description: Get contract logs.
+      operationId: GetContractLogs
+      parameters:
+      - name: contract_id
+        in: query
+        description: Contract that emitted the logs
+        required: false
+        schema:
+          $ref: '#/components/schemas/ContractAddress'
+      - name: event
+        in: query
+        description: Name of the event
+        required: false
+        schema:
+          type: string
+          example: Transfer
+      - name: function
+        in: query
+        description: Prefix of the contract called function
+        required: false
+        schema:
+          type: string
+          example: mint
+      - name: function_prefix
+        in: query
+        description: Prefix of the contract called function
+        required: false
+        schema:
+          type: string
+          example: put
+      - name: data
+        in: query
+        description: Data prefix from the contract call
+        required: false
+        schema:
+          type: string
+          example: AB
+      - name: aexn-args
+        in: query
+        description: Indicates to format args when event is AEX-N
+        required: false
+        schema:
+          type: boolean
+          example: true
+      - $ref: '#/components/parameters/LimitParam'
+      - $ref: '#/components/parameters/ScopeParam'
+      - $ref: '#/components/parameters/DirectionParam'
+      responses:
+        '200':
+          description: Returns paginated contracts logs
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/ContractLog'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Contracts
+      summary: Get contract logs
+      x-summary-source: derived
+  /contracts/{id}:
+    get:
+      deprecated: false
+      description: Gets contract creation info.
+      operationId: GetContract
+      parameters:
+      - name: id
+        in: path
+        description: Contract that emitted the logs
+        required: true
+        schema:
+          $ref: '#/components/schemas/ContractAddress'
+      responses:
+        '200':
+          description: Returns single contract
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Contract'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+      tags:
+      - Contracts
+      summary: Get contract
+      x-summary-source: derived
+components:
+  schemas:
+    NamePointer:
+      type: object
+      properties:
+        key:
+          type: string
+        encoded_key:
+          $ref: '#/components/schemas/EncodedByteArray'
+        id:
+          $ref: '#/components/schemas/EncodedPubkey'
+      required:
+      - key
+      - id
+    OracleRespondTx:
+      type: object
+      properties:
+        query_id:
+          $ref: '#/components/schemas/EncodedOracleQueryId'
+        response:
+          type: string
+        response_ttl:
+          $ref: '#/components/schemas/RelativeTTL'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        oracle_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - query_id
+      - response
+      - response_ttl
+      - fee
+      - oracle_id
+    ErrorResponse:
+      description: Error response from the API
+      type: object
+      example:
+        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Error response
+    NameTransferTx:
+      type: object
+      properties:
+        name_id:
+          $ref: '#/components/schemas/EncodedNameId'
+        recipient_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        account_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - name_id
+      - recipient_id
+      - fee
+      - account_id
+    OracleExtendTx:
+      type: object
+      properties:
+        fee:
+          $ref: '#/components/schemas/UInt'
+        oracle_ttl:
+          $ref: '#/components/schemas/RelativeTTL'
+        oracle_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - fee
+      - oracle_ttl
+      - oracle_id
+    NamePreclaimTx:
+      type: object
+      properties:
+        commitment_id:
+          $ref: '#/components/schemas/EncodedCommitmentId'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        account_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - commitment_id
+      - fee
+      - account_id
+    EncodedOracleQueryId:
+      description: Base58Check encoded oracle query id
+      type: string
+      example: oq_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^oq_\w+$
+    ContractInternalTx:
+      description: Contract internal transaction
+      type: object
+      oneOf:
+      - $ref: '#/components/schemas/ContractCreateTx'
+      - $ref: '#/components/schemas/NameClaimTx'
+      - $ref: '#/components/schemas/NamePreclaimTx'
+      - $ref: '#/components/schemas/NameUpdateTx'
+      - $ref: '#/components/schemas/NameTransferTx'
+      - $ref: '#/components/schemas/OracleExtendTx'
+      - $ref: '#/components/schemas/OracleQueryTx'
+      - $ref: '#/components/schemas/OracleRegisterTx'
+      - $ref: '#/components/schemas/OracleRespondTx'
+      - $ref: '#/components/schemas/SpendTx'
+    ContractCall:
+      description: ContractCall
+      type: object
+      required:
+      - block_hash
+      - call_tx_hash
+      - contract_id
+      - contract_tx_hash
+      - function
+      - height
+      - internal_tx
+      - local_idx
+      - micro_index
+      properties:
+        block_hash:
+          $ref: '#/components/schemas/MicroBlockHash'
+        call_tx_hash:
+          $ref: '#/components/schemas/TransactionHash'
+        contract_id:
+          $ref: '#/components/schemas/ContractAddress'
+        contract_tx_hash:
+          $ref: '#/components/schemas/TransactionHash'
+        function:
+          type: string
+          example: Oracle.query
+        height:
+          type: integer
+          example: 608269
+        internal_tx:
+          type: object
+          $ref: '#/components/schemas/ContractInternalTx'
+          example:
+            fee: 0
+            nonce: 0
+            oracle_id: ok_4HGhEdjeRtpsWzfSEJZnBKNmjgHALAifcBUey8EvRAdDfRsqc
+            query: YWtfdVRXZWdwZk42VWpBNHl6OFg0WlZSaTl4S0VZZVhISkRSWmNScnlUc1JIQUZvQnBMYTtodHRwczovL21haWwuZ29vZ2xlLmNvbS9tYWlsL3UvMC8jaW5ib3g=
+            query_fee: 20000000000000
+            query_id: oq_2T4mYmjcyinbfYyHyDq6FfPXHChf5mYPEXgza9vHAukuq2EEHj
+            query_ttl:
+              type: delta
+              value: 20
+            response_ttl:
+              type: delta
+              value: 20
+            sender_id: ak_7wqP18AHzyoqymwGaqQp8G2UpzBCggYiq7CZdJiB71VUsLpR4
+            type: OracleQueryTx
+            version: 1
+        local_idx:
+          type: integer
+          example: 0
+        micro_index:
+          type: integer
+          example: 2
+    EncodedNameId:
+      description: Base58Check encoded AENS name hash
+      type: string
+      example: nm_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^nm_\w+$
+    TransactionHash:
+      description: Transaction hash
+      type: string
+      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^th_\w{38,50}$
+    MicroBlockHash:
+      description: Micro block hash
+      type: string
+      example: mh_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^mh_\w{38,50}$
+    SpendTx:
+      allOf:
+      - $ref: '#/components/schemas/SpendTxInput'
+      - required:
+        - nonce
+    ContractAddress:
+      description: Contract address
+      type: string
+      example: ct_2t7TnocFw7oCYSS7g2yGutZMpGEJta6dq2DTX38SmuqmwtN6Ch
+      pattern: ^ct_\w{38,50}$
+    NotFoundResponse:
+      description: Resource not found on the API
+      type: object
+      example:
+        error: 'not found: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Not found response
+    TTL:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - delta
+          - block
+        value:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - type
+      - value
+    GAAttachTx:
+      type: object
+      properties:
+        owner_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        code:
+          $ref: '#/components/schemas/EncodedContractByteArray'
+        vm_version:
+          $ref: '#/components/schemas/UInt16'
+        abi_version:
+          $ref: '#/components/schemas/UInt16'
+        gas:
+          $ref: '#/components/schemas/UInt64'
+        gas_price:
+          $ref: '#/components/schemas/UInt'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        call_data:
+          $ref: '#/components/schemas/EncodedContractByteArray'
+        auth_fun:
+          description: Contract authorization function hash (hex encoded)
+          type: string
+          pattern: ^(0x|0X)?[a-fA-F0-9]+$
+      required:
+      - owner_id
+      - code
+      - vm_version
+      - abi_version
+      - gas
+      - gas_price
+      - fee
+      - call_data
+      - auth_fun
+    ContractCreateTx:
+      type: object
+      properties:
+        owner_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        code:
+          $ref: '#/components/schemas/EncodedContractByteArray'
+        vm_version:
+          $ref: '#/components/schemas/UInt16'
+        abi_version:
+          $ref: '#/components/schemas/UInt16'
+        deposit:
+          $ref: '#/components/schemas/UInt'
+        amount:
+          $ref: '#/components/schemas/UInt'
+        gas:
+          $ref: '#/components/schemas/UInt64'
+        gas_price:
+          $ref: '#/components/schemas/UInt'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        call_data:
+          $ref: '#/components/schemas/EncodedContractByteArray'
+      required:
+      - owner_id
+      - code
+      - vm_version
+      - abi_version
+      - deposit
+      - amount
+      - gas
+      - gas_price
+      - fee
+      - call_data
+    OracleQueryTx:
+      type: object
+      properties:
+        oracle_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        query:
+          type: string
+        query_fee:
+          $ref: '#/components/schemas/UInt'
+        query_ttl:
+          $ref: '#/components/schemas/TTL'
+        response_ttl:
+          $ref: '#/components/schemas/RelativeTTL'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        sender_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - oracle_id
+      - query
+      - query_fee
+      - query_ttl
+      - response_ttl
+      - fee
+      - sender_id
+    ContractLog:
+      description: ContractLog
+      type: object
+      required:
+      - args
+      - block_hash
+      - block_time
+      - call_tx_hash
+      - contract_id
+      - contract_tx_hash
+      - data
+      - event_hash
+      - event_name
+      - ext_caller_contract_id
+      - ext_caller_contract_tx_hash
+      - height
+      - log_idx
+      - micro_index
+      - parent_contract_id
+      properties:
+        args:
+          type: array
+          items:
+            type: string
+          example:
+          - 57632170077998225994387431184384351560267542170559996321319244663568556637966
+          - 70455690283454580784062717387189552611484838031419336802117080415662207780030
+          - 1050376320000000000
+        block_hash:
+          $ref: '#/components/schemas/MicroBlockHash'
+        block_time:
+          type: integer
+          example: 1615820000000
+        call_tx_hash:
+          $ref: '#/components/schemas/TransactionHash'
+        contract_id:
+          $ref: '#/components/schemas/ContractAddress'
+        contract_tx_hash:
+          $ref: '#/components/schemas/TransactionHash'
+        data:
+          type: string
+          example: ''
+        event_hash:
+          type: string
+          example: 48U3JOKTVTI6FVMTK2BLHM8NG72JEBG93VS6MENPSC8E71IM5FNG====
+        event_name:
+          type:
+          - string
+          - 'null'
+          example: Transfer
+        ext_caller_contract_id:
+          $ref: '#/components/schemas/ContractAddress'
+        ext_caller_contract_tx_hash:
+          $ref: '#/components/schemas/TransactionHash'
+        height:
+          type: integer
+          example: 609854
+        log_idx:
+          type: integer
+          example: 0
+        micro_index:
+          type: integer
+          example: 15
+        parent_contract_id:
+          type:
+          - integer
+          - 'null'
+          example: null
+    NameUpdateTx:
+      type: object
+      properties:
+        name_id:
+          $ref: '#/components/schemas/EncodedNameId'
+        name_ttl:
+          $ref: '#/components/schemas/UInt64'
+        pointers:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamePointer'
+        client_ttl:
+          $ref: '#/components/schemas/UInt64'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        account_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - name_id
+      - name_ttl
+      - client_ttl
+      - pointers
+      - fee
+      - account_id
+    EncodedPubkey:
+      description: Base58Check encoded tagged pubkey
+      type: string
+    UInt:
+      oneOf:
+      - type: integer
+        minimum: 0
+      - type: string
+    EncodedContractByteArray:
+      description: Base64Check encoded contract byte array
+      type: string
+      example: cb_AAAAAfy4hFE=
+      pattern: ^cb_[0-9A-Za-z+/=]+$
+    UInt16:
+      oneOf:
+      - type: integer
+        minimum: 0
+        maximum: 65535
+      - type: string
+    NameClaimTx:
+      type: object
+      properties:
+        name:
+          type: string
+        name_salt:
+          $ref: '#/components/schemas/UInt'
+        name_fee:
+          $ref: '#/components/schemas/UInt'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        account_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - name
+      - name_salt
+      - fee
+      - account_id
+    Contract:
+      description: Contract creation info
+      type: object
+      required:
+      - aexn_type
+      - block_hash
+      - contract
+      - source_tx_hash
+      - source_tx_type
+      - create_tx
+      properties:
+        aexn_type:
+          type:
+          - string
+          - 'null'
+          example: aex9
+        block_hash:
+          $ref: '#/components/schemas/MicroBlockHash'
+        contract:
+          $ref: '#/components/schemas/ContractAddress'
+        source_tx_hash:
+          $ref: '#/components/schemas/TransactionHash'
+        source_tx_type:
+          description: Contract source transaction type
+          example: ContractCreateTx
+          type: string
+          enum:
+          - ContractCreateTx
+          - GaAttachTx
+          - PayingForTx
+        create_tx:
+          type: object
+          oneOf:
+          - $ref: '#/components/schemas/ContractCreateTx'
+          - $ref: '#/components/schemas/GAAttachTx'
+          example:
+            abi_version: 3
+            call_data: cb_+Q==
+            code: cb_+QrfRgOgbAwsRHU
+            deposit: 0
+            fee: 13276000000000
+            gas: 200000
+            gas_price: 1000000000
+            nonce: 66
+            owner_id: ak_7wqP18AHzyoqymwGaqQp8G2UpzBCggYiq7CZdJiB71VUsLpR4
+            ttl: 0
+            vm_version: 5
+    RelativeTTL:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - delta
+        value:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - type
+      - value
+    EncodedByteArray:
+      description: Base64Check encoded byte array
+      type: string
+      example: ba_AAAAAfy4hFE=
+      pattern: ^ba_[0-9A-Za-z+/=]+$
+    OracleRegisterTx:
+      type: object
+      properties:
+        query_format:
+          type: string
+        response_format:
+          type: string
+        query_fee:
+          $ref: '#/components/schemas/UInt'
+        oracle_ttl:
+          $ref: '#/components/schemas/TTL'
+        account_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        abi_version:
+          $ref: '#/components/schemas/UInt16'
+      required:
+      - query_format
+      - response_format
+      - query_fee
+      - fee
+      - oracle_ttl
+      - account_id
+    UInt64:
+      oneOf:
+      - type: integer
+        minimum: 0
+        maximum: 18446744073709552000
+      - type: string
+    PaginatedResponse:
+      type: object
+      properties:
+        next:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=123
+        prev:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=234
+      required:
+      - next
+      - prev
+    SpendTxInput:
+      type: object
+      properties:
+        recipient_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        amount:
+          $ref: '#/components/schemas/UInt'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        sender_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        payload:
+          description: Base64Check encoded byte array, or a raw string
+      required:
+      - recipient_id
+      - amount
+      - fee
+      - sender_id
+      - payload
+    EncodedCommitmentId:
+      description: Base58Check encoded AENS commitment
+      type: string
+      example: cm_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^cm_\w+$
+  parameters:
+    ScopeParam:
+      in: query
+      name: scope
+      description: Scopes results in a generation range
+      schema:
+        type: string
+        pattern: (gen):\d+(-\d+)?
+    DirectionParam:
+      in: query
+      name: direction
+      description: Sorts results in forwards or backwards direction
+      schema:
+        type: string
+        enum:
+        - forward
+        - backward
+    LimitParam:
+      in: query
+      name: limit
+      description: Limit paginated resources (max 100)
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10

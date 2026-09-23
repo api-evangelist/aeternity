@@ -1,0 +1,951 @@
+openapi: 3.2.0
+info:
+  description: API for Aeternity Middleware
+  title: Aeternity Middleware Names API
+  version: 1.108.2
+servers:
+- url: https://mainnet.aeternity.io/mdw/v3
+  description: Mainnet middleware
+- url: https://testnet.aeternity.io/mdw/v3
+  description: Testnet middleware
+tags:
+- name: Names
+paths:
+  /names:
+    get:
+      deprecated: false
+      description: Get multiple names.
+      operationId: GetNames
+      parameters:
+      - name: by
+        in: query
+        description: Sorting by deactivation, activation or name
+        required: false
+        schema:
+          type: string
+          example: activation
+      - name: owned_by
+        in: query
+        description: Account that owns the name
+        required: false
+        schema:
+          $ref: '#/components/schemas/AccountAddress'
+      - name: prefix
+        in: query
+        description: Name prefix filter (case insensitive). Requires by=name parameter
+        required: false
+        schema:
+          type: string
+      - name: state
+        in: query
+        description: Activation state of the name (active or inactive)
+        required: false
+        schema:
+          type: string
+          example: inactive
+      - $ref: '#/components/parameters/LimitParam'
+      - $ref: '#/components/parameters/DirectionParam'
+      responses:
+        '200':
+          description: Returns paginated names
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Name'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Names
+      summary: Get names
+      x-summary-source: derived
+  /names/auctions:
+    get:
+      deprecated: false
+      description: Get multiple names.
+      operationId: GetNamesAuctions
+      parameters:
+      - $ref: '#/components/parameters/LimitParam'
+      - $ref: '#/components/parameters/ScopeParam'
+      - $ref: '#/components/parameters/DirectionParam'
+      responses:
+        '200':
+          description: Returns paginated active/inactive names and auctions
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Auction'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Names
+      summary: Get names auctions
+      x-summary-source: derived
+  /names/auctions/{id}:
+    get:
+      deprecated: false
+      operationId: GetNameAuction
+      parameters:
+      - name: id
+        in: path
+        description: The name
+        required: true
+        schema:
+          oneOf:
+          - $ref: '#/components/schemas/NameString'
+          - $ref: '#/components/schemas/NameHash'
+      - $ref: '#/components/parameters/LimitParam'
+      - $ref: '#/components/parameters/ScopeParam'
+      - $ref: '#/components/parameters/DirectionParam'
+      responses:
+        '200':
+          description: Returns the name active auction
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Auction'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+      tags:
+      - Names
+      summary: Get name auction
+      x-summary-source: derived
+  /names/auctions/{id}/claims:
+    get:
+      deprecated: false
+      operationId: GetNameAuctionClaims
+      parameters:
+      - name: id
+        in: path
+        description: The name
+        required: true
+        schema:
+          oneOf:
+          - $ref: '#/components/schemas/NameString'
+          - $ref: '#/components/schemas/NameHash'
+      - $ref: '#/components/parameters/LimitParam'
+      - $ref: '#/components/parameters/ScopeParam'
+      - $ref: '#/components/parameters/DirectionParam'
+      responses:
+        '200':
+          description: Returns the name auction claims
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - data
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/NameClaim'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+      tags:
+      - Names
+      summary: Get name auction claims
+      x-summary-source: derived
+  /names/count:
+    get:
+      deprecated: false
+      description: Get the total number of active names.
+      operationId: GetNamesCount
+      parameters:
+      - name: owned_by
+        in: query
+        description: Account that owns the name
+        required: false
+        schema:
+          $ref: '#/components/schemas/AccountAddress'
+      responses:
+        '200':
+          description: Returns the total number of active names
+          content:
+            application/json:
+              schema:
+                description: Total number of names
+                example: 191145
+                type: integer
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Names
+      summary: Get names count
+      x-summary-source: derived
+  /names/{id}:
+    get:
+      deprecated: false
+      description: Get a single name.
+      operationId: GetName
+      parameters:
+      - name: id
+        in: path
+        description: The name
+        required: true
+        schema:
+          oneOf:
+          - $ref: '#/components/schemas/NameString'
+          - $ref: '#/components/schemas/NameHash'
+      responses:
+        '200':
+          description: Returns single name
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Name'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+      tags:
+      - Names
+      summary: Get name
+      x-summary-source: derived
+  /names/{id}/claims:
+    get:
+      deprecated: false
+      operationId: GetNameClaims
+      parameters:
+      - name: id
+        in: path
+        description: The name or name hash
+        required: true
+        schema:
+          oneOf:
+          - $ref: '#/components/schemas/NameString'
+          - $ref: '#/components/schemas/NameHash'
+      - $ref: '#/components/parameters/LimitParam'
+      - $ref: '#/components/parameters/ScopeParam'
+      - $ref: '#/components/parameters/DirectionParam'
+      responses:
+        '200':
+          description: The name claims
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/NameClaim'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+      tags:
+      - Names
+      summary: Get name claims
+      x-summary-source: derived
+  /names/{id}/transfers:
+    get:
+      deprecated: false
+      operationId: GetNameTransfers
+      parameters:
+      - name: id
+        in: path
+        description: The name or name hash
+        required: true
+        schema:
+          oneOf:
+          - $ref: '#/components/schemas/NameString'
+          - $ref: '#/components/schemas/NameHash'
+      - $ref: '#/components/parameters/LimitParam'
+      - $ref: '#/components/parameters/ScopeParam'
+      - $ref: '#/components/parameters/DirectionParam'
+      responses:
+        '200':
+          description: The name transfers
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/NameTransfer'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+      tags:
+      - Names
+      summary: Get name transfers
+      x-summary-source: derived
+  /names/{id}/updates:
+    get:
+      deprecated: false
+      operationId: GetNameUpdates
+      parameters:
+      - name: id
+        in: path
+        description: The name or name hash
+        required: true
+        schema:
+          oneOf:
+          - $ref: '#/components/schemas/NameString'
+          - $ref: '#/components/schemas/NameHash'
+      - $ref: '#/components/parameters/LimitParam'
+      - $ref: '#/components/parameters/ScopeParam'
+      - $ref: '#/components/parameters/DirectionParam'
+      responses:
+        '200':
+          description: The name updates
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/NameUpdate'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+      tags:
+      - Names
+      summary: Get name updates
+      x-summary-source: derived
+components:
+  schemas:
+    NamePointer:
+      type: object
+      properties:
+        key:
+          type: string
+        encoded_key:
+          $ref: '#/components/schemas/EncodedByteArray'
+        id:
+          $ref: '#/components/schemas/EncodedPubkey'
+      required:
+      - key
+      - id
+    ContractCallTx:
+      type: object
+      properties:
+        caller_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        contract_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        abi_version:
+          $ref: '#/components/schemas/UInt16'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        amount:
+          $ref: '#/components/schemas/UInt'
+        gas:
+          $ref: '#/components/schemas/UInt64'
+        gas_price:
+          $ref: '#/components/schemas/UInt'
+        call_data:
+          $ref: '#/components/schemas/EncodedContractByteArray'
+      required:
+      - caller_id
+      - contract_id
+      - abi_version
+      - fee
+      - amount
+      - gas
+      - gas_price
+      - call_data
+    NameTransfer:
+      description: Name Transfer
+      type: object
+      required:
+      - active_from
+      - block_hash
+      - height
+      - source_tx_hash
+      - source_tx_type
+      - tx
+      properties:
+        active_from:
+          type: integer
+          example: 163282
+        block_hash:
+          $ref: '#/components/schemas/MicroBlockHash'
+        height:
+          type: integer
+          example: 45784
+        source_tx_hash:
+          $ref: '#/components/schemas/TransactionHash'
+        source_tx_type:
+          type: string
+          enum:
+          - NameTransferTx
+          - ContractCallTx
+          example: NameTransferTx
+        tx:
+          oneOf:
+          - $ref: '#/components/schemas/NameTransferTx'
+          - $ref: '#/components/schemas/ContractCallTx'
+          example:
+            account_id: ak_24jcHLTZQfsou7NvomRJ1hKEnjyNqbYSq2Az7DmyrAyUHPq8uR
+            fee: 30000
+            name_id: nm_en1mSKcVPb9gY8UGxPfABw3JouEGZ4ZvdfcBWetmn6czUuVG1
+            nonce: 18550
+            recipient_id: ak_2WZoa13VKHCamt2zL9Wid8ovmyvTEUzqBjDNGDNwuqwUQJZG4t
+            ttl: 42420
+        internal_source:
+          type: boolean
+    NameString:
+      description: AENS name
+      type: string
+      example: trustwallet.chain
+      pattern: ^\w+\.chain$
+    ErrorResponse:
+      description: Error response from the API
+      type: object
+      example:
+        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Error response
+    NameTransferTx:
+      type: object
+      properties:
+        name_id:
+          $ref: '#/components/schemas/EncodedNameId'
+        recipient_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        account_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - name_id
+      - recipient_id
+      - fee
+      - account_id
+    NameHash:
+      description: AENS name hash
+      type: string
+      example: nm_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^nm_\w{38,50}$
+    EncodedNameId:
+      description: Base58Check encoded AENS name hash
+      type: string
+      example: nm_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^nm_\w+$
+    TransactionHash:
+      description: Transaction hash
+      type: string
+      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^th_\w{38,50}$
+    MicroBlockHash:
+      description: Micro block hash
+      type: string
+      example: mh_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^mh_\w{38,50}$
+    NameClaim:
+      description: Name Claim
+      type: object
+      required:
+      - active_from
+      - source_tx_hash
+      - source_tx_type
+      - block_hash
+      - height
+      - tx
+      properties:
+        active_from:
+          type: integer
+          example: 163282
+        source_tx_hash:
+          $ref: '#/components/schemas/TransactionHash'
+        source_tx_type:
+          type: string
+          enum:
+          - NameClaimTx
+          - ContractCallTx
+          example: NameClaimTx
+        block_hash:
+          $ref: '#/components/schemas/MicroBlockHash'
+        height:
+          type: integer
+          example: 45784
+        tx:
+          oneOf:
+          - $ref: '#/components/schemas/NameClaimTx'
+          - $ref: '#/components/schemas/ContractCallTx'
+          example:
+            account_id: ak_2JJNMYcnqPaABiSY5omockmv4cCoZefv4XzStAxKe9gM2xYz2r
+            fee: 16540000000000
+            name: 1996.chain
+            name_fee: 134626900000000000000
+            name_salt: 7095609104934055
+            nonce: 225
+            ttl: 818002
+        internal_source:
+          type: boolean
+    AccountAddress:
+      description: Account address
+      type: string
+      example: ak_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^ak_\w{38,50}$
+    TransactionEncoded:
+      description: Encoded transaction
+      type: string
+      example: tx_+E8hAaEB4TK48d23oE5jt/qWR5pUu8UlpTGn8bwM5JISGQMGf7ABoQOvDVCf43V7alNbsUvTarXaCf7rjtWX36YLS4+JTa4jn4YPHaUyOAAAxRZ6Sg==
+      pattern: ^tx_\w+$
+    NotFoundResponse:
+      description: Resource not found on the API
+      type: object
+      example:
+        error: 'not found: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Not found response
+    Name:
+      description: Name
+      type: object
+      required:
+      - active
+      - hash
+      - active_from
+      - approximate_activation_time
+      - approximate_expire_time
+      - expire_height
+      - pointers
+      - auction
+      - auction_timeout
+      - ownership
+      - name
+      - name_fee
+      - revoke
+      properties:
+        active:
+          type: boolean
+          example: true
+        hash:
+          $ref: '#/components/schemas/NameHash'
+        active_from:
+          type: integer
+          example: 163282
+        approximate_activation_time:
+          type: integer
+          example: 1587577771376
+        approximate_expire_time:
+          type: integer
+          example: 1587577781376
+        expire_height:
+          type: integer
+          example: 362026
+        pointers:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamePointer'
+        auction:
+          $ref: '#/components/schemas/Auction'
+        auction_timeout:
+          type: integer
+          example: 1088448
+        ownership:
+          type: object
+          properties:
+            current:
+              $ref: '#/components/schemas/AccountAddress'
+            original:
+              $ref: '#/components/schemas/AccountAddress'
+        name:
+          $ref: '#/components/schemas/NameString'
+        name_fee:
+          type: integer
+          example: 134626900000000000000
+        revoke:
+          $ref: '#/components/schemas/NameTx'
+        claims_count:
+          type: integer
+          example: 3
+    NameUpdateTx:
+      type: object
+      properties:
+        name_id:
+          $ref: '#/components/schemas/EncodedNameId'
+        name_ttl:
+          $ref: '#/components/schemas/UInt64'
+        pointers:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamePointer'
+        client_ttl:
+          $ref: '#/components/schemas/UInt64'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        account_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - name_id
+      - name_ttl
+      - client_ttl
+      - pointers
+      - fee
+      - account_id
+    Signature:
+      description: Signature
+      type: string
+      example: sg_8hhU15cVMbukFj4FbdrFwwYnbzXYPnstu9PDnWZGbfQNpeHcB6tK1F3wvG1MPYySARgDRJYUh3YPJD3HctFwg6Y4rUGSR
+      pattern: ^sg_\w+$
+    EncodedPubkey:
+      description: Base58Check encoded tagged pubkey
+      type: string
+    NameUpdate:
+      description: Name Update
+      type: object
+      required:
+      - active_from
+      - block_hash
+      - height
+      - source_tx_hash
+      - source_tx_type
+      - tx
+      properties:
+        active_from:
+          type: integer
+          example: 163282
+        block_hash:
+          $ref: '#/components/schemas/MicroBlockHash'
+        height:
+          type: integer
+          example: 45784
+        source_tx_hash:
+          $ref: '#/components/schemas/TransactionHash'
+        source_tx_type:
+          type: string
+          enum:
+          - NameUpdateTx
+          - ContractCallTx
+          example: NameUpdateTx
+        tx:
+          oneOf:
+          - $ref: '#/components/schemas/NameUpdateTx'
+          - $ref: '#/components/schemas/ContractCallTx'
+          example:
+            account_id: ak_2CXSVZqVaGuZsmcRs3CN6wb2b9GKtf7Arwej7ahbeAQ1S8qkmM
+            client_ttl: 36000
+            fee: 20000000000000
+            name_id: nm_2tokSd7X5zeYzAr5icomaVLBYC3TGeCypsPjZALcQcxYZb4YdP
+            name_ttl: 50000
+            nonce: 3544
+            pointers:
+            - id: ak_M6MNwGLtMQ4j3m8pzQz9uF38nMfjCCVaiQ8fvTAU6DEsCocD5
+              key: account_pubkey
+            ttl: 60000
+        internal_source:
+          type: boolean
+    Auction:
+      description: Auction
+      type: object
+      required:
+      - auction_end
+      - activation_time
+      - approximate_expire_time
+      - last_bid
+      - name
+      - name_fee
+      - claims_count
+      properties:
+        auction_end:
+          type: integer
+          example: 638002
+        activation_time:
+          type: integer
+          example: 1687575562705
+        approximate_expire_time:
+          type: integer
+          example: 1692935617598
+        last_bid:
+          type: object
+          required:
+          - block_hash
+          - block_height
+          - encoded_tx
+          - hash
+          - micro_index
+          - micro_time
+          - signatures
+          - tx
+          properties:
+            block_hash:
+              $ref: '#/components/schemas/MicroBlockHash'
+            block_height:
+              type: integer
+              example: 608242
+            encoded_tx:
+              $ref: '#/components/schemas/TransactionEncoded'
+            hash:
+              $ref: '#/components/schemas/TransactionHash'
+            micro_index:
+              type: integer
+              example: 2
+            micro_time:
+              type: integer
+              example: 1687575562705
+            signatures:
+              type: array
+              items:
+                $ref: '#/components/schemas/Signature'
+            tx:
+              oneOf:
+              - $ref: '#/components/schemas/NameClaimTx'
+              - $ref: '#/components/schemas/ContractCallTx'
+        name:
+          $ref: '#/components/schemas/NameString'
+        name_fee:
+          type: integer
+          example: 134626900000000000000
+        claims_count:
+          type: integer
+          example: 3
+    UInt:
+      oneOf:
+      - type: integer
+        minimum: 0
+      - type: string
+    EncodedContractByteArray:
+      description: Base64Check encoded contract byte array
+      type: string
+      example: cb_AAAAAfy4hFE=
+      pattern: ^cb_[0-9A-Za-z+/=]+$
+    UInt16:
+      oneOf:
+      - type: integer
+        minimum: 0
+        maximum: 65535
+      - type: string
+    NameClaimTx:
+      type: object
+      properties:
+        name:
+          type: string
+        name_salt:
+          $ref: '#/components/schemas/UInt'
+        name_fee:
+          $ref: '#/components/schemas/UInt'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        account_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - name
+      - name_salt
+      - fee
+      - account_id
+    NameTx:
+      type:
+      - object
+      - 'null'
+      required:
+      - block_hash
+      - block_height
+      - hash
+      - micro_index
+      - micro_time
+      - signatures
+      - tx
+      properties:
+        block_hash:
+          $ref: '#/components/schemas/MicroBlockHash'
+        block_height:
+          type: integer
+        hash:
+          $ref: '#/components/schemas/TransactionHash'
+        micro_index:
+          type: integer
+        micro_time:
+          type: integer
+        signatures:
+          type: array
+          items:
+            $ref: '#/components/schemas/Signature'
+        tx:
+          type: object
+          required:
+          - account_id
+          - fee
+          - name_id
+          - nonce
+          - type
+          - version
+          properties:
+            account_id:
+              $ref: '#/components/schemas/AccountAddress'
+            fee:
+              type: integer
+            name_id:
+              $ref: '#/components/schemas/NameHash'
+            nonce:
+              type: integer
+            ttl:
+              type: integer
+            type:
+              type: string
+            version:
+              type: integer
+      example:
+        block_hash: mh_2Nr1oj3Z3D9sYnEDrNk4SXjboT3otCXQafsNukRcRDg25URKrR
+        block_height: 45784
+        hash: th_2FAG7SHx4FkEBwh5dxjd2As3d7xXPZ3AZTQKFxm2sKADYpvDf6
+        micro_index: 2
+        micro_time: 1687575562705
+        signatures:
+        - sg_VXb4ipxdLk5PxfoQ6xUv9ma3GGmmMSARsRbXeWdS8cAGZS5SVdkfJgLskSw7rXzZSikGwha23LzsK7LPrDomkohRZTcb8
+        tx:
+          account_id: ak_X8uq6yXsG9kKrFUChYDrkkxWgNcPnuSsosx7dB1Qt4uC4A4Ao
+          fee: 16660000000000
+          name: olcobaxn0tkizccs4k4z3dzqxbbt1o.chain
+          name_id: nm_6oHMk21c4chkF2A7WQ4bx1HhfaoAEQgXZFgofNTLw4yX7b2ff
+          nonce: 4
+          ttl: 2762
+          type: NameRevokeTx
+          version: 1
+    EncodedByteArray:
+      description: Base64Check encoded byte array
+      type: string
+      example: ba_AAAAAfy4hFE=
+      pattern: ^ba_[0-9A-Za-z+/=]+$
+    PaginatedResponse:
+      type: object
+      properties:
+        next:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=123
+        prev:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=234
+      required:
+      - next
+      - prev
+    UInt64:
+      oneOf:
+      - type: integer
+        minimum: 0
+        maximum: 18446744073709552000
+      - type: string
+  parameters:
+    ScopeParam:
+      in: query
+      name: scope
+      description: Scopes results in a generation range
+      schema:
+        type: string
+        pattern: (gen):\d+(-\d+)?
+    DirectionParam:
+      in: query
+      name: direction
+      description: Sorts results in forwards or backwards direction
+      schema:
+        type: string
+        enum:
+        - forward
+        - backward
+    LimitParam:
+      in: query
+      name: limit
+      description: Limit paginated resources (max 100)
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10

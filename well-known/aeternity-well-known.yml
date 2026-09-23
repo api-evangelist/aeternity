@@ -1,22 +1,22 @@
 generated: '2026-09-12'
 method: probed
-source: live GET of the named /.well-known/ path list on every host in apis.yml (registrable domain + www, each API baseURL host, every OpenAPI servers[] host, and the docs/reference hosts)
-note: >-
-  Two real documents are served, both on the aeternity.com WordPress origin and both describing the
-  OAuth 2.1 authorization layer in front of the site's remote MCP endpoint: RFC 8414 authorization-server
+source: live GET of the named /.well-known/ path list on every host in apis.yml (registrable domain +
+  www, each API baseURL host, every OpenAPI servers[] host, and the docs/reference hosts)
+note: 'Two real documents are served, both on the aeternity.com WordPress origin and both describing the
+  OAuth 2.1 authorization layer in front of the site''s remote MCP endpoint: RFC 8414 authorization-server
   metadata and RFC 9728 protected-resource metadata. No security.txt, api-catalog, openid-configuration,
-  ai-plugin.json or agent card is published on any host. The blockchain API hosts (mainnet/testnet
-  aeternity.io) return a bare 404 for every well-known path; aeternity.com, docs.aeternity.com,
-  docs.aeternity.io and api-docs.aeternity.io return HTML 404 pages.
+  ai-plugin.json or agent card is published on any host. The blockchain API hosts (mainnet/testnet aeternity.io)
+  return a bare 404 for every well-known path; aeternity.com, docs.aeternity.com, docs.aeternity.io and
+  api-docs.aeternity.io return HTML 404 pages.'
 hosts:
 - host: aeternity.com
   documents:
   - path: /.well-known/oauth-authorization-server
     status: 200
-    file: well-known/aeternity-oauth-authorization-server.json
+    file: aeternity-oauth-authorization-server.json
   - path: /.well-known/oauth-protected-resource
     status: 200
-    file: well-known/aeternity-oauth-protected-resource.json
+    file: aeternity-oauth-protected-resource.json
   - path: /.well-known/security.txt
     status: 404
   - path: /.well-known/openid-configuration
@@ -33,10 +33,10 @@ hosts:
   documents:
   - path: /.well-known/oauth-authorization-server
     status: 200
-    file: well-known/aeternity-oauth-authorization-server.json
+    file: aeternity-oauth-authorization-server.json
   - path: /.well-known/oauth-protected-resource
     status: 200
-    file: well-known/aeternity-oauth-protected-resource.json
+    file: aeternity-oauth-protected-resource.json
   - path: /.well-known/security.txt
     status: 404
   - path: /.well-known/openid-configuration

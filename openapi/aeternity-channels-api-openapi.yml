@@ -1,0 +1,284 @@
+openapi: 3.2.0
+info:
+  description: API for Aeternity Middleware
+  title: Aeternity Middleware Channels API
+  version: 1.108.2
+servers:
+- url: https://mainnet.aeternity.io/mdw/v3
+  description: Mainnet middleware
+- url: https://testnet.aeternity.io/mdw/v3
+  description: Testnet middleware
+tags:
+- name: Channels
+paths:
+  /channels:
+    get:
+      deprecated: false
+      description: Get multiple channels.
+      operationId: GetChannels
+      parameters:
+      - $ref: '#/components/parameters/LimitParam'
+      - $ref: '#/components/parameters/ScopeParam'
+      - $ref: '#/components/parameters/DirectionParam'
+      - name: state
+        in: query
+        description: Exclusively filter by active/inactive channels.
+        required: false
+        schema:
+          type: string
+          enum:
+          - active
+          - inactive
+          example: inactive
+      responses:
+        '200':
+          description: Returns paginated channels
+          content:
+            application/json:
+              schema:
+                allOf:
+                - type: object
+                  required:
+                  - data
+                  properties:
+                    data:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/Channel'
+                - $ref: '#/components/schemas/PaginatedResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      tags:
+      - Channels
+      summary: Get channels
+      x-summary-source: derived
+  /channels/{id}:
+    get:
+      deprecated: false
+      description: Get a single channel.
+      operationId: GetChannel
+      parameters:
+      - name: id
+        in: path
+        description: The channel
+        required: true
+        schema:
+          $ref: '#/components/schemas/ChannelId'
+      responses:
+        '200':
+          description: Returns single channel
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Channel'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotFoundResponse'
+      tags:
+      - Channels
+      summary: Get channel
+      x-summary-source: derived
+components:
+  schemas:
+    TransactionHash:
+      description: Transaction hash
+      type: string
+      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^th_\w{38,50}$
+    AccountAddress:
+      description: Account address
+      type: string
+      example: ak_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^ak_\w{38,50}$
+    ChannelId:
+      type: string
+      pattern: ^ch_\w{38,50}$
+      example: ch_2VfzXmCRZepB3ichPf3WTt2uf8zMqsyY3cZWg8k1vt3xcu8L8V
+    NotFoundResponse:
+      description: Resource not found on the API
+      type: object
+      example:
+        error: 'not found: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Not found response
+    ErrorResponse:
+      description: Error response from the API
+      type: object
+      example:
+        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Error response
+    PaginatedResponse:
+      type: object
+      properties:
+        next:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=123
+        prev:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=234
+      required:
+      - next
+      - prev
+    Channel:
+      type: object
+      required:
+      - active
+      - amount
+      - channel
+      - channel_reserve
+      - delegate_ids
+      - initiator
+      - initiator_amount
+      - last_updated_height
+      - last_updated_tx_type
+      - last_updated_time
+      - last_updated_tx_hash
+      - lock_period
+      - locked_until
+      - responder
+      - responder_amount
+      - round
+      - solo_round
+      - state_hash
+      - updates_count
+      properties:
+        active:
+          type: boolean
+          description: Channel is active
+          example: true
+        amount:
+          type: integer
+          description: Balance currently left in the channel
+          example: 20000000000001
+        channel:
+          $ref: '#/components/schemas/ChannelId'
+        channel_reserve:
+          type: integer
+          description: Minimum amount for sufficient funds
+          example: 500000000000000000
+        delegate_ids:
+          type: object
+          description: Pubkeys of delegated accounts
+          example:
+            initiator: []
+            responder: []
+        initiator:
+          description: Channel initiator pubkey
+          $ref: '#/components/schemas/AccountAddress'
+        initiator_amount:
+          type: integer
+          description: Amount owned by initiator
+          example: 4500000000000000000
+        last_updated_height:
+          type: integer
+          description: The last height in which the channel was updated on chain
+          example: 141956
+        last_updated_tx_type:
+          type: string
+          enum:
+          - ChannelCloseSoloTx
+          - ChannelCloseMutualTx
+          - ChannelCreateTx
+          - ChannelDepositTx
+          - ChannelForceProgressTx
+          - ChannelSetDelegatesTx
+          - ChannelSettleTx
+          - ChannelSlashTx
+          - ChannelSnapshotSoloTx
+          - ChannelWithdrawTx
+          - ChannelOffChainTx
+          description: The transaction type of the last transaction that updated the channel
+          example: ChannelDepositTx
+        last_updated_time:
+          type: integer
+          description: The block time in which the channel was last updated
+          example: 1587577771376
+        last_updated_tx_hash:
+          description: The hash of the last transaction that updated the channel
+          $ref: '#/components/schemas/TransactionHash'
+        lock_period:
+          description: Amount of heights locked after a solo closing
+          example: 10
+          type: integer
+        locked_until:
+          description: Non-inclusive height until which the channel is locked
+          example: 712001
+          type: integer
+        responder:
+          description: The channel responder pubkey
+          $ref: '#/components/schemas/AccountAddress'
+        responder_amount:
+          type: integer
+          description: Amount owned by responder
+          example: 4500000000000000000
+        round:
+          type: integer
+          description: Round after last transaction
+          example: 1
+        solo_round:
+          type: integer
+          description: Round of last solo transaction
+          example: 0
+        state_hash:
+          type: string
+          description: The hash of the current channel state
+          example: st_Wwxms0IVM7PPCHpeOXWeeZZm8h5p/SuqZL7IHIbr3CqtlCL+
+          pattern: ^st_\w+$
+        updates_count:
+          type: integer
+          description: The amount of times the channel's been updated by any of the channel transactions
+          example: 2
+  parameters:
+    DirectionParam:
+      in: query
+      name: direction
+      description: Sorts results in forwards or backwards direction
+      schema:
+        type: string
+        enum:
+        - forward
+        - backward
+    LimitParam:
+      in: query
+      name: limit
+      description: Limit paginated resources (max 100)
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10
+    ScopeParam:
+      in: query
+      name: scope
+      description: Scopes results in a generation range
+      schema:
+        type: string
+        pattern: (gen):\d+(-\d+)?
