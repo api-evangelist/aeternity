@@ -47,12 +47,33 @@ paths:
       summary: Get transfers
       x-summary-source: derived
 components:
+  parameters:
+    ScopeParam:
+      in: query
+      name: scope
+      description: Scopes results in a generation range
+      schema:
+        type: string
+        pattern: (gen):\d+(-\d+)?
+    DirectionParam:
+      in: query
+      name: direction
+      description: Sorts results in forwards or backwards direction
+      schema:
+        type: string
+        enum:
+        - forward
+        - backward
+    LimitParam:
+      in: query
+      name: limit
+      description: Limit paginated resources (max 100)
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10
   schemas:
-    TransactionHash:
-      description: Transaction hash
-      type: string
-      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
-      pattern: ^th_\w{38,50}$
     AccountAddress:
       description: Account address
       type: string
@@ -93,18 +114,21 @@ components:
           $ref: '#/components/schemas/TransactionHash'
         ref_tx_type:
           $ref: '#/components/schemas/TransferRefTxType'
-    ErrorResponse:
-      description: Error response from the API
-      type: object
-      example:
-        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
-      properties:
-        error:
-          description: The message of the error raised
-          type: string
-      required:
-      - error
-      title: Error response
+    TransferRefTxType:
+      type:
+      - string
+      - 'null'
+      example: OracleQueryTx
+      enum:
+      - ContractCallTx
+      - NameClaimTx
+      - OracleQueryTx
+      - null
+    TransactionHash:
+      description: Transaction hash
+      type: string
+      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^th_\w{38,50}$
     PaginatedResponse:
       type: object
       properties:
@@ -121,39 +145,15 @@ components:
       required:
       - next
       - prev
-    TransferRefTxType:
-      type:
-      - string
-      - 'null'
-      example: OracleQueryTx
-      enum:
-      - ContractCallTx
-      - NameClaimTx
-      - OracleQueryTx
-      - null
-  parameters:
-    DirectionParam:
-      in: query
-      name: direction
-      description: Sorts results in forwards or backwards direction
-      schema:
-        type: string
-        enum:
-        - forward
-        - backward
-    ScopeParam:
-      in: query
-      name: scope
-      description: Scopes results in a generation range
-      schema:
-        type: string
-        pattern: (gen):\d+(-\d+)?
-    LimitParam:
-      in: query
-      name: limit
-      description: Limit paginated resources (max 100)
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-        default: 10
+    ErrorResponse:
+      description: Error response from the API
+      type: object
+      example:
+        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Error response

@@ -129,45 +129,33 @@ paths:
       summary: Get key block micro blocks
       x-summary-source: derived
 components:
+  parameters:
+    ScopeParam:
+      in: query
+      name: scope
+      description: Scopes results in a generation range
+      schema:
+        type: string
+        pattern: (gen):\d+(-\d+)?
+    LimitParam:
+      in: query
+      name: limit
+      description: Limit paginated resources (max 100)
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10
+    DirectionParam:
+      in: query
+      name: direction
+      description: Sorts results in forwards or backwards direction
+      schema:
+        type: string
+        enum:
+        - forward
+        - backward
   schemas:
-    ErrorResponse:
-      description: Error response from the API
-      type: object
-      example:
-        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
-      properties:
-        error:
-          description: The message of the error raised
-          type: string
-      required:
-      - error
-      title: Error response
-    KeyBlockHash:
-      description: Key block hash
-      type: string
-      example: kh_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
-      pattern: ^kh_\w{38,50}$
-    NotFoundResponse:
-      description: Resource not found on the API
-      type: object
-      example:
-        error: 'not found: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
-      properties:
-        error:
-          description: The message of the error raised
-          type: string
-      required:
-      - error
-      title: Not found response
-    EncodedHash:
-      description: Base58Check encoded tagged hash
-      type: string
-    Pow:
-      type: array
-      items:
-        $ref: '#/components/schemas/UInt32'
-      minItems: 42
-      maxItems: 42
     MicroBlockHeader:
       type: object
       properties:
@@ -207,47 +195,22 @@ components:
       - signature
       - time
       - version
+    EncodedByteArray:
+      description: Base64Check encoded byte array
+      type: string
+      example: ba_AAAAAfy4hFE=
+      pattern: ^ba_[0-9A-Za-z+/=]+$
     EncodedSignature:
       description: Base58Check encoded signature
       type: string
       example: sg_8hhU15cVMbukFj4FbdrFwwYnbzXYPnstu9PDnWZGbfQNpeHcB6tK1F3wvG1MPYySARgDRJYUh3YPJD3HctFwg6Y4rUGSR
       pattern: ^sg_\w+$
-    MicroBlockExtended:
-      example:
-        micro_block_index: 64
-        transactions_count: 1
-        hash: mh_JryFr55GwbEbEJivkvHwBPzqbhu6AvpcZqCiBoXzgZdLmNn2K
-        height: 685072
-        pof_hash: no_fraud
-        gas: 1950000
-        prev_hash: mh_hH3qADCrnGvuup6JwjtNSacHLd9h3NJzAgr173jS9KUqijfTB
-        prev_key_hash: kh_2rTj3FTZJ6fnuLFDJwAiDQZat2a23Lkp5uZQooxjwXEFhH4Vtw
-        signature: sg_8hhU15cVMbukFj4FbdrFwwYnbzXYPnstu9PDnWZGbfQNpeHcB6tK1F3wvG1MPYySARgDRJYUh3YPJD3HctFwg6Y4rUGSR
-        state_hash: bs_2bNSxvfhsPeAwN3LJU1oZLtUJ6GbeRdJYTEnFLAAazWtwPPqpN
-        time: 1668435898477
-        txs_hash: bx_2TAosDwRW2CwxbNiucN8hRfUHQcnJn2u3quDLPE9jAmgX26Qya
-        version: 5
-      title: Micro Block Extended
-      allOf:
-      - $ref: '#/components/schemas/MicroBlockHeader'
-      - type: object
-        required:
-        - micro_block_index
-        - transactions_count
-        - gas
-        - flags
-        properties:
-          micro_block_index:
-            description: The index of the micro-block on the micro-block height, starting from 0
-            type: integer
-          transactions_count:
-            description: The number of transactions
-            type: integer
-          gas:
-            description: The gas used by the microblock
-            type: integer
-          flags:
-            $ref: '#/components/schemas/ByteArray'
+    Pow:
+      type: array
+      items:
+        $ref: '#/components/schemas/UInt32'
+      minItems: 42
+      maxItems: 42
     KeyBlockExtended:
       example:
         beneficiary: ak_2MR38Zf355m6JtP13T3WEcUcSLVLCxjGvjk6zG95S2mfKohcSS
@@ -329,10 +292,11 @@ components:
           transactions_count:
             description: The number of transactions
             type: integer
-    ByteArray:
+    EncodedContractByteArray:
+      description: Base64Check encoded contract byte array
       type: string
-      example: ba_wAAAAKv2ZV4=
-      pattern: ^ba_\w+$
+      example: cb_AAAAAfy4hFE=
+      pattern: ^cb_[0-9A-Za-z+/=]+$
     EncodedPubkey:
       description: Base58Check encoded tagged pubkey
       type: string
@@ -379,21 +343,67 @@ components:
       - time
       - version
       - info
-    EncodedContractByteArray:
-      description: Base64Check encoded contract byte array
+    EncodedHash:
+      description: Base58Check encoded tagged hash
       type: string
-      example: cb_AAAAAfy4hFE=
-      pattern: ^cb_[0-9A-Za-z+/=]+$
-    EncodedByteArray:
-      description: Base64Check encoded byte array
+    KeyBlockHash:
+      description: Key block hash
       type: string
-      example: ba_AAAAAfy4hFE=
-      pattern: ^ba_[0-9A-Za-z+/=]+$
-    UInt32:
+      example: kh_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^kh_\w{38,50}$
+    MicroBlockExtended:
+      example:
+        micro_block_index: 64
+        transactions_count: 1
+        hash: mh_JryFr55GwbEbEJivkvHwBPzqbhu6AvpcZqCiBoXzgZdLmNn2K
+        height: 685072
+        pof_hash: no_fraud
+        gas: 1950000
+        prev_hash: mh_hH3qADCrnGvuup6JwjtNSacHLd9h3NJzAgr173jS9KUqijfTB
+        prev_key_hash: kh_2rTj3FTZJ6fnuLFDJwAiDQZat2a23Lkp5uZQooxjwXEFhH4Vtw
+        signature: sg_8hhU15cVMbukFj4FbdrFwwYnbzXYPnstu9PDnWZGbfQNpeHcB6tK1F3wvG1MPYySARgDRJYUh3YPJD3HctFwg6Y4rUGSR
+        state_hash: bs_2bNSxvfhsPeAwN3LJU1oZLtUJ6GbeRdJYTEnFLAAazWtwPPqpN
+        time: 1668435898477
+        txs_hash: bx_2TAosDwRW2CwxbNiucN8hRfUHQcnJn2u3quDLPE9jAmgX26Qya
+        version: 5
+      title: Micro Block Extended
+      allOf:
+      - $ref: '#/components/schemas/MicroBlockHeader'
+      - type: object
+        required:
+        - micro_block_index
+        - transactions_count
+        - gas
+        - flags
+        properties:
+          micro_block_index:
+            description: The index of the micro-block on the micro-block height, starting from 0
+            type: integer
+          transactions_count:
+            description: The number of transactions
+            type: integer
+          gas:
+            description: The gas used by the microblock
+            type: integer
+          flags:
+            $ref: '#/components/schemas/ByteArray'
+    NotFoundResponse:
+      description: Resource not found on the API
+      type: object
+      example:
+        error: 'not found: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Not found response
+    UInt64:
       oneOf:
       - type: integer
         minimum: 0
-        maximum: 4294967295
+        maximum: 18446744073709552000
       - type: string
     PaginatedResponse:
       type: object
@@ -411,35 +421,25 @@ components:
       required:
       - next
       - prev
-    UInt64:
+    ErrorResponse:
+      description: Error response from the API
+      type: object
+      example:
+        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Error response
+    UInt32:
       oneOf:
       - type: integer
         minimum: 0
-        maximum: 18446744073709552000
+        maximum: 4294967295
       - type: string
-  parameters:
-    ScopeParam:
-      in: query
-      name: scope
-      description: Scopes results in a generation range
-      schema:
-        type: string
-        pattern: (gen):\d+(-\d+)?
-    DirectionParam:
-      in: query
-      name: direction
-      description: Sorts results in forwards or backwards direction
-      schema:
-        type: string
-        enum:
-        - forward
-        - backward
-    LimitParam:
-      in: query
-      name: limit
-      description: Limit paginated resources (max 100)
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-        default: 10
+    ByteArray:
+      type: string
+      example: ba_wAAAAKv2ZV4=
+      pattern: ^ba_\w+$

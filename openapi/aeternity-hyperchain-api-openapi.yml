@@ -280,6 +280,19 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    Schedule:
+      description: Schedule information
+      type: object
+      properties:
+        height:
+          type: integer
+          example: 1
+        leader:
+          type: string
+          example: ak_1111111111111111111111111111111111111111111111111
+      required:
+      - height
+      - leader
     AccountAddress:
       description: Account address
       type: string
@@ -318,68 +331,6 @@ components:
       - delegates
       - rewards_earned
       - pinning_history
-    Delegate:
-      description: Delegate information
-      type: object
-      properties:
-        epoch:
-          type: integer
-          example: 1
-        delegate:
-          type: string
-          example: ak_1111111111111111111111111111111111111111111111111
-        stake:
-          type: integer
-          example: 1000000000000000000
-        validator:
-          type: string
-          example: ak_1111111111111111111111111111111111111111111111111
-      required:
-      - epoch
-      - delegate
-      - stake
-      - validator
-    Schedule:
-      description: Schedule information
-      type: object
-      properties:
-        height:
-          type: integer
-          example: 1
-        leader:
-          type: string
-          example: ak_1111111111111111111111111111111111111111111111111
-      required:
-      - height
-      - leader
-    ErrorResponse:
-      description: Error response from the API
-      type: object
-      example:
-        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
-      properties:
-        error:
-          description: The message of the error raised
-          type: string
-      required:
-      - error
-      title: Error response
-    PaginatedResponse:
-      type: object
-      properties:
-        next:
-          type:
-          - string
-          - 'null'
-          example: /blocks?cursor=123
-        prev:
-          type:
-          - string
-          - 'null'
-          example: /blocks?cursor=234
-      required:
-      - next
-      - prev
     EpochInfo:
       description: Epoch information
       type: object
@@ -433,23 +384,56 @@ components:
       - last_leader
       - epoch_start_time
       - validators
+    PaginatedResponse:
+      type: object
+      properties:
+        next:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=123
+        prev:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=234
+      required:
+      - next
+      - prev
+    ErrorResponse:
+      description: Error response from the API
+      type: object
+      example:
+        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Error response
+    Delegate:
+      description: Delegate information
+      type: object
+      properties:
+        epoch:
+          type: integer
+          example: 1
+        delegate:
+          type: string
+          example: ak_1111111111111111111111111111111111111111111111111
+        stake:
+          type: integer
+          example: 1000000000000000000
+        validator:
+          type: string
+          example: ak_1111111111111111111111111111111111111111111111111
+      required:
+      - epoch
+      - delegate
+      - stake
+      - validator
   parameters:
-    DirectionParam:
-      in: query
-      name: direction
-      description: Sorts results in forwards or backwards direction
-      schema:
-        type: string
-        enum:
-        - forward
-        - backward
-    HyperchainScopeParam:
-      in: query
-      name: scope
-      description: Scopes results in a hyperchain epoch range
-      schema:
-        type: string
-        pattern: (epoch):\d+(-\d+)?
     LimitParam:
       in: query
       name: limit
@@ -459,3 +443,19 @@ components:
         minimum: 1
         maximum: 100
         default: 10
+    HyperchainScopeParam:
+      in: query
+      name: scope
+      description: Scopes results in a hyperchain epoch range
+      schema:
+        type: string
+        pattern: (epoch):\d+(-\d+)?
+    DirectionParam:
+      in: query
+      name: direction
+      description: Sorts results in forwards or backwards direction
+      schema:
+        type: string
+        enum:
+        - forward
+        - backward

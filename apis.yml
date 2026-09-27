@@ -27,12 +27,13 @@ tags:
 - Cryptocurrency
 - Web3
 - Distributed Ledger
-- Open-Source
+- Open Source
 - GraphQL
 - State Channels
 - Oracle
 - Naming System
 - Developer Tools
+- Real-Time
 tags_raw:
 - blockchain
 - layer-1
@@ -46,6 +47,8 @@ tags_raw:
 - oracles
 - naming-system
 - developer-tools
+- Open-Source
+- Real-Time
 apis:
 - name: Aeternity MCP Server
   description: >-
@@ -68,6 +71,9 @@ apis:
     url: mcp/aeternity-mcp.yml
   - type: ToolCrosswalk
     url: mcp/aeternity-tool-crosswalk.yml
+  x-surface: platform-generated
+  x-platform: wordpress
+  x-platform-surface: mcp-plugin
 - aid: aeternity:aeternity-accounts-api
   name: Aeternity Accounts API
   description: The Accounts API from Aeternity — 7 operation(s) for accounts.

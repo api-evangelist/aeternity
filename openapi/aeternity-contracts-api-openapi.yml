@@ -194,91 +194,11 @@ components:
       - response_ttl
       - fee
       - oracle_id
-    ErrorResponse:
-      description: Error response from the API
-      type: object
-      example:
-        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
-      properties:
-        error:
-          description: The message of the error raised
-          type: string
-      required:
-      - error
-      title: Error response
-    NameTransferTx:
-      type: object
-      properties:
-        name_id:
-          $ref: '#/components/schemas/EncodedNameId'
-        recipient_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        account_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-      required:
-      - name_id
-      - recipient_id
-      - fee
-      - account_id
-    OracleExtendTx:
-      type: object
-      properties:
-        fee:
-          $ref: '#/components/schemas/UInt'
-        oracle_ttl:
-          $ref: '#/components/schemas/RelativeTTL'
-        oracle_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-      required:
-      - fee
-      - oracle_ttl
-      - oracle_id
-    NamePreclaimTx:
-      type: object
-      properties:
-        commitment_id:
-          $ref: '#/components/schemas/EncodedCommitmentId'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        account_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-      required:
-      - commitment_id
-      - fee
-      - account_id
-    EncodedOracleQueryId:
-      description: Base58Check encoded oracle query id
+    EncodedNameId:
+      description: Base58Check encoded AENS name hash
       type: string
-      example: oq_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
-      pattern: ^oq_\w+$
-    ContractInternalTx:
-      description: Contract internal transaction
-      type: object
-      oneOf:
-      - $ref: '#/components/schemas/ContractCreateTx'
-      - $ref: '#/components/schemas/NameClaimTx'
-      - $ref: '#/components/schemas/NamePreclaimTx'
-      - $ref: '#/components/schemas/NameUpdateTx'
-      - $ref: '#/components/schemas/NameTransferTx'
-      - $ref: '#/components/schemas/OracleExtendTx'
-      - $ref: '#/components/schemas/OracleQueryTx'
-      - $ref: '#/components/schemas/OracleRegisterTx'
-      - $ref: '#/components/schemas/OracleRespondTx'
-      - $ref: '#/components/schemas/SpendTx'
+      example: nm_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^nm_\w+$
     ContractCall:
       description: ContractCall
       type: object
@@ -332,43 +252,31 @@ components:
         micro_index:
           type: integer
           example: 2
-    EncodedNameId:
-      description: Base58Check encoded AENS name hash
+    EncodedByteArray:
+      description: Base64Check encoded byte array
       type: string
-      example: nm_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
-      pattern: ^nm_\w+$
-    TransactionHash:
-      description: Transaction hash
-      type: string
-      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
-      pattern: ^th_\w{38,50}$
-    MicroBlockHash:
-      description: Micro block hash
-      type: string
-      example: mh_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
-      pattern: ^mh_\w{38,50}$
+      example: ba_AAAAAfy4hFE=
+      pattern: ^ba_[0-9A-Za-z+/=]+$
     SpendTx:
       allOf:
       - $ref: '#/components/schemas/SpendTxInput'
       - required:
         - nonce
-    ContractAddress:
-      description: Contract address
+    EncodedContractByteArray:
+      description: Base64Check encoded contract byte array
       type: string
-      example: ct_2t7TnocFw7oCYSS7g2yGutZMpGEJta6dq2DTX38SmuqmwtN6Ch
-      pattern: ^ct_\w{38,50}$
-    NotFoundResponse:
-      description: Resource not found on the API
-      type: object
-      example:
-        error: 'not found: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
-      properties:
-        error:
-          description: The message of the error raised
-          type: string
-      required:
-      - error
-      title: Not found response
+      example: cb_AAAAAfy4hFE=
+      pattern: ^cb_[0-9A-Za-z+/=]+$
+    EncodedOracleQueryId:
+      description: Base58Check encoded oracle query id
+      type: string
+      example: oq_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^oq_\w+$
+    EncodedCommitmentId:
+      description: Base58Check encoded AENS commitment
+      type: string
+      example: cm_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^cm_\w+$
     TTL:
       type: object
       properties:
@@ -382,110 +290,68 @@ components:
       required:
       - type
       - value
-    GAAttachTx:
+    ContractAddress:
+      description: Contract address
+      type: string
+      example: ct_2t7TnocFw7oCYSS7g2yGutZMpGEJta6dq2DTX38SmuqmwtN6Ch
+      pattern: ^ct_\w{38,50}$
+    EncodedPubkey:
+      description: Base58Check encoded tagged pubkey
+      type: string
+    NameTransferTx:
       type: object
       properties:
-        owner_id:
+        name_id:
+          $ref: '#/components/schemas/EncodedNameId'
+        recipient_id:
           $ref: '#/components/schemas/EncodedPubkey'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-        code:
-          $ref: '#/components/schemas/EncodedContractByteArray'
-        vm_version:
-          $ref: '#/components/schemas/UInt16'
-        abi_version:
-          $ref: '#/components/schemas/UInt16'
-        gas:
-          $ref: '#/components/schemas/UInt64'
-        gas_price:
-          $ref: '#/components/schemas/UInt'
         fee:
           $ref: '#/components/schemas/UInt'
         ttl:
           $ref: '#/components/schemas/UInt64'
-        call_data:
-          $ref: '#/components/schemas/EncodedContractByteArray'
-        auth_fun:
-          description: Contract authorization function hash (hex encoded)
+        account_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - name_id
+      - recipient_id
+      - fee
+      - account_id
+    RelativeTTL:
+      type: object
+      properties:
+        type:
           type: string
-          pattern: ^(0x|0X)?[a-fA-F0-9]+$
+          enum:
+          - delta
+        value:
+          $ref: '#/components/schemas/UInt64'
       required:
-      - owner_id
-      - code
-      - vm_version
-      - abi_version
-      - gas
-      - gas_price
-      - fee
-      - call_data
-      - auth_fun
-    ContractCreateTx:
+      - type
+      - value
+    NameClaimTx:
       type: object
       properties:
-        owner_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-        code:
-          $ref: '#/components/schemas/EncodedContractByteArray'
-        vm_version:
-          $ref: '#/components/schemas/UInt16'
-        abi_version:
-          $ref: '#/components/schemas/UInt16'
-        deposit:
-          $ref: '#/components/schemas/UInt'
-        amount:
-          $ref: '#/components/schemas/UInt'
-        gas:
-          $ref: '#/components/schemas/UInt64'
-        gas_price:
-          $ref: '#/components/schemas/UInt'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        call_data:
-          $ref: '#/components/schemas/EncodedContractByteArray'
-      required:
-      - owner_id
-      - code
-      - vm_version
-      - abi_version
-      - deposit
-      - amount
-      - gas
-      - gas_price
-      - fee
-      - call_data
-    OracleQueryTx:
-      type: object
-      properties:
-        oracle_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        query:
+        name:
           type: string
-        query_fee:
+        name_salt:
           $ref: '#/components/schemas/UInt'
-        query_ttl:
-          $ref: '#/components/schemas/TTL'
-        response_ttl:
-          $ref: '#/components/schemas/RelativeTTL'
+        name_fee:
+          $ref: '#/components/schemas/UInt'
         fee:
           $ref: '#/components/schemas/UInt'
         ttl:
           $ref: '#/components/schemas/UInt64'
-        sender_id:
+        account_id:
           $ref: '#/components/schemas/EncodedPubkey'
         nonce:
           $ref: '#/components/schemas/UInt64'
       required:
-      - oracle_id
-      - query
-      - query_fee
-      - query_ttl
-      - response_ttl
+      - name
+      - name_salt
       - fee
-      - sender_id
+      - account_id
     ContractLog:
       description: ContractLog
       type: object
@@ -554,75 +420,35 @@ components:
           - integer
           - 'null'
           example: null
-    NameUpdateTx:
+    OracleQueryTx:
       type: object
       properties:
-        name_id:
-          $ref: '#/components/schemas/EncodedNameId'
-        name_ttl:
-          $ref: '#/components/schemas/UInt64'
-        pointers:
-          type: array
-          items:
-            $ref: '#/components/schemas/NamePointer'
-        client_ttl:
-          $ref: '#/components/schemas/UInt64'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        account_id:
+        oracle_id:
           $ref: '#/components/schemas/EncodedPubkey'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-      required:
-      - name_id
-      - name_ttl
-      - client_ttl
-      - pointers
-      - fee
-      - account_id
-    EncodedPubkey:
-      description: Base58Check encoded tagged pubkey
-      type: string
-    UInt:
-      oneOf:
-      - type: integer
-        minimum: 0
-      - type: string
-    EncodedContractByteArray:
-      description: Base64Check encoded contract byte array
-      type: string
-      example: cb_AAAAAfy4hFE=
-      pattern: ^cb_[0-9A-Za-z+/=]+$
-    UInt16:
-      oneOf:
-      - type: integer
-        minimum: 0
-        maximum: 65535
-      - type: string
-    NameClaimTx:
-      type: object
-      properties:
-        name:
+        query:
           type: string
-        name_salt:
+        query_fee:
           $ref: '#/components/schemas/UInt'
-        name_fee:
-          $ref: '#/components/schemas/UInt'
+        query_ttl:
+          $ref: '#/components/schemas/TTL'
+        response_ttl:
+          $ref: '#/components/schemas/RelativeTTL'
         fee:
           $ref: '#/components/schemas/UInt'
         ttl:
           $ref: '#/components/schemas/UInt64'
-        account_id:
+        sender_id:
           $ref: '#/components/schemas/EncodedPubkey'
         nonce:
           $ref: '#/components/schemas/UInt64'
       required:
-      - name
-      - name_salt
+      - oracle_id
+      - query
+      - query_fee
+      - query_ttl
+      - response_ttl
       - fee
-      - account_id
+      - sender_id
     Contract:
       description: Contract creation info
       type: object
@@ -670,23 +496,99 @@ components:
             owner_id: ak_7wqP18AHzyoqymwGaqQp8G2UpzBCggYiq7CZdJiB71VUsLpR4
             ttl: 0
             vm_version: 5
-    RelativeTTL:
+    NamePreclaimTx:
       type: object
       properties:
-        type:
-          type: string
-          enum:
-          - delta
-        value:
+        commitment_id:
+          $ref: '#/components/schemas/EncodedCommitmentId'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        account_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
           $ref: '#/components/schemas/UInt64'
       required:
-      - type
-      - value
-    EncodedByteArray:
-      description: Base64Check encoded byte array
+      - commitment_id
+      - fee
+      - account_id
+    UInt16:
+      oneOf:
+      - type: integer
+        minimum: 0
+        maximum: 65535
+      - type: string
+    MicroBlockHash:
+      description: Micro block hash
       type: string
-      example: ba_AAAAAfy4hFE=
-      pattern: ^ba_[0-9A-Za-z+/=]+$
+      example: mh_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^mh_\w{38,50}$
+    GAAttachTx:
+      type: object
+      properties:
+        owner_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        code:
+          $ref: '#/components/schemas/EncodedContractByteArray'
+        vm_version:
+          $ref: '#/components/schemas/UInt16'
+        abi_version:
+          $ref: '#/components/schemas/UInt16'
+        gas:
+          $ref: '#/components/schemas/UInt64'
+        gas_price:
+          $ref: '#/components/schemas/UInt'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        call_data:
+          $ref: '#/components/schemas/EncodedContractByteArray'
+        auth_fun:
+          description: Contract authorization function hash (hex encoded)
+          type: string
+          pattern: ^(0x|0X)?[a-fA-F0-9]+$
+      required:
+      - owner_id
+      - code
+      - vm_version
+      - abi_version
+      - gas
+      - gas_price
+      - fee
+      - call_data
+      - auth_fun
+    NameUpdateTx:
+      type: object
+      properties:
+        name_id:
+          $ref: '#/components/schemas/EncodedNameId'
+        name_ttl:
+          $ref: '#/components/schemas/UInt64'
+        pointers:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamePointer'
+        client_ttl:
+          $ref: '#/components/schemas/UInt64'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        account_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - name_id
+      - name_ttl
+      - client_ttl
+      - pointers
+      - fee
+      - account_id
     OracleRegisterTx:
       type: object
       properties:
@@ -715,28 +617,23 @@ components:
       - fee
       - oracle_ttl
       - account_id
-    UInt64:
-      oneOf:
-      - type: integer
-        minimum: 0
-        maximum: 18446744073709552000
-      - type: string
-    PaginatedResponse:
+    OracleExtendTx:
       type: object
       properties:
-        next:
-          type:
-          - string
-          - 'null'
-          example: /blocks?cursor=123
-        prev:
-          type:
-          - string
-          - 'null'
-          example: /blocks?cursor=234
+        fee:
+          $ref: '#/components/schemas/UInt'
+        oracle_ttl:
+          $ref: '#/components/schemas/RelativeTTL'
+        oracle_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
       required:
-      - next
-      - prev
+      - fee
+      - oracle_ttl
+      - oracle_id
     SpendTxInput:
       type: object
       properties:
@@ -760,11 +657,114 @@ components:
       - fee
       - sender_id
       - payload
-    EncodedCommitmentId:
-      description: Base58Check encoded AENS commitment
+    UInt64:
+      oneOf:
+      - type: integer
+        minimum: 0
+        maximum: 18446744073709552000
+      - type: string
+    NotFoundResponse:
+      description: Resource not found on the API
+      type: object
+      example:
+        error: 'not found: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Not found response
+    TransactionHash:
+      description: Transaction hash
       type: string
-      example: cm_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
-      pattern: ^cm_\w+$
+      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^th_\w{38,50}$
+    UInt:
+      oneOf:
+      - type: integer
+        minimum: 0
+      - type: string
+    ContractInternalTx:
+      description: Contract internal transaction
+      type: object
+      oneOf:
+      - $ref: '#/components/schemas/ContractCreateTx'
+      - $ref: '#/components/schemas/NameClaimTx'
+      - $ref: '#/components/schemas/NamePreclaimTx'
+      - $ref: '#/components/schemas/NameUpdateTx'
+      - $ref: '#/components/schemas/NameTransferTx'
+      - $ref: '#/components/schemas/OracleExtendTx'
+      - $ref: '#/components/schemas/OracleQueryTx'
+      - $ref: '#/components/schemas/OracleRegisterTx'
+      - $ref: '#/components/schemas/OracleRespondTx'
+      - $ref: '#/components/schemas/SpendTx'
+    PaginatedResponse:
+      type: object
+      properties:
+        next:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=123
+        prev:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=234
+      required:
+      - next
+      - prev
+    ErrorResponse:
+      description: Error response from the API
+      type: object
+      example:
+        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Error response
+    ContractCreateTx:
+      type: object
+      properties:
+        owner_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        code:
+          $ref: '#/components/schemas/EncodedContractByteArray'
+        vm_version:
+          $ref: '#/components/schemas/UInt16'
+        abi_version:
+          $ref: '#/components/schemas/UInt16'
+        deposit:
+          $ref: '#/components/schemas/UInt'
+        amount:
+          $ref: '#/components/schemas/UInt'
+        gas:
+          $ref: '#/components/schemas/UInt64'
+        gas_price:
+          $ref: '#/components/schemas/UInt'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        call_data:
+          $ref: '#/components/schemas/EncodedContractByteArray'
+      required:
+      - owner_id
+      - code
+      - vm_version
+      - abi_version
+      - deposit
+      - amount
+      - gas
+      - gas_price
+      - fee
+      - call_data
   parameters:
     ScopeParam:
       in: query
@@ -773,15 +773,6 @@ components:
       schema:
         type: string
         pattern: (gen):\d+(-\d+)?
-    DirectionParam:
-      in: query
-      name: direction
-      description: Sorts results in forwards or backwards direction
-      schema:
-        type: string
-        enum:
-        - forward
-        - backward
     LimitParam:
       in: query
       name: limit
@@ -791,3 +782,12 @@ components:
         minimum: 1
         maximum: 100
         default: 10
+    DirectionParam:
+      in: query
+      name: direction
+      description: Sorts results in forwards or backwards direction
+      schema:
+        type: string
+        enum:
+        - forward
+        - backward

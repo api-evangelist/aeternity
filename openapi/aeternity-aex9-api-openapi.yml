@@ -296,54 +296,33 @@ paths:
       summary: Get aex9 by contract
       x-summary-source: derived
 components:
+  parameters:
+    ScopeParam:
+      in: query
+      name: scope
+      description: Scopes results in a generation range
+      schema:
+        type: string
+        pattern: (gen):\d+(-\d+)?
+    DirectionParam:
+      in: query
+      name: direction
+      description: Sorts results in forwards or backwards direction
+      schema:
+        type: string
+        enum:
+        - forward
+        - backward
+    LimitParam:
+      in: query
+      name: limit
+      description: Limit paginated resources (max 100)
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10
   schemas:
-    Aex9ContractBalanceResponse:
-      description: Response Schema for AEX9 contract balances responses
-      example:
-        account_id: ak_2MHJv6JcdcfpNvu4wRDZXWzq8QSxGbhUfhMLR7vUPzRFYsDFw6
-        amount: 4050000000000
-        contract_id: ct_RDRJC5EySx4TcLtGRWYrXfNgyWzEDzssThJYPd9kdLeS5ECaA
-        block_hash: kh_bkyFuxj3W9yY8Tmuiq3KSCVHaTP3vMzHt4pZ6y1QcQEzyAf5i
-        height: 618127
-        last_tx_hash: th_KTTTudTgSAZrHJQVwW4AF6XD1ksQbpyHXWfgmL2kSGvNk14CU,
-        last_log_idx: 1
-      properties:
-        account_id:
-          description: The wallet pubkey
-          $ref: '#/components/schemas/AccountAddress'
-        amount:
-          description: The balance amount
-          type: integer
-        block_hash:
-          description: The block hash, indicating a state of a balance for that block
-          type: integer
-        contract_id:
-          description: The contract id of given token
-          type: integer
-        height:
-          description: The block height, indicating a state of a balance for that block height
-          type: integer
-        last_tx_hash:
-          description: The hash of the last transaction that changed the balance
-          $ref: '#/components/schemas/TransactionHash'
-        last_log_idx:
-          description: The index of the event log that changed the balance
-          type: integer
-      required:
-      - account_id
-      - amount
-      - block_hash
-      - contract_id
-      - height
-      - last_tx_hash
-      - last_log_idx
-      title: Response for AEX-9 contract balances
-      type: object
-    TransactionHash:
-      description: Transaction hash
-      type: string
-      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
-      pattern: ^th_\w{38,50}$
     AccountAddress:
       description: Account address
       type: string
@@ -419,18 +398,53 @@ components:
       type: string
       example: ct_2t7TnocFw7oCYSS7g2yGutZMpGEJta6dq2DTX38SmuqmwtN6Ch
       pattern: ^ct_\w{38,50}$
-    ErrorResponse:
-      description: Error response from the API
-      type: object
+    TransactionHash:
+      description: Transaction hash
+      type: string
+      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^th_\w{38,50}$
+    Aex9ContractBalanceResponse:
+      description: Response Schema for AEX9 contract balances responses
       example:
-        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+        account_id: ak_2MHJv6JcdcfpNvu4wRDZXWzq8QSxGbhUfhMLR7vUPzRFYsDFw6
+        amount: 4050000000000
+        contract_id: ct_RDRJC5EySx4TcLtGRWYrXfNgyWzEDzssThJYPd9kdLeS5ECaA
+        block_hash: kh_bkyFuxj3W9yY8Tmuiq3KSCVHaTP3vMzHt4pZ6y1QcQEzyAf5i
+        height: 618127
+        last_tx_hash: th_KTTTudTgSAZrHJQVwW4AF6XD1ksQbpyHXWfgmL2kSGvNk14CU,
+        last_log_idx: 1
       properties:
-        error:
-          description: The message of the error raised
-          type: string
+        account_id:
+          description: The wallet pubkey
+          $ref: '#/components/schemas/AccountAddress'
+        amount:
+          description: The balance amount
+          type: integer
+        block_hash:
+          description: The block hash, indicating a state of a balance for that block
+          type: integer
+        contract_id:
+          description: The contract id of given token
+          type: integer
+        height:
+          description: The block height, indicating a state of a balance for that block height
+          type: integer
+        last_tx_hash:
+          description: The hash of the last transaction that changed the balance
+          $ref: '#/components/schemas/TransactionHash'
+        last_log_idx:
+          description: The index of the event log that changed the balance
+          type: integer
       required:
-      - error
-      title: Error response
+      - account_id
+      - amount
+      - block_hash
+      - contract_id
+      - height
+      - last_tx_hash
+      - last_log_idx
+      title: Response for AEX-9 contract balances
+      type: object
     PaginatedResponse:
       type: object
       properties:
@@ -447,29 +461,15 @@ components:
       required:
       - next
       - prev
-  parameters:
-    DirectionParam:
-      in: query
-      name: direction
-      description: Sorts results in forwards or backwards direction
-      schema:
-        type: string
-        enum:
-        - forward
-        - backward
-    LimitParam:
-      in: query
-      name: limit
-      description: Limit paginated resources (max 100)
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-        default: 10
-    ScopeParam:
-      in: query
-      name: scope
-      description: Scopes results in a generation range
-      schema:
-        type: string
-        pattern: (gen):\d+(-\d+)?
+    ErrorResponse:
+      description: Error response from the API
+      type: object
+      example:
+        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Error response

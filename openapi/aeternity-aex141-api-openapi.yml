@@ -315,53 +315,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    Aex141TemplatesResponse:
-      description: Response Schema for templates of a AEX-141 contract
-      example:
-        contract_id: ct_2oq4kSd4j1VkkbupueXLdHwYEJdY8Ntzvp1FFkMB1gYyXkYPcV
-        edition:
-          limit: 2
-          limit_log_idx: 0
-          limit_tx_hash: th_KTTTudTgSAZrHJQVwW4AF6XD1ksQbpyHXWfgmL2kSGvNk14CU
-          supply: 1
-          supply_log_idx: 0
-          supply_tx_hash: th_erpNZJTuvRfKPafcRvkJ7ddCu9GBSQoY12QVs5pdCTm6eCDwr
-        log_idx: 0
-        template_id: 1
-        tx_hash: th_ojhH9bD7kGRpgZ6rXob2qi5asBKsYTdbSVaKzGdpfP6wiRxz4
-      properties:
-        contract_id:
-          description: NFT contract id
-          $ref: '#/components/schemas/ContractAddress'
-        edition:
-          description: Template edition details
-          type: object
-        log_idx:
-          description: Log index of the TemplateCreation
-          type: integer
-        template_id:
-          description: Template id of AEX-141 tokens
-          type: integer
-        tx_hash:
-          description: Transaction hash of the TemplateCreation
-          $ref: '#/components/schemas/TransactionHash'
-      required:
-      - contract_id
-      - log_idx
-      - template_id
-      - tx_hash
-      title: Aex141TemplatesResponse
-      type: object
-    TransactionHash:
-      description: Transaction hash
-      type: string
-      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
-      pattern: ^th_\w{38,50}$
-    AccountAddress:
-      description: Account address
-      type: string
-      example: ak_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
-      pattern: ^ak_\w{38,50}$
     Aex141TransferEvent:
       description: AEx141 Transfer
       type: object
@@ -399,6 +352,90 @@ components:
           example: 1
         tx_hash:
           $ref: '#/components/schemas/TransactionHash'
+    AccountAddress:
+      description: Account address
+      type: string
+      example: ak_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^ak_\w{38,50}$
+    ContractAddress:
+      description: Contract address
+      type: string
+      example: ct_2t7TnocFw7oCYSS7g2yGutZMpGEJta6dq2DTX38SmuqmwtN6Ch
+      pattern: ^ct_\w{38,50}$
+    TransactionHash:
+      description: Transaction hash
+      type: string
+      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^th_\w{38,50}$
+    Aex141TokenDetailResponse:
+      description: Response schema for AEX-141 token detail
+      example:
+        contract_id: ct_2oq4kSd4j1VkkbupueXLdHwYEJdY8Ntzvp1FFkMB1gYyXkYPcV
+        owner_id: ak_vTGaRAuGXPLhvNexrbzmHJ2MDv9JS2Ky7u2v469o6weaZ2Cgw
+        token_id: 1
+        metadata:
+          map:
+            description: CC
+            media_type: IMAGE
+            media_url: https://www.tierfreund.de/wp-content/uploads/2016/09/1.jpg
+            minted: '1670241975288'
+            name: test
+      properties:
+        contract_id:
+          description: NFT contract id
+          $ref: '#/components/schemas/ContractAddress'
+        owner_id:
+          $ref: '#/components/schemas/AccountAddress'
+        token_id:
+          description: Non-fungible token id
+          type: integer
+        metadata:
+          description: The metadata associated to this NFT
+          type: object
+      required:
+      - contract_id
+      - owner_id
+      - token_id
+      - metadata
+      title: Aex141OwnedTokenResponse
+      type: object
+    Aex141TemplatesResponse:
+      description: Response Schema for templates of a AEX-141 contract
+      example:
+        contract_id: ct_2oq4kSd4j1VkkbupueXLdHwYEJdY8Ntzvp1FFkMB1gYyXkYPcV
+        edition:
+          limit: 2
+          limit_log_idx: 0
+          limit_tx_hash: th_KTTTudTgSAZrHJQVwW4AF6XD1ksQbpyHXWfgmL2kSGvNk14CU
+          supply: 1
+          supply_log_idx: 0
+          supply_tx_hash: th_erpNZJTuvRfKPafcRvkJ7ddCu9GBSQoY12QVs5pdCTm6eCDwr
+        log_idx: 0
+        template_id: 1
+        tx_hash: th_ojhH9bD7kGRpgZ6rXob2qi5asBKsYTdbSVaKzGdpfP6wiRxz4
+      properties:
+        contract_id:
+          description: NFT contract id
+          $ref: '#/components/schemas/ContractAddress'
+        edition:
+          description: Template edition details
+          type: object
+        log_idx:
+          description: Log index of the TemplateCreation
+          type: integer
+        template_id:
+          description: Template id of AEX-141 tokens
+          type: integer
+        tx_hash:
+          description: Transaction hash of the TemplateCreation
+          $ref: '#/components/schemas/TransactionHash'
+      required:
+      - contract_id
+      - log_idx
+      - template_id
+      - tx_hash
+      title: Aex141TemplatesResponse
+      type: object
     Aex141TokenResponse:
       description: Response Schema for owners of AEX-141 tokens
       example:
@@ -420,6 +457,61 @@ components:
       - token_id
       title: Aex141OwnedTokenResponse
       type: object
+    Aex141TemplateTokensResponse:
+      description: Response Schema for template tokens of a AEX-141 contract
+      example:
+        log_idx: 0
+        owner_id: ak_8Ujt76QfpT1DyYsNZKGPGtMZ2C2MFf7CcnpQvJWNsX6szZkYN
+        token_id: 29
+        tx_hash: th_ZzPmumNtkYCfrGpVGtQP6em9hgkWQqstddB5ynagrJJa7ua9c
+      properties:
+        owner_id:
+          description: Owner wallet address
+          $ref: '#/components/schemas/AccountAddress'
+        log_idx:
+          description: Mint event index
+          type: integer
+        token_id:
+          description: NFT id
+          type: integer
+        tx_hash:
+          description: Mint transaction hash
+          $ref: '#/components/schemas/TransactionHash'
+      required:
+      - log_idx
+      - owner_id
+      - token_id
+      - tx_hash
+      title: Aex141TemplatesResponse
+      type: object
+    PaginatedResponse:
+      type: object
+      properties:
+        next:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=123
+        prev:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=234
+      required:
+      - next
+      - prev
+    ErrorResponse:
+      description: Error response from the API
+      type: object
+      example:
+        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Error response
     Aex141Response:
       description: Response Schema for AEX141 contract
       example:
@@ -486,98 +578,6 @@ components:
       - creation_time
       - block_height
       title: Aex141Response
-      type: object
-    ContractAddress:
-      description: Contract address
-      type: string
-      example: ct_2t7TnocFw7oCYSS7g2yGutZMpGEJta6dq2DTX38SmuqmwtN6Ch
-      pattern: ^ct_\w{38,50}$
-    ErrorResponse:
-      description: Error response from the API
-      type: object
-      example:
-        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
-      properties:
-        error:
-          description: The message of the error raised
-          type: string
-      required:
-      - error
-      title: Error response
-    PaginatedResponse:
-      type: object
-      properties:
-        next:
-          type:
-          - string
-          - 'null'
-          example: /blocks?cursor=123
-        prev:
-          type:
-          - string
-          - 'null'
-          example: /blocks?cursor=234
-      required:
-      - next
-      - prev
-    Aex141TemplateTokensResponse:
-      description: Response Schema for template tokens of a AEX-141 contract
-      example:
-        log_idx: 0
-        owner_id: ak_8Ujt76QfpT1DyYsNZKGPGtMZ2C2MFf7CcnpQvJWNsX6szZkYN
-        token_id: 29
-        tx_hash: th_ZzPmumNtkYCfrGpVGtQP6em9hgkWQqstddB5ynagrJJa7ua9c
-      properties:
-        owner_id:
-          description: Owner wallet address
-          $ref: '#/components/schemas/AccountAddress'
-        log_idx:
-          description: Mint event index
-          type: integer
-        token_id:
-          description: NFT id
-          type: integer
-        tx_hash:
-          description: Mint transaction hash
-          $ref: '#/components/schemas/TransactionHash'
-      required:
-      - log_idx
-      - owner_id
-      - token_id
-      - tx_hash
-      title: Aex141TemplatesResponse
-      type: object
-    Aex141TokenDetailResponse:
-      description: Response schema for AEX-141 token detail
-      example:
-        contract_id: ct_2oq4kSd4j1VkkbupueXLdHwYEJdY8Ntzvp1FFkMB1gYyXkYPcV
-        owner_id: ak_vTGaRAuGXPLhvNexrbzmHJ2MDv9JS2Ky7u2v469o6weaZ2Cgw
-        token_id: 1
-        metadata:
-          map:
-            description: CC
-            media_type: IMAGE
-            media_url: https://www.tierfreund.de/wp-content/uploads/2016/09/1.jpg
-            minted: '1670241975288'
-            name: test
-      properties:
-        contract_id:
-          description: NFT contract id
-          $ref: '#/components/schemas/ContractAddress'
-        owner_id:
-          $ref: '#/components/schemas/AccountAddress'
-        token_id:
-          description: Non-fungible token id
-          type: integer
-        metadata:
-          description: The metadata associated to this NFT
-          type: object
-      required:
-      - contract_id
-      - owner_id
-      - token_id
-      - metadata
-      title: Aex141OwnedTokenResponse
       type: object
   parameters:
     DirectionParam:

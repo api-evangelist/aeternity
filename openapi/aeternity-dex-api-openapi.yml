@@ -85,16 +85,21 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    TransactionHash:
-      description: Transaction hash
-      type: string
-      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
-      pattern: ^th_\w{38,50}$
     AccountAddress:
       description: Account address
       type: string
       example: ak_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
       pattern: ^ak_\w{38,50}$
+    ContractAddress:
+      description: Contract address
+      type: string
+      example: ct_2t7TnocFw7oCYSS7g2yGutZMpGEJta6dq2DTX38SmuqmwtN6Ch
+      pattern: ^ct_\w{38,50}$
+    TransactionHash:
+      description: Transaction hash
+      type: string
+      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^th_\w{38,50}$
     DexSwap:
       description: DEX swap
       type: object
@@ -180,23 +185,6 @@ components:
       - to_decimals
       - micro_time
       - height
-    ContractAddress:
-      description: Contract address
-      type: string
-      example: ct_2t7TnocFw7oCYSS7g2yGutZMpGEJta6dq2DTX38SmuqmwtN6Ch
-      pattern: ^ct_\w{38,50}$
-    ErrorResponse:
-      description: Error response from the API
-      type: object
-      example:
-        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
-      properties:
-        error:
-          description: The message of the error raised
-          type: string
-      required:
-      - error
-      title: Error response
     PaginatedResponse:
       type: object
       properties:
@@ -213,6 +201,18 @@ components:
       required:
       - next
       - prev
+    ErrorResponse:
+      description: Error response from the API
+      type: object
+      example:
+        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Error response
   parameters:
     DirectionParam:
       in: query
