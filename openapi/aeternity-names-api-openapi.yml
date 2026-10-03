@@ -380,219 +380,33 @@ paths:
       summary: Get name updates
       x-summary-source: derived
 components:
+  parameters:
+    ScopeParam:
+      in: query
+      name: scope
+      description: Scopes results in a generation range
+      schema:
+        type: string
+        pattern: (gen):\d+(-\d+)?
+    DirectionParam:
+      in: query
+      name: direction
+      description: Sorts results in forwards or backwards direction
+      schema:
+        type: string
+        enum:
+        - forward
+        - backward
+    LimitParam:
+      in: query
+      name: limit
+      description: Limit paginated resources (max 100)
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10
   schemas:
-    TransactionEncoded:
-      description: Encoded transaction
-      type: string
-      example: tx_+E8hAaEB4TK48d23oE5jt/qWR5pUu8UlpTGn8bwM5JISGQMGf7ABoQOvDVCf43V7alNbsUvTarXaCf7rjtWX36YLS4+JTa4jn4YPHaUyOAAAxRZ6Sg==
-      pattern: ^tx_\w+$
-    NamePointer:
-      type: object
-      properties:
-        key:
-          type: string
-        encoded_key:
-          $ref: '#/components/schemas/EncodedByteArray'
-        id:
-          $ref: '#/components/schemas/EncodedPubkey'
-      required:
-      - key
-      - id
-    AccountAddress:
-      description: Account address
-      type: string
-      example: ak_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
-      pattern: ^ak_\w{38,50}$
-    EncodedNameId:
-      description: Base58Check encoded AENS name hash
-      type: string
-      example: nm_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
-      pattern: ^nm_\w+$
-    Signature:
-      description: Signature
-      type: string
-      example: sg_8hhU15cVMbukFj4FbdrFwwYnbzXYPnstu9PDnWZGbfQNpeHcB6tK1F3wvG1MPYySARgDRJYUh3YPJD3HctFwg6Y4rUGSR
-      pattern: ^sg_\w+$
-    EncodedByteArray:
-      description: Base64Check encoded byte array
-      type: string
-      example: ba_AAAAAfy4hFE=
-      pattern: ^ba_[0-9A-Za-z+/=]+$
-    EncodedContractByteArray:
-      description: Base64Check encoded contract byte array
-      type: string
-      example: cb_AAAAAfy4hFE=
-      pattern: ^cb_[0-9A-Za-z+/=]+$
-    NameClaim:
-      description: Name Claim
-      type: object
-      required:
-      - active_from
-      - source_tx_hash
-      - source_tx_type
-      - block_hash
-      - height
-      - tx
-      properties:
-        active_from:
-          type: integer
-          example: 163282
-        source_tx_hash:
-          $ref: '#/components/schemas/TransactionHash'
-        source_tx_type:
-          type: string
-          enum:
-          - NameClaimTx
-          - ContractCallTx
-          example: NameClaimTx
-        block_hash:
-          $ref: '#/components/schemas/MicroBlockHash'
-        height:
-          type: integer
-          example: 45784
-        tx:
-          oneOf:
-          - $ref: '#/components/schemas/NameClaimTx'
-          - $ref: '#/components/schemas/ContractCallTx'
-          example:
-            account_id: ak_2JJNMYcnqPaABiSY5omockmv4cCoZefv4XzStAxKe9gM2xYz2r
-            fee: 16540000000000
-            name: 1996.chain
-            name_fee: 134626900000000000000
-            name_salt: 7095609104934055
-            nonce: 225
-            ttl: 818002
-        internal_source:
-          type: boolean
-    EncodedPubkey:
-      description: Base58Check encoded tagged pubkey
-      type: string
-    NameTransfer:
-      description: Name Transfer
-      type: object
-      required:
-      - active_from
-      - block_hash
-      - height
-      - source_tx_hash
-      - source_tx_type
-      - tx
-      properties:
-        active_from:
-          type: integer
-          example: 163282
-        block_hash:
-          $ref: '#/components/schemas/MicroBlockHash'
-        height:
-          type: integer
-          example: 45784
-        source_tx_hash:
-          $ref: '#/components/schemas/TransactionHash'
-        source_tx_type:
-          type: string
-          enum:
-          - NameTransferTx
-          - ContractCallTx
-          example: NameTransferTx
-        tx:
-          oneOf:
-          - $ref: '#/components/schemas/NameTransferTx'
-          - $ref: '#/components/schemas/ContractCallTx'
-          example:
-            account_id: ak_24jcHLTZQfsou7NvomRJ1hKEnjyNqbYSq2Az7DmyrAyUHPq8uR
-            fee: 30000
-            name_id: nm_en1mSKcVPb9gY8UGxPfABw3JouEGZ4ZvdfcBWetmn6czUuVG1
-            nonce: 18550
-            recipient_id: ak_2WZoa13VKHCamt2zL9Wid8ovmyvTEUzqBjDNGDNwuqwUQJZG4t
-            ttl: 42420
-        internal_source:
-          type: boolean
-    NameTransferTx:
-      type: object
-      properties:
-        name_id:
-          $ref: '#/components/schemas/EncodedNameId'
-        recipient_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        account_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-      required:
-      - name_id
-      - recipient_id
-      - fee
-      - account_id
-    NameClaimTx:
-      type: object
-      properties:
-        name:
-          type: string
-        name_salt:
-          $ref: '#/components/schemas/UInt'
-        name_fee:
-          $ref: '#/components/schemas/UInt'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        account_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-      required:
-      - name
-      - name_salt
-      - fee
-      - account_id
-    UInt16:
-      oneOf:
-      - type: integer
-        minimum: 0
-        maximum: 65535
-      - type: string
-    MicroBlockHash:
-      description: Micro block hash
-      type: string
-      example: mh_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
-      pattern: ^mh_\w{38,50}$
-    NameString:
-      description: AENS name
-      type: string
-      example: trustwallet.chain
-      pattern: ^\w+\.chain$
-    NameUpdateTx:
-      type: object
-      properties:
-        name_id:
-          $ref: '#/components/schemas/EncodedNameId'
-        name_ttl:
-          $ref: '#/components/schemas/UInt64'
-        pointers:
-          type: array
-          items:
-            $ref: '#/components/schemas/NamePointer'
-        client_ttl:
-          $ref: '#/components/schemas/UInt64'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        account_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-      required:
-      - name_id
-      - name_ttl
-      - client_ttl
-      - pointers
-      - fee
-      - account_id
     NameUpdate:
       description: Name Update
       type: object
@@ -637,11 +451,54 @@ components:
             ttl: 60000
         internal_source:
           type: boolean
-    NameHash:
-      description: AENS name hash
-      type: string
-      example: nm_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
-      pattern: ^nm_\w{38,50}$
+    NameUpdateTx:
+      type: object
+      properties:
+        name_id:
+          $ref: '#/components/schemas/EncodedNameId'
+        name_ttl:
+          $ref: '#/components/schemas/UInt64'
+        pointers:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamePointer'
+        client_ttl:
+          $ref: '#/components/schemas/UInt64'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        account_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - name_id
+      - name_ttl
+      - client_ttl
+      - pointers
+      - fee
+      - account_id
+    NameTransferTx:
+      type: object
+      properties:
+        name_id:
+          $ref: '#/components/schemas/EncodedNameId'
+        recipient_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        account_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - name_id
+      - recipient_id
+      - fee
+      - account_id
     ContractCallTx:
       type: object
       properties:
@@ -674,123 +531,11 @@ components:
       - gas
       - gas_price
       - call_data
-    UInt64:
-      oneOf:
-      - type: integer
-        minimum: 0
-        maximum: 18446744073709552000
-      - type: string
-    NotFoundResponse:
-      description: Resource not found on the API
-      type: object
-      example:
-        error: 'not found: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
-      properties:
-        error:
-          description: The message of the error raised
-          type: string
-      required:
-      - error
-      title: Not found response
-    TransactionHash:
-      description: Transaction hash
+    AccountAddress:
+      description: Account address
       type: string
-      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
-      pattern: ^th_\w{38,50}$
-    UInt:
-      oneOf:
-      - type: integer
-        minimum: 0
-      - type: string
-    Name:
-      description: Name
-      type: object
-      required:
-      - active
-      - hash
-      - active_from
-      - approximate_activation_time
-      - approximate_expire_time
-      - expire_height
-      - pointers
-      - auction
-      - auction_timeout
-      - ownership
-      - name
-      - name_fee
-      - revoke
-      properties:
-        active:
-          type: boolean
-          example: true
-        hash:
-          $ref: '#/components/schemas/NameHash'
-        active_from:
-          type: integer
-          example: 163282
-        approximate_activation_time:
-          type: integer
-          example: 1587577771376
-        approximate_expire_time:
-          type: integer
-          example: 1587577781376
-        expire_height:
-          type: integer
-          example: 362026
-        pointers:
-          type: array
-          items:
-            $ref: '#/components/schemas/NamePointer'
-        auction:
-          $ref: '#/components/schemas/Auction'
-        auction_timeout:
-          type: integer
-          example: 1088448
-        ownership:
-          type: object
-          properties:
-            current:
-              $ref: '#/components/schemas/AccountAddress'
-            original:
-              $ref: '#/components/schemas/AccountAddress'
-        name:
-          $ref: '#/components/schemas/NameString'
-        name_fee:
-          type: integer
-          example: 134626900000000000000
-        revoke:
-          $ref: '#/components/schemas/NameTx'
-        claims_count:
-          type: integer
-          example: 3
-    PaginatedResponse:
-      type: object
-      properties:
-        next:
-          type:
-          - string
-          - 'null'
-          example: /blocks?cursor=123
-        prev:
-          type:
-          - string
-          - 'null'
-          example: /blocks?cursor=234
-      required:
-      - next
-      - prev
-    ErrorResponse:
-      description: Error response from the API
-      type: object
-      example:
-        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
-      properties:
-        error:
-          description: The message of the error raised
-          type: string
-      required:
-      - error
-      title: Error response
+      example: ak_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^ak_\w{38,50}$
     NameTx:
       type:
       - object
@@ -923,29 +668,284 @@ components:
         claims_count:
           type: integer
           example: 3
-  parameters:
-    ScopeParam:
-      in: query
-      name: scope
-      description: Scopes results in a generation range
-      schema:
-        type: string
-        pattern: (gen):\d+(-\d+)?
-    LimitParam:
-      in: query
-      name: limit
-      description: Limit paginated resources (max 100)
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-        default: 10
-    DirectionParam:
-      in: query
-      name: direction
-      description: Sorts results in forwards or backwards direction
-      schema:
-        type: string
-        enum:
-        - forward
-        - backward
+    MicroBlockHash:
+      description: Micro block hash
+      type: string
+      example: mh_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^mh_\w{38,50}$
+    NameHash:
+      description: AENS name hash
+      type: string
+      example: nm_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^nm_\w{38,50}$
+    EncodedPubkey:
+      description: Base58Check encoded tagged pubkey
+      type: string
+    EncodedNameId:
+      description: Base58Check encoded AENS name hash
+      type: string
+      example: nm_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^nm_\w+$
+    UInt64:
+      oneOf:
+      - type: integer
+        minimum: 0
+        maximum: 18446744073709552000
+      - type: string
+    NotFoundResponse:
+      description: Resource not found on the API
+      type: object
+      example:
+        error: 'not found: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Not found response
+    UInt:
+      oneOf:
+      - type: integer
+        minimum: 0
+      - type: string
+    UInt16:
+      oneOf:
+      - type: integer
+        minimum: 0
+        maximum: 65535
+      - type: string
+    NameTransfer:
+      description: Name Transfer
+      type: object
+      required:
+      - active_from
+      - block_hash
+      - height
+      - source_tx_hash
+      - source_tx_type
+      - tx
+      properties:
+        active_from:
+          type: integer
+          example: 163282
+        block_hash:
+          $ref: '#/components/schemas/MicroBlockHash'
+        height:
+          type: integer
+          example: 45784
+        source_tx_hash:
+          $ref: '#/components/schemas/TransactionHash'
+        source_tx_type:
+          type: string
+          enum:
+          - NameTransferTx
+          - ContractCallTx
+          example: NameTransferTx
+        tx:
+          oneOf:
+          - $ref: '#/components/schemas/NameTransferTx'
+          - $ref: '#/components/schemas/ContractCallTx'
+          example:
+            account_id: ak_24jcHLTZQfsou7NvomRJ1hKEnjyNqbYSq2Az7DmyrAyUHPq8uR
+            fee: 30000
+            name_id: nm_en1mSKcVPb9gY8UGxPfABw3JouEGZ4ZvdfcBWetmn6czUuVG1
+            nonce: 18550
+            recipient_id: ak_2WZoa13VKHCamt2zL9Wid8ovmyvTEUzqBjDNGDNwuqwUQJZG4t
+            ttl: 42420
+        internal_source:
+          type: boolean
+    NameString:
+      description: AENS name
+      type: string
+      example: trustwallet.chain
+      pattern: ^\w+\.chain$
+    TransactionEncoded:
+      description: Encoded transaction
+      type: string
+      example: tx_+E8hAaEB4TK48d23oE5jt/qWR5pUu8UlpTGn8bwM5JISGQMGf7ABoQOvDVCf43V7alNbsUvTarXaCf7rjtWX36YLS4+JTa4jn4YPHaUyOAAAxRZ6Sg==
+      pattern: ^tx_\w+$
+    NameClaim:
+      description: Name Claim
+      type: object
+      required:
+      - active_from
+      - source_tx_hash
+      - source_tx_type
+      - block_hash
+      - height
+      - tx
+      properties:
+        active_from:
+          type: integer
+          example: 163282
+        source_tx_hash:
+          $ref: '#/components/schemas/TransactionHash'
+        source_tx_type:
+          type: string
+          enum:
+          - NameClaimTx
+          - ContractCallTx
+          example: NameClaimTx
+        block_hash:
+          $ref: '#/components/schemas/MicroBlockHash'
+        height:
+          type: integer
+          example: 45784
+        tx:
+          oneOf:
+          - $ref: '#/components/schemas/NameClaimTx'
+          - $ref: '#/components/schemas/ContractCallTx'
+          example:
+            account_id: ak_2JJNMYcnqPaABiSY5omockmv4cCoZefv4XzStAxKe9gM2xYz2r
+            fee: 16540000000000
+            name: 1996.chain
+            name_fee: 134626900000000000000
+            name_salt: 7095609104934055
+            nonce: 225
+            ttl: 818002
+        internal_source:
+          type: boolean
+    TransactionHash:
+      description: Transaction hash
+      type: string
+      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^th_\w{38,50}$
+    Name:
+      description: Name
+      type: object
+      required:
+      - active
+      - hash
+      - active_from
+      - approximate_activation_time
+      - approximate_expire_time
+      - expire_height
+      - pointers
+      - auction
+      - auction_timeout
+      - ownership
+      - name
+      - name_fee
+      - revoke
+      properties:
+        active:
+          type: boolean
+          example: true
+        hash:
+          $ref: '#/components/schemas/NameHash'
+        active_from:
+          type: integer
+          example: 163282
+        approximate_activation_time:
+          type: integer
+          example: 1587577771376
+        approximate_expire_time:
+          type: integer
+          example: 1587577781376
+        expire_height:
+          type: integer
+          example: 362026
+        pointers:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamePointer'
+        auction:
+          $ref: '#/components/schemas/Auction'
+        auction_timeout:
+          type: integer
+          example: 1088448
+        ownership:
+          type: object
+          properties:
+            current:
+              $ref: '#/components/schemas/AccountAddress'
+            original:
+              $ref: '#/components/schemas/AccountAddress'
+        name:
+          $ref: '#/components/schemas/NameString'
+        name_fee:
+          type: integer
+          example: 134626900000000000000
+        revoke:
+          $ref: '#/components/schemas/NameTx'
+        claims_count:
+          type: integer
+          example: 3
+    NamePointer:
+      type: object
+      properties:
+        key:
+          type: string
+        encoded_key:
+          $ref: '#/components/schemas/EncodedByteArray'
+        id:
+          $ref: '#/components/schemas/EncodedPubkey'
+      required:
+      - key
+      - id
+    EncodedByteArray:
+      description: Base64Check encoded byte array
+      type: string
+      example: ba_AAAAAfy4hFE=
+      pattern: ^ba_[0-9A-Za-z+/=]+$
+    PaginatedResponse:
+      type: object
+      properties:
+        next:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=123
+        prev:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=234
+      required:
+      - next
+      - prev
+    NameClaimTx:
+      type: object
+      properties:
+        name:
+          type: string
+        name_salt:
+          $ref: '#/components/schemas/UInt'
+        name_fee:
+          $ref: '#/components/schemas/UInt'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        account_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - name
+      - name_salt
+      - fee
+      - account_id
+    ErrorResponse:
+      description: Error response from the API
+      type: object
+      example:
+        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Error response
+    Signature:
+      description: Signature
+      type: string
+      example: sg_8hhU15cVMbukFj4FbdrFwwYnbzXYPnstu9PDnWZGbfQNpeHcB6tK1F3wvG1MPYySARgDRJYUh3YPJD3HctFwg6Y4rUGSR
+      pattern: ^sg_\w+$
+    EncodedContractByteArray:
+      description: Base64Check encoded contract byte array
+      type: string
+      example: cb_AAAAAfy4hFE=
+      pattern: ^cb_[0-9A-Za-z+/=]+$

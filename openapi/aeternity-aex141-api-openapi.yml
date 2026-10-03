@@ -315,53 +315,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    Aex141TransferEvent:
-      description: AEx141 Transfer
-      type: object
-      required:
-      - block_height
-      - contract_id
-      - log_idx
-      - micro_index
-      - micro_time
-      - recipient
-      - sender
-      - token_id
-      - tx_hash
-      properties:
-        block_height:
-          type: integer
-          example: 653289
-        contract_id:
-          $ref: '#/components/schemas/ContractAddress'
-        log_idx:
-          type: integer
-          example: 0
-        micro_index:
-          type: integer
-          example: 125
-        micro_time:
-          type: integer
-          example: 1662654259282
-        recipient:
-          $ref: '#/components/schemas/AccountAddress'
-        sender:
-          $ref: '#/components/schemas/AccountAddress'
-        token_id:
-          type: integer
-          example: 1
-        tx_hash:
-          $ref: '#/components/schemas/TransactionHash'
-    AccountAddress:
-      description: Account address
-      type: string
-      example: ak_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
-      pattern: ^ak_\w{38,50}$
-    ContractAddress:
-      description: Contract address
-      type: string
-      example: ct_2t7TnocFw7oCYSS7g2yGutZMpGEJta6dq2DTX38SmuqmwtN6Ch
-      pattern: ^ct_\w{38,50}$
     TransactionHash:
       description: Transaction hash
       type: string
@@ -397,6 +350,27 @@ components:
       - owner_id
       - token_id
       - metadata
+      title: Aex141OwnedTokenResponse
+      type: object
+    Aex141TokenResponse:
+      description: Response Schema for owners of AEX-141 tokens
+      example:
+        contract_id: ct_2oq4kSd4j1VkkbupueXLdHwYEJdY8Ntzvp1FFkMB1gYyXkYPcV
+        owner_id: ak_vTGaRAuGXPLhvNexrbzmHJ2MDv9JS2Ky7u2v469o6weaZ2Cgw
+        token_id: 1
+      properties:
+        contract_id:
+          description: NFT contract id
+          $ref: '#/components/schemas/ContractAddress'
+        owner_id:
+          $ref: '#/components/schemas/AccountAddress'
+        token_id:
+          description: Non-fungible token id
+          type: integer
+      required:
+      - contract_id
+      - account_id
+      - token_id
       title: Aex141OwnedTokenResponse
       type: object
     Aex141TemplatesResponse:
@@ -436,27 +410,59 @@ components:
       - tx_hash
       title: Aex141TemplatesResponse
       type: object
-    Aex141TokenResponse:
-      description: Response Schema for owners of AEX-141 tokens
-      example:
-        contract_id: ct_2oq4kSd4j1VkkbupueXLdHwYEJdY8Ntzvp1FFkMB1gYyXkYPcV
-        owner_id: ak_vTGaRAuGXPLhvNexrbzmHJ2MDv9JS2Ky7u2v469o6weaZ2Cgw
-        token_id: 1
+    PaginatedResponse:
+      type: object
       properties:
+        next:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=123
+        prev:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=234
+      required:
+      - next
+      - prev
+    Aex141TransferEvent:
+      description: AEx141 Transfer
+      type: object
+      required:
+      - block_height
+      - contract_id
+      - log_idx
+      - micro_index
+      - micro_time
+      - recipient
+      - sender
+      - token_id
+      - tx_hash
+      properties:
+        block_height:
+          type: integer
+          example: 653289
         contract_id:
-          description: NFT contract id
           $ref: '#/components/schemas/ContractAddress'
-        owner_id:
+        log_idx:
+          type: integer
+          example: 0
+        micro_index:
+          type: integer
+          example: 125
+        micro_time:
+          type: integer
+          example: 1662654259282
+        recipient:
+          $ref: '#/components/schemas/AccountAddress'
+        sender:
           $ref: '#/components/schemas/AccountAddress'
         token_id:
-          description: Non-fungible token id
           type: integer
-      required:
-      - contract_id
-      - account_id
-      - token_id
-      title: Aex141OwnedTokenResponse
-      type: object
+          example: 1
+        tx_hash:
+          $ref: '#/components/schemas/TransactionHash'
     Aex141TemplateTokensResponse:
       description: Response Schema for template tokens of a AEX-141 contract
       example:
@@ -484,34 +490,6 @@ components:
       - tx_hash
       title: Aex141TemplatesResponse
       type: object
-    PaginatedResponse:
-      type: object
-      properties:
-        next:
-          type:
-          - string
-          - 'null'
-          example: /blocks?cursor=123
-        prev:
-          type:
-          - string
-          - 'null'
-          example: /blocks?cursor=234
-      required:
-      - next
-      - prev
-    ErrorResponse:
-      description: Error response from the API
-      type: object
-      example:
-        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
-      properties:
-        error:
-          description: The message of the error raised
-          type: string
-      required:
-      - error
-      title: Error response
     Aex141Response:
       description: Response Schema for AEX141 contract
       example:
@@ -579,6 +557,28 @@ components:
       - block_height
       title: Aex141Response
       type: object
+    ErrorResponse:
+      description: Error response from the API
+      type: object
+      example:
+        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Error response
+    AccountAddress:
+      description: Account address
+      type: string
+      example: ak_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^ak_\w{38,50}$
+    ContractAddress:
+      description: Contract address
+      type: string
+      example: ct_2t7TnocFw7oCYSS7g2yGutZMpGEJta6dq2DTX38SmuqmwtN6Ch
+      pattern: ^ct_\w{38,50}$
   parameters:
     DirectionParam:
       in: query

@@ -47,43 +47,12 @@ paths:
       summary: Get transfers
       x-summary-source: derived
 components:
-  parameters:
-    ScopeParam:
-      in: query
-      name: scope
-      description: Scopes results in a generation range
-      schema:
-        type: string
-        pattern: (gen):\d+(-\d+)?
-    DirectionParam:
-      in: query
-      name: direction
-      description: Sorts results in forwards or backwards direction
-      schema:
-        type: string
-        enum:
-        - forward
-        - backward
-    LimitParam:
-      in: query
-      name: limit
-      description: Limit paginated resources (max 100)
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-        default: 10
   schemas:
-    AccountAddress:
-      description: Account address
+    TransactionHash:
+      description: Transaction hash
       type: string
-      example: ak_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
-      pattern: ^ak_\w{38,50}$
-    MicroBlockHash:
-      description: Micro block hash
-      type: string
-      example: mh_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
-      pattern: ^mh_\w{38,50}$
+      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^th_\w{38,50}$
     Transfer:
       type: object
       required:
@@ -114,21 +83,6 @@ components:
           $ref: '#/components/schemas/TransactionHash'
         ref_tx_type:
           $ref: '#/components/schemas/TransferRefTxType'
-    TransferRefTxType:
-      type:
-      - string
-      - 'null'
-      example: OracleQueryTx
-      enum:
-      - ContractCallTx
-      - NameClaimTx
-      - OracleQueryTx
-      - null
-    TransactionHash:
-      description: Transaction hash
-      type: string
-      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
-      pattern: ^th_\w{38,50}$
     PaginatedResponse:
       type: object
       properties:
@@ -145,6 +99,16 @@ components:
       required:
       - next
       - prev
+    TransferRefTxType:
+      type:
+      - string
+      - 'null'
+      example: OracleQueryTx
+      enum:
+      - ContractCallTx
+      - NameClaimTx
+      - OracleQueryTx
+      - null
     ErrorResponse:
       description: Error response from the API
       type: object
@@ -157,3 +121,39 @@ components:
       required:
       - error
       title: Error response
+    AccountAddress:
+      description: Account address
+      type: string
+      example: ak_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^ak_\w{38,50}$
+    MicroBlockHash:
+      description: Micro block hash
+      type: string
+      example: mh_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^mh_\w{38,50}$
+  parameters:
+    DirectionParam:
+      in: query
+      name: direction
+      description: Sorts results in forwards or backwards direction
+      schema:
+        type: string
+        enum:
+        - forward
+        - backward
+    ScopeParam:
+      in: query
+      name: scope
+      description: Scopes results in a generation range
+      schema:
+        type: string
+        pattern: (gen):\d+(-\d+)?
+    LimitParam:
+      in: query
+      name: limit
+      description: Limit paginated resources (max 100)
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10

@@ -129,88 +129,7 @@ paths:
       summary: Get key block micro blocks
       x-summary-source: derived
 components:
-  parameters:
-    ScopeParam:
-      in: query
-      name: scope
-      description: Scopes results in a generation range
-      schema:
-        type: string
-        pattern: (gen):\d+(-\d+)?
-    LimitParam:
-      in: query
-      name: limit
-      description: Limit paginated resources (max 100)
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-        default: 10
-    DirectionParam:
-      in: query
-      name: direction
-      description: Sorts results in forwards or backwards direction
-      schema:
-        type: string
-        enum:
-        - forward
-        - backward
   schemas:
-    MicroBlockHeader:
-      type: object
-      properties:
-        hash:
-          $ref: '#/components/schemas/EncodedHash'
-        height:
-          $ref: '#/components/schemas/UInt64'
-        pof_hash:
-          description: \"no_fraud\" or Base58Check encoded Proof of Fraud hash
-          type: string
-          pattern: ^(no_fraud|bf_\w+)$
-          example: no_fraud
-        prev_hash:
-          $ref: '#/components/schemas/EncodedHash'
-        prev_key_hash:
-          $ref: '#/components/schemas/EncodedHash'
-        state_hash:
-          $ref: '#/components/schemas/EncodedHash'
-        txs_hash:
-          $ref: '#/components/schemas/EncodedHash'
-        signature:
-          $ref: '#/components/schemas/EncodedSignature'
-        time:
-          $ref: '#/components/schemas/UInt64'
-        version:
-          $ref: '#/components/schemas/UInt32'
-        flags:
-          $ref: '#/components/schemas/EncodedByteArray'
-      required:
-      - hash
-      - height
-      - pof_hash
-      - prev_hash
-      - prev_key_hash
-      - state_hash
-      - txs_hash
-      - signature
-      - time
-      - version
-    EncodedByteArray:
-      description: Base64Check encoded byte array
-      type: string
-      example: ba_AAAAAfy4hFE=
-      pattern: ^ba_[0-9A-Za-z+/=]+$
-    EncodedSignature:
-      description: Base58Check encoded signature
-      type: string
-      example: sg_8hhU15cVMbukFj4FbdrFwwYnbzXYPnstu9PDnWZGbfQNpeHcB6tK1F3wvG1MPYySARgDRJYUh3YPJD3HctFwg6Y4rUGSR
-      pattern: ^sg_\w+$
-    Pow:
-      type: array
-      items:
-        $ref: '#/components/schemas/UInt32'
-      minItems: 42
-      maxItems: 42
     KeyBlockExtended:
       example:
         beneficiary: ak_2MR38Zf355m6JtP13T3WEcUcSLVLCxjGvjk6zG95S2mfKohcSS
@@ -292,14 +211,91 @@ components:
           transactions_count:
             description: The number of transactions
             type: integer
-    EncodedContractByteArray:
-      description: Base64Check encoded contract byte array
-      type: string
-      example: cb_AAAAAfy4hFE=
-      pattern: ^cb_[0-9A-Za-z+/=]+$
     EncodedPubkey:
       description: Base58Check encoded tagged pubkey
       type: string
+    UInt64:
+      oneOf:
+      - type: integer
+        minimum: 0
+        maximum: 18446744073709552000
+      - type: string
+    NotFoundResponse:
+      description: Resource not found on the API
+      type: object
+      example:
+        error: 'not found: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Not found response
+    EncodedHash:
+      description: Base58Check encoded tagged hash
+      type: string
+    EncodedSignature:
+      description: Base58Check encoded signature
+      type: string
+      example: sg_8hhU15cVMbukFj4FbdrFwwYnbzXYPnstu9PDnWZGbfQNpeHcB6tK1F3wvG1MPYySARgDRJYUh3YPJD3HctFwg6Y4rUGSR
+      pattern: ^sg_\w+$
+    Pow:
+      type: array
+      items:
+        $ref: '#/components/schemas/UInt32'
+      minItems: 42
+      maxItems: 42
+    MicroBlockHeader:
+      type: object
+      properties:
+        hash:
+          $ref: '#/components/schemas/EncodedHash'
+        height:
+          $ref: '#/components/schemas/UInt64'
+        pof_hash:
+          description: \"no_fraud\" or Base58Check encoded Proof of Fraud hash
+          type: string
+          pattern: ^(no_fraud|bf_\w+)$
+          example: no_fraud
+        prev_hash:
+          $ref: '#/components/schemas/EncodedHash'
+        prev_key_hash:
+          $ref: '#/components/schemas/EncodedHash'
+        state_hash:
+          $ref: '#/components/schemas/EncodedHash'
+        txs_hash:
+          $ref: '#/components/schemas/EncodedHash'
+        signature:
+          $ref: '#/components/schemas/EncodedSignature'
+        time:
+          $ref: '#/components/schemas/UInt64'
+        version:
+          $ref: '#/components/schemas/UInt32'
+        flags:
+          $ref: '#/components/schemas/EncodedByteArray'
+      required:
+      - hash
+      - height
+      - pof_hash
+      - prev_hash
+      - prev_key_hash
+      - state_hash
+      - txs_hash
+      - signature
+      - time
+      - version
+    KeyBlockHash:
+      description: Key block hash
+      type: string
+      example: kh_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^kh_\w{38,50}$
+    UInt32:
+      oneOf:
+      - type: integer
+        minimum: 0
+        maximum: 4294967295
+      - type: string
     KeyBlock:
       type: object
       properties:
@@ -343,14 +339,43 @@ components:
       - time
       - version
       - info
-    EncodedHash:
-      description: Base58Check encoded tagged hash
+    EncodedByteArray:
+      description: Base64Check encoded byte array
       type: string
-    KeyBlockHash:
-      description: Key block hash
+      example: ba_AAAAAfy4hFE=
+      pattern: ^ba_[0-9A-Za-z+/=]+$
+    PaginatedResponse:
+      type: object
+      properties:
+        next:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=123
+        prev:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=234
+      required:
+      - next
+      - prev
+    ByteArray:
       type: string
-      example: kh_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
-      pattern: ^kh_\w{38,50}$
+      example: ba_wAAAAKv2ZV4=
+      pattern: ^ba_\w+$
+    ErrorResponse:
+      description: Error response from the API
+      type: object
+      example:
+        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Error response
     MicroBlockExtended:
       example:
         micro_block_index: 64
@@ -387,59 +412,34 @@ components:
             type: integer
           flags:
             $ref: '#/components/schemas/ByteArray'
-    NotFoundResponse:
-      description: Resource not found on the API
-      type: object
-      example:
-        error: 'not found: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
-      properties:
-        error:
-          description: The message of the error raised
-          type: string
-      required:
-      - error
-      title: Not found response
-    UInt64:
-      oneOf:
-      - type: integer
-        minimum: 0
-        maximum: 18446744073709552000
-      - type: string
-    PaginatedResponse:
-      type: object
-      properties:
-        next:
-          type:
-          - string
-          - 'null'
-          example: /blocks?cursor=123
-        prev:
-          type:
-          - string
-          - 'null'
-          example: /blocks?cursor=234
-      required:
-      - next
-      - prev
-    ErrorResponse:
-      description: Error response from the API
-      type: object
-      example:
-        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
-      properties:
-        error:
-          description: The message of the error raised
-          type: string
-      required:
-      - error
-      title: Error response
-    UInt32:
-      oneOf:
-      - type: integer
-        minimum: 0
-        maximum: 4294967295
-      - type: string
-    ByteArray:
+    EncodedContractByteArray:
+      description: Base64Check encoded contract byte array
       type: string
-      example: ba_wAAAAKv2ZV4=
-      pattern: ^ba_\w+$
+      example: cb_AAAAAfy4hFE=
+      pattern: ^cb_[0-9A-Za-z+/=]+$
+  parameters:
+    ScopeParam:
+      in: query
+      name: scope
+      description: Scopes results in a generation range
+      schema:
+        type: string
+        pattern: (gen):\d+(-\d+)?
+    DirectionParam:
+      in: query
+      name: direction
+      description: Sorts results in forwards or backwards direction
+      schema:
+        type: string
+        enum:
+        - forward
+        - backward
+    LimitParam:
+      in: query
+      name: limit
+      description: Limit paginated resources (max 100)
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10
