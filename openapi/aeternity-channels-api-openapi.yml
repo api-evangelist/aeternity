@@ -93,23 +93,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    TransactionHash:
-      description: Transaction hash
-      type: string
-      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
-      pattern: ^th_\w{38,50}$
-    NotFoundResponse:
-      description: Resource not found on the API
-      type: object
-      example:
-        error: 'not found: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
-      properties:
-        error:
-          description: The message of the error raised
-          type: string
-      required:
-      - error
-      title: Not found response
     PaginatedResponse:
       type: object
       properties:
@@ -138,11 +121,6 @@ components:
       required:
       - error
       title: Error response
-    AccountAddress:
-      description: Account address
-      type: string
-      example: ak_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
-      pattern: ^ak_\w{38,50}$
     Channel:
       type: object
       required:
@@ -252,10 +230,32 @@ components:
           type: integer
           description: The amount of times the channel's been updated by any of the channel transactions
           example: 2
+    AccountAddress:
+      description: Account address
+      type: string
+      example: ak_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^ak_\w{38,50}$
     ChannelId:
       type: string
       pattern: ^ch_\w{38,50}$
       example: ch_2VfzXmCRZepB3ichPf3WTt2uf8zMqsyY3cZWg8k1vt3xcu8L8V
+    NotFoundResponse:
+      description: Resource not found on the API
+      type: object
+      example:
+        error: 'not found: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Not found response
+    TransactionHash:
+      description: Transaction hash
+      type: string
+      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^th_\w{38,50}$
   parameters:
     DirectionParam:
       in: query
@@ -266,13 +266,6 @@ components:
         enum:
         - forward
         - backward
-    ScopeParam:
-      in: query
-      name: scope
-      description: Scopes results in a generation range
-      schema:
-        type: string
-        pattern: (gen):\d+(-\d+)?
     LimitParam:
       in: query
       name: limit
@@ -282,3 +275,10 @@ components:
         minimum: 1
         maximum: 100
         default: 10
+    ScopeParam:
+      in: query
+      name: scope
+      description: Scopes results in a generation range
+      schema:
+        type: string
+        pattern: (gen):\d+(-\d+)?

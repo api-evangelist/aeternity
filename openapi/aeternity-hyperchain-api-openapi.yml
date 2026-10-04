@@ -279,54 +279,40 @@ paths:
       summary: Get top validator delegates
       x-summary-source: derived
 components:
-  parameters:
-    HyperchainScopeParam:
-      in: query
-      name: scope
-      description: Scopes results in a hyperchain epoch range
-      schema:
-        type: string
-        pattern: (epoch):\d+(-\d+)?
-    DirectionParam:
-      in: query
-      name: direction
-      description: Sorts results in forwards or backwards direction
-      schema:
-        type: string
-        enum:
-        - forward
-        - backward
-    LimitParam:
-      in: query
-      name: limit
-      description: Limit paginated resources (max 100)
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-        default: 10
   schemas:
-    Delegate:
-      description: Delegate information
+    Validator:
+      description: Validator information
       type: object
       properties:
         epoch:
           type: integer
           example: 1
-        delegate:
-          type: string
-          example: ak_1111111111111111111111111111111111111111111111111
-        stake:
-          type: integer
-          example: 1000000000000000000
         validator:
           type: string
           example: ak_1111111111111111111111111111111111111111111111111
+        total_stakes:
+          type: integer
+          example: 1000000000000000000
+        delegates:
+          type: integer
+          example: 5
+        rewards_earned:
+          type: integer
+          example: 1000000000000000000
+        pinning_history:
+          type: object
+          additionalProperties:
+            type: integer
+          example:
+            '1': 1000000000000000000
+            '2': 2000000000000000000
       required:
       - epoch
-      - delegate
-      - stake
       - validator
+      - total_stakes
+      - delegates
+      - rewards_earned
+      - pinning_history
     PaginatedResponse:
       type: object
       properties:
@@ -343,6 +329,23 @@ components:
       required:
       - next
       - prev
+    ErrorResponse:
+      description: Error response from the API
+      type: object
+      example:
+        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Error response
+    AccountAddress:
+      description: Account address
+      type: string
+      example: ak_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^ak_\w{38,50}$
     EpochInfo:
       description: Epoch information
       type: object
@@ -396,56 +399,6 @@ components:
       - last_leader
       - epoch_start_time
       - validators
-    Validator:
-      description: Validator information
-      type: object
-      properties:
-        epoch:
-          type: integer
-          example: 1
-        validator:
-          type: string
-          example: ak_1111111111111111111111111111111111111111111111111
-        total_stakes:
-          type: integer
-          example: 1000000000000000000
-        delegates:
-          type: integer
-          example: 5
-        rewards_earned:
-          type: integer
-          example: 1000000000000000000
-        pinning_history:
-          type: object
-          additionalProperties:
-            type: integer
-          example:
-            '1': 1000000000000000000
-            '2': 2000000000000000000
-      required:
-      - epoch
-      - validator
-      - total_stakes
-      - delegates
-      - rewards_earned
-      - pinning_history
-    ErrorResponse:
-      description: Error response from the API
-      type: object
-      example:
-        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
-      properties:
-        error:
-          description: The message of the error raised
-          type: string
-      required:
-      - error
-      title: Error response
-    AccountAddress:
-      description: Account address
-      type: string
-      example: ak_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
-      pattern: ^ak_\w{38,50}$
     Schedule:
       description: Schedule information
       type: object
@@ -459,3 +412,50 @@ components:
       required:
       - height
       - leader
+    Delegate:
+      description: Delegate information
+      type: object
+      properties:
+        epoch:
+          type: integer
+          example: 1
+        delegate:
+          type: string
+          example: ak_1111111111111111111111111111111111111111111111111
+        stake:
+          type: integer
+          example: 1000000000000000000
+        validator:
+          type: string
+          example: ak_1111111111111111111111111111111111111111111111111
+      required:
+      - epoch
+      - delegate
+      - stake
+      - validator
+  parameters:
+    HyperchainScopeParam:
+      in: query
+      name: scope
+      description: Scopes results in a hyperchain epoch range
+      schema:
+        type: string
+        pattern: (epoch):\d+(-\d+)?
+    DirectionParam:
+      in: query
+      name: direction
+      description: Sorts results in forwards or backwards direction
+      schema:
+        type: string
+        enum:
+        - forward
+        - backward
+    LimitParam:
+      in: query
+      name: limit
+      description: Limit paginated resources (max 100)
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10

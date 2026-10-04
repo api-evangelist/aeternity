@@ -234,11 +234,17 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    OracleAddress:
-      description: Oracle address
+    AccountAddress:
+      description: Account address
       type: string
-      example: ok_2t7TnocFw7oCYSS7g2yGutZMpGEJta6dq2DTX38SmuqmwtN6Ch
-      pattern: ^ok_\w{38,50}$
+      example: ak_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^ak_\w{38,50}$
+    UInt64:
+      oneOf:
+      - type: integer
+        minimum: 0
+        maximum: 18446744073709552000
+      - type: string
     ContractCreateTx:
       type: object
       properties:
@@ -277,111 +283,19 @@ components:
       - gas_price
       - fee
       - call_data
-    TTL:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - delta
-          - block
-        value:
-          $ref: '#/components/schemas/UInt64'
-      required:
-      - type
-      - value
-    ContractCallTx:
-      type: object
-      properties:
-        caller_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-        contract_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        abi_version:
-          $ref: '#/components/schemas/UInt16'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        amount:
-          $ref: '#/components/schemas/UInt'
-        gas:
-          $ref: '#/components/schemas/UInt64'
-        gas_price:
-          $ref: '#/components/schemas/UInt'
-        call_data:
-          $ref: '#/components/schemas/EncodedContractByteArray'
-      required:
-      - caller_id
-      - contract_id
-      - abi_version
-      - fee
-      - amount
-      - gas
-      - gas_price
-      - call_data
-    AccountAddress:
-      description: Account address
+    EncodedPubkey:
+      description: Base58Check encoded tagged pubkey
       type: string
-      example: ak_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
-      pattern: ^ak_\w{38,50}$
-    OracleExtendTx:
-      type: object
-      properties:
-        fee:
-          $ref: '#/components/schemas/UInt'
-        oracle_ttl:
-          $ref: '#/components/schemas/RelativeTTL'
-        oracle_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-      required:
-      - fee
-      - oracle_ttl
-      - oracle_id
+    TransactionEncoded:
+      description: Encoded transaction
+      type: string
+      example: tx_+E8hAaEB4TK48d23oE5jt/qWR5pUu8UlpTGn8bwM5JISGQMGf7ABoQOvDVCf43V7alNbsUvTarXaCf7rjtWX36YLS4+JTa4jn4YPHaUyOAAAxRZ6Sg==
+      pattern: ^tx_\w+$
     MicroBlockHash:
       description: Micro block hash
       type: string
       example: mh_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
       pattern: ^mh_\w{38,50}$
-    EncodedPubkey:
-      description: Base58Check encoded tagged pubkey
-      type: string
-    RelativeTTL:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - delta
-        value:
-          $ref: '#/components/schemas/UInt64'
-      required:
-      - type
-      - value
-    UInt64:
-      oneOf:
-      - type: integer
-        minimum: 0
-        maximum: 18446744073709552000
-      - type: string
-    NotFoundResponse:
-      description: Resource not found on the API
-      type: object
-      example:
-        error: 'not found: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
-      properties:
-        error:
-          description: The message of the error raised
-          type: string
-      required:
-      - error
-      title: Not found response
     OracleQuery:
       example:
         block_hash: mh_211yFeU3yxKgqXAaRyyxrALMDPxxTyYkrs6TwN9hWnxMHQk8Nc
@@ -468,11 +382,277 @@ components:
       - sender_id
       - ttl
       type: object
+    OracleExtendTx:
+      type: object
+      properties:
+        fee:
+          $ref: '#/components/schemas/UInt'
+        oracle_ttl:
+          $ref: '#/components/schemas/RelativeTTL'
+        oracle_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - fee
+      - oracle_ttl
+      - oracle_id
+    OracleAddress:
+      description: Oracle address
+      type: string
+      example: ok_2t7TnocFw7oCYSS7g2yGutZMpGEJta6dq2DTX38SmuqmwtN6Ch
+      pattern: ^ok_\w{38,50}$
+    OracleExtend:
+      example:
+        height: 961963
+        block_hash: mh_j3kociQVYDLkCsxdPVU8J9qPFLxUzrMnoSMuLp38yubDpuTyR
+        tx:
+          fee: 16132000000000
+          nonce: 4357
+          oracle_id: ok_Gb6cD91w29v8csjAxyyBmfAQmdNo1aUedWkhn9HxqiXeVuGcj
+          oracle_ttl:
+            type: delta
+            value: 500
+          ttl: 0
+        source_tx_hash: th_NgGUA81Cy2VkwStujdyKQxBW9DTnEVJo3eHh7do3oAn4Zymmu
+        source_tx_type: OracleExtendTx
+      properties:
+        block_hash:
+          description: The hash of the block in which it occurred
+          $ref: '#/components/schemas/MicroBlockHash'
+        height:
+          description: The block height
+          type: integer
+        source_tx_hash:
+          description: The hash of the transaction in which the extend was done
+          $ref: '#/components/schemas/TransactionHash'
+        source_tx_type:
+          description: The type of the transaction in which the extend was done, it can be either via a contract call or an extend transaction
+          type: string
+          enum:
+          - ContractCallTx
+          - OracleExtendTx
+        tx:
+          oneOf:
+          - $ref: '#/components/schemas/OracleExtendTx'
+          - $ref: '#/components/schemas/ContractCallTx'
+      required:
+      - block_hash
+      - height
+      - source_tx_hash
+      - source_tx_type
+      - tx
+      type: object
+    UInt16:
+      oneOf:
+      - type: integer
+        minimum: 0
+        maximum: 65535
+      - type: string
     UInt:
       oneOf:
       - type: integer
         minimum: 0
       - type: string
+    OracleResponse:
+      example:
+        block_hash: mh_211yFeU3yxKgqXAaRyyxrALMDPxxTyYkrs6TwN9hWnxMHQk8Nc
+        block_time: 1595571314482
+        height: 289005
+        query_id: oq_su6wv4MZsnJfopjAhd1Sx7HuBBtqhdHhahkoTPWk7bg24UWNR
+        source_tx_hash: th_gsaRRLnysE4pFH1DqY731F6LBEjhdDwnzoDyBnZjBUygoSvpJ
+        source_tx_type: OracleRespondTx
+        fee: 17199000000000
+        nonce: 57
+        oracle_id: ok_qJZPXvWPC7G9kFVEqNjj9NAmwMsQcpRu6E3SSCvCQuwfqpMtN
+        query_fee: 2000000000000000
+        response_ttl:
+          type: delta
+          value: 100
+        ttl: 289505
+      properties:
+        block_hash:
+          description: The hash of the block in which it occurred
+          $ref: '#/components/schemas/MicroBlockHash'
+        block_time:
+          description: The time of the block
+          type: integer
+        height:
+          description: The block height
+          type: integer
+        query_id:
+          $ref: '#/components/schemas/OracleQueryId'
+        source_tx_hash:
+          description: The hash of the transaction in which the response was created
+          $ref: '#/components/schemas/TransactionHash'
+        source_tx_type:
+          type: string
+          description: The type of the transaction in which the response was created, it can be either via a contract call or a respond transaction
+          enum:
+          - ContractCallTx
+          - OracleRespondTx
+        fee:
+          description: The transaction fee
+          type: integer
+        nonce:
+          description: The nonce
+          type: integer
+        oracle_id:
+          description: The oracle ID of this response
+          $ref: '#/components/schemas/OracleAddress'
+        response:
+          description: Base64 encoding of the response
+          type: string
+        response_ttl:
+          description: Expiration of the response
+          type: object
+        ttl:
+          description: Transaction TTL
+          type: integer
+      required:
+      - block_hash
+      - block_time
+      - height
+      - query_id
+      - source_tx_hash
+      - source_tx_type
+      - fee
+      - nonce
+      - oracle_id
+      - response
+      - response_ttl
+      - ttl
+      type: object
+    PaginatedResponse:
+      type: object
+      properties:
+        next:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=123
+        prev:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=234
+      required:
+      - next
+      - prev
+    Signature:
+      description: Signature
+      type: string
+      example: sg_8hhU15cVMbukFj4FbdrFwwYnbzXYPnstu9PDnWZGbfQNpeHcB6tK1F3wvG1MPYySARgDRJYUh3YPJD3HctFwg6Y4rUGSR
+      pattern: ^sg_\w+$
+    TTL:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - delta
+          - block
+        value:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - type
+      - value
+    OracleQueryId:
+      description: Oracle query ID
+      type: string
+      example: oq_2t7TnocFw7oCYSS7g2yGutZMpGEJta6dq2DTX38SmuqmwtN6Ch
+      pattern: ^oq_\w{38,50}$
+    ContractCallTx:
+      type: object
+      properties:
+        caller_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        contract_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        abi_version:
+          $ref: '#/components/schemas/UInt16'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        amount:
+          $ref: '#/components/schemas/UInt'
+        gas:
+          $ref: '#/components/schemas/UInt64'
+        gas_price:
+          $ref: '#/components/schemas/UInt'
+        call_data:
+          $ref: '#/components/schemas/EncodedContractByteArray'
+      required:
+      - caller_id
+      - contract_id
+      - abi_version
+      - fee
+      - amount
+      - gas
+      - gas_price
+      - call_data
+    OracleRegisterTx:
+      type: object
+      properties:
+        query_format:
+          type: string
+        response_format:
+          type: string
+        query_fee:
+          $ref: '#/components/schemas/UInt'
+        oracle_ttl:
+          $ref: '#/components/schemas/TTL'
+        account_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        abi_version:
+          $ref: '#/components/schemas/UInt16'
+      required:
+      - query_format
+      - response_format
+      - query_fee
+      - fee
+      - oracle_ttl
+      - account_id
+    TransactionHash:
+      description: Transaction hash
+      type: string
+      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^th_\w{38,50}$
+    RelativeTTL:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - delta
+        value:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - type
+      - value
+    ErrorResponse:
+      description: Error response from the API
+      type: object
+      example:
+        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Error response
     OracleTx:
       type: object
       required:
@@ -533,45 +713,23 @@ components:
                 OracleRegisterTx: '#/components/schemas/OracleRegisterTx'
                 ContractCallTx: '#/components/schemas/ContractCallTx'
                 ContractCreateTx: '#/components/schemas/ContractCreateTx'
-    UInt16:
-      oneOf:
-      - type: integer
-        minimum: 0
-        maximum: 65535
-      - type: string
-    OracleRegisterTx:
+    NotFoundResponse:
+      description: Resource not found on the API
       type: object
+      example:
+        error: 'not found: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
       properties:
-        query_format:
+        error:
+          description: The message of the error raised
           type: string
-        response_format:
-          type: string
-        query_fee:
-          $ref: '#/components/schemas/UInt'
-        oracle_ttl:
-          $ref: '#/components/schemas/TTL'
-        account_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        abi_version:
-          $ref: '#/components/schemas/UInt16'
       required:
-      - query_format
-      - response_format
-      - query_fee
-      - fee
-      - oracle_ttl
-      - account_id
-    TransactionEncoded:
-      description: Encoded transaction
+      - error
+      title: Not found response
+    EncodedContractByteArray:
+      description: Base64Check encoded contract byte array
       type: string
-      example: tx_+E8hAaEB4TK48d23oE5jt/qWR5pUu8UlpTGn8bwM5JISGQMGf7ABoQOvDVCf43V7alNbsUvTarXaCf7rjtWX36YLS4+JTa4jn4YPHaUyOAAAxRZ6Sg==
-      pattern: ^tx_\w+$
+      example: cb_AAAAAfy4hFE=
+      pattern: ^cb_[0-9A-Za-z+/=]+$
     Oracle:
       example:
         active: false
@@ -667,181 +825,7 @@ components:
       - active_from
       - active
       type: object
-    TransactionHash:
-      description: Transaction hash
-      type: string
-      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
-      pattern: ^th_\w{38,50}$
-    OracleQueryId:
-      description: Oracle query ID
-      type: string
-      example: oq_2t7TnocFw7oCYSS7g2yGutZMpGEJta6dq2DTX38SmuqmwtN6Ch
-      pattern: ^oq_\w{38,50}$
-    OracleExtend:
-      example:
-        height: 961963
-        block_hash: mh_j3kociQVYDLkCsxdPVU8J9qPFLxUzrMnoSMuLp38yubDpuTyR
-        tx:
-          fee: 16132000000000
-          nonce: 4357
-          oracle_id: ok_Gb6cD91w29v8csjAxyyBmfAQmdNo1aUedWkhn9HxqiXeVuGcj
-          oracle_ttl:
-            type: delta
-            value: 500
-          ttl: 0
-        source_tx_hash: th_NgGUA81Cy2VkwStujdyKQxBW9DTnEVJo3eHh7do3oAn4Zymmu
-        source_tx_type: OracleExtendTx
-      properties:
-        block_hash:
-          description: The hash of the block in which it occurred
-          $ref: '#/components/schemas/MicroBlockHash'
-        height:
-          description: The block height
-          type: integer
-        source_tx_hash:
-          description: The hash of the transaction in which the extend was done
-          $ref: '#/components/schemas/TransactionHash'
-        source_tx_type:
-          description: The type of the transaction in which the extend was done, it can be either via a contract call or an extend transaction
-          type: string
-          enum:
-          - ContractCallTx
-          - OracleExtendTx
-        tx:
-          oneOf:
-          - $ref: '#/components/schemas/OracleExtendTx'
-          - $ref: '#/components/schemas/ContractCallTx'
-      required:
-      - block_hash
-      - height
-      - source_tx_hash
-      - source_tx_type
-      - tx
-      type: object
-    PaginatedResponse:
-      type: object
-      properties:
-        next:
-          type:
-          - string
-          - 'null'
-          example: /blocks?cursor=123
-        prev:
-          type:
-          - string
-          - 'null'
-          example: /blocks?cursor=234
-      required:
-      - next
-      - prev
-    OracleResponse:
-      example:
-        block_hash: mh_211yFeU3yxKgqXAaRyyxrALMDPxxTyYkrs6TwN9hWnxMHQk8Nc
-        block_time: 1595571314482
-        height: 289005
-        query_id: oq_su6wv4MZsnJfopjAhd1Sx7HuBBtqhdHhahkoTPWk7bg24UWNR
-        source_tx_hash: th_gsaRRLnysE4pFH1DqY731F6LBEjhdDwnzoDyBnZjBUygoSvpJ
-        source_tx_type: OracleRespondTx
-        fee: 17199000000000
-        nonce: 57
-        oracle_id: ok_qJZPXvWPC7G9kFVEqNjj9NAmwMsQcpRu6E3SSCvCQuwfqpMtN
-        query_fee: 2000000000000000
-        response_ttl:
-          type: delta
-          value: 100
-        ttl: 289505
-      properties:
-        block_hash:
-          description: The hash of the block in which it occurred
-          $ref: '#/components/schemas/MicroBlockHash'
-        block_time:
-          description: The time of the block
-          type: integer
-        height:
-          description: The block height
-          type: integer
-        query_id:
-          $ref: '#/components/schemas/OracleQueryId'
-        source_tx_hash:
-          description: The hash of the transaction in which the response was created
-          $ref: '#/components/schemas/TransactionHash'
-        source_tx_type:
-          type: string
-          description: The type of the transaction in which the response was created, it can be either via a contract call or a respond transaction
-          enum:
-          - ContractCallTx
-          - OracleRespondTx
-        fee:
-          description: The transaction fee
-          type: integer
-        nonce:
-          description: The nonce
-          type: integer
-        oracle_id:
-          description: The oracle ID of this response
-          $ref: '#/components/schemas/OracleAddress'
-        response:
-          description: Base64 encoding of the response
-          type: string
-        response_ttl:
-          description: Expiration of the response
-          type: object
-        ttl:
-          description: Transaction TTL
-          type: integer
-      required:
-      - block_hash
-      - block_time
-      - height
-      - query_id
-      - source_tx_hash
-      - source_tx_type
-      - fee
-      - nonce
-      - oracle_id
-      - response
-      - response_ttl
-      - ttl
-      type: object
-    ErrorResponse:
-      description: Error response from the API
-      type: object
-      example:
-        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
-      properties:
-        error:
-          description: The message of the error raised
-          type: string
-      required:
-      - error
-      title: Error response
-    Signature:
-      description: Signature
-      type: string
-      example: sg_8hhU15cVMbukFj4FbdrFwwYnbzXYPnstu9PDnWZGbfQNpeHcB6tK1F3wvG1MPYySARgDRJYUh3YPJD3HctFwg6Y4rUGSR
-      pattern: ^sg_\w+$
-    EncodedContractByteArray:
-      description: Base64Check encoded contract byte array
-      type: string
-      example: cb_AAAAAfy4hFE=
-      pattern: ^cb_[0-9A-Za-z+/=]+$
   parameters:
-    ScopeParam:
-      in: query
-      name: scope
-      description: Scopes results in a generation range
-      schema:
-        type: string
-        pattern: (gen):\d+(-\d+)?
-    DirectionParam:
-      in: query
-      name: direction
-      description: Sorts results in forwards or backwards direction
-      schema:
-        type: string
-        enum:
-        - forward
-        - backward
     LimitParam:
       in: query
       name: limit
@@ -851,3 +835,19 @@ components:
         minimum: 1
         maximum: 100
         default: 10
+    DirectionParam:
+      in: query
+      name: direction
+      description: Sorts results in forwards or backwards direction
+      schema:
+        type: string
+        enum:
+        - forward
+        - backward
+    ScopeParam:
+      in: query
+      name: scope
+      description: Scopes results in a generation range
+      schema:
+        type: string
+        pattern: (gen):\d+(-\d+)?

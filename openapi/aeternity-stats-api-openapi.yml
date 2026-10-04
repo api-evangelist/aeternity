@@ -773,127 +773,6 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    TransactionHash:
-      description: Transaction hash
-      type: string
-      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
-      pattern: ^th_\w{38,50}$
-    KeyBlockHash:
-      description: Key block hash
-      type: string
-      example: kh_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
-      pattern: ^kh_\w{38,50}$
-    TotalStat:
-      type: object
-      description: TotalStat
-      required:
-      - height
-      - contracts
-      - locked_in_auctions
-      - burned_in_auctions
-      - locked_in_channels
-      - active_auctions
-      - active_names
-      - inactive_names
-      - active_oracles
-      - inactive_oracles
-      - open_channels
-      - sum_block_reward
-      - sum_dev_reward
-      - total_token_supply
-      - last_tx_hash
-      properties:
-        height:
-          description: The generation
-          type: integer
-        contracts:
-          description: The number of contracts
-          type: integer
-        locked_in_auctions:
-          description: The amount locked in auctions
-          type: integer
-        burned_in_auctions:
-          description: The amount burned in auctions
-          type: integer
-        locked_in_channels:
-          description: The amount locked in channels
-          type: integer
-        active_auctions:
-          description: The number of active auctions
-          type: integer
-        active_names:
-          description: The number of active names
-          type: integer
-        inactive_names:
-          description: The number of inactive names
-          type: integer
-        active_oracles:
-          description: The number of active oracles
-          type: integer
-        inactive_oracles:
-          description: The number of inactive oracles
-          type: integer
-        open_channels:
-          description: The number of open channels
-          type: integer
-        sum_block_reward:
-          description: The sum of block rewards
-          type: integer
-        sum_dev_reward:
-          description: The sum of dev rewards
-          type: integer
-        total_token_supply:
-          description: The total token supply
-          type: integer
-        last_tx_hash:
-          description: The last transaction hash for this height
-          $ref: '#/components/schemas/TransactionHash'
-        accounts:
-          description: The cumulative total number of accounts up to this generation
-          type: integer
-      example:
-        height: 121804
-        contracts: 0
-        locked_in_auctions: 0
-        burned_in_auctions: 0
-        locked_in_channels: 0
-        active_auctions: 0
-        active_names: 0
-        inactive_names: 0
-        active_oracles: 0
-        inactive_oracles: 0
-        open_channels: 0
-        sum_block_reward: 269973000000000000000
-        sum_dev_reward: 33027000000000000000
-        total_token_supply: 10000000000000000000000000000
-        last_tx_hash: th_2FHxDzpQMRTiRfpYRV3eCcsheHr1sjf9waxk7z6JDTVcgqZRXR
-        accounts: 0
-    TopMinerStat:
-      type: object
-      description: TopMinerStat
-      required:
-      - miner
-      - blocks_mined
-      - start_date
-      - end_date
-      properties:
-        miner:
-          description: The miner (beneficiary) address
-          $ref: '#/components/schemas/AccountAddress'
-        blocks_mined:
-          description: The number of blocks mined
-          type: integer
-        start_date:
-          description: The statistic start date
-          type: string
-        end_date:
-          description: The statistic end date
-          type: string
-      example:
-        miner: ak_2whjDhTTmbN13vU7gAUsRbosBhmycho4h8LqHVqKwyGofDetQ9
-        blocks_mined: 945
-        start_date: '2024-02-28'
-        end_date: '2024-02-29'
     Stats:
       type: object
       description: Stats
@@ -943,22 +822,32 @@ components:
       required:
       - next
       - prev
-    Miner:
+    TopMinerStat:
       type: object
-      description: Miner
+      description: TopMinerStat
       required:
       - miner
-      - total_reward
+      - blocks_mined
+      - start_date
+      - end_date
       properties:
         miner:
           description: The miner (beneficiary) address
           $ref: '#/components/schemas/AccountAddress'
-        total_reward:
-          description: The accumulated reward on the miner (beneficiary) address
+        blocks_mined:
+          description: The number of blocks mined
           type: integer
+        start_date:
+          description: The statistic start date
+          type: string
+        end_date:
+          description: The statistic end date
+          type: string
       example:
         miner: ak_2whjDhTTmbN13vU7gAUsRbosBhmycho4h8LqHVqKwyGofDetQ9
-        total_reward: 945000000000000000000
+        blocks_mined: 945
+        start_date: '2024-02-28'
+        end_date: '2024-02-29'
     ErrorResponse:
       description: Error response from the API
       type: object
@@ -976,27 +865,27 @@ components:
       type: string
       example: ak_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
       pattern: ^ak_\w{38,50}$
-    Stat:
+    KeyBlockHash:
+      description: Key block hash
+      type: string
+      example: kh_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^kh_\w{38,50}$
+    Miner:
       type: object
-      description: Stat
+      description: Miner
       required:
-      - count
-      - start_date
-      - end_date
+      - miner
+      - total_reward
       properties:
-        count:
-          description: The statistic count
+        miner:
+          description: The miner (beneficiary) address
+          $ref: '#/components/schemas/AccountAddress'
+        total_reward:
+          description: The accumulated reward on the miner (beneficiary) address
           type: integer
-        start_date:
-          description: The statistic start date
-          type: string
-        end_date:
-          description: The statistic end date (not taken into account)
-          type: string
       example:
-        count: 7701
-        end_date: '2024-02-29'
-        start_date: '2024-02-28'
+        miner: ak_2whjDhTTmbN13vU7gAUsRbosBhmycho4h8LqHVqKwyGofDetQ9
+        total_reward: 945000000000000000000
     DeltaStat:
       description: DeltaStat
       type: object
@@ -1087,23 +976,118 @@ components:
         locked_in_auctions: 0
         locked_in_channels: 0
         accounts: 0
+    TotalStat:
+      type: object
+      description: TotalStat
+      required:
+      - height
+      - contracts
+      - locked_in_auctions
+      - burned_in_auctions
+      - locked_in_channels
+      - active_auctions
+      - active_names
+      - inactive_names
+      - active_oracles
+      - inactive_oracles
+      - open_channels
+      - sum_block_reward
+      - sum_dev_reward
+      - total_token_supply
+      - last_tx_hash
+      properties:
+        height:
+          description: The generation
+          type: integer
+        contracts:
+          description: The number of contracts
+          type: integer
+        locked_in_auctions:
+          description: The amount locked in auctions
+          type: integer
+        burned_in_auctions:
+          description: The amount burned in auctions
+          type: integer
+        locked_in_channels:
+          description: The amount locked in channels
+          type: integer
+        active_auctions:
+          description: The number of active auctions
+          type: integer
+        active_names:
+          description: The number of active names
+          type: integer
+        inactive_names:
+          description: The number of inactive names
+          type: integer
+        active_oracles:
+          description: The number of active oracles
+          type: integer
+        inactive_oracles:
+          description: The number of inactive oracles
+          type: integer
+        open_channels:
+          description: The number of open channels
+          type: integer
+        sum_block_reward:
+          description: The sum of block rewards
+          type: integer
+        sum_dev_reward:
+          description: The sum of dev rewards
+          type: integer
+        total_token_supply:
+          description: The total token supply
+          type: integer
+        last_tx_hash:
+          description: The last transaction hash for this height
+          $ref: '#/components/schemas/TransactionHash'
+        accounts:
+          description: The cumulative total number of accounts up to this generation
+          type: integer
+      example:
+        height: 121804
+        contracts: 0
+        locked_in_auctions: 0
+        burned_in_auctions: 0
+        locked_in_channels: 0
+        active_auctions: 0
+        active_names: 0
+        inactive_names: 0
+        active_oracles: 0
+        inactive_oracles: 0
+        open_channels: 0
+        sum_block_reward: 269973000000000000000
+        sum_dev_reward: 33027000000000000000
+        total_token_supply: 10000000000000000000000000000
+        last_tx_hash: th_2FHxDzpQMRTiRfpYRV3eCcsheHr1sjf9waxk7z6JDTVcgqZRXR
+        accounts: 0
+    Stat:
+      type: object
+      description: Stat
+      required:
+      - count
+      - start_date
+      - end_date
+      properties:
+        count:
+          description: The statistic count
+          type: integer
+        start_date:
+          description: The statistic start date
+          type: string
+        end_date:
+          description: The statistic end date (not taken into account)
+          type: string
+      example:
+        count: 7701
+        end_date: '2024-02-29'
+        start_date: '2024-02-28'
+    TransactionHash:
+      description: Transaction hash
+      type: string
+      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^th_\w{38,50}$
   parameters:
-    ScopeParam:
-      in: query
-      name: scope
-      description: Scopes results in a generation range
-      schema:
-        type: string
-        pattern: (gen):\d+(-\d+)?
-    DirectionParam:
-      in: query
-      name: direction
-      description: Sorts results in forwards or backwards direction
-      schema:
-        type: string
-        enum:
-        - forward
-        - backward
     StatsLimitParam:
       in: query
       name: limit
@@ -1113,3 +1097,19 @@ components:
         minimum: 1
         maximum: 1000
         default: 10
+    DirectionParam:
+      in: query
+      name: direction
+      description: Sorts results in forwards or backwards direction
+      schema:
+        type: string
+        enum:
+        - forward
+        - backward
+    ScopeParam:
+      in: query
+      name: scope
+      description: Scopes results in a generation range
+      schema:
+        type: string
+        pattern: (gen):\d+(-\d+)?
