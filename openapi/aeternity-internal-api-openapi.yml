@@ -1153,17 +1153,35 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    UInt64:
-      oneOf:
-      - type: integer
-        minimum: 0
-        maximum: 18446744073709552000
-      - type: string
-    EncodedByteArray:
-      description: Base64Check encoded byte array
-      type: string
-      example: ba_AAAAAfy4hFE=
-      pattern: ^ba_[0-9A-Za-z+/=]+$
+    DryRunInputItem:
+      type: object
+      properties:
+        tx:
+          $ref: '#/components/schemas/EncodedTxByteArray'
+        tx_hash:
+          $ref: '#/components/schemas/EncodedTxHash'
+        call_req:
+          $ref: '#/components/schemas/DryRunCallReq'
+    NameTransferTx:
+      type: object
+      properties:
+        name_id:
+          $ref: '#/components/schemas/EncodedNameId'
+        recipient_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        account_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - name_id
+      - recipient_id
+      - fee
+      - account_id
     DryRunInput:
       type: object
       properties:
@@ -1185,307 +1203,110 @@ components:
           description: Collect and return on-chain tx events that would result from the call
       required:
       - txs
-    EncodedCommitmentId:
-      description: Base58Check encoded AENS commitment
-      type: string
-      example: cm_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
-      pattern: ^cm_\w+$
-    TxBlockHeight:
+    ContractCallTx:
+      type: object
+      properties:
+        caller_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        contract_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        abi_version:
+          $ref: '#/components/schemas/UInt16'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        amount:
+          $ref: '#/components/schemas/UInt'
+        gas:
+          $ref: '#/components/schemas/UInt64'
+        gas_price:
+          $ref: '#/components/schemas/UInt'
+        call_data:
+          $ref: '#/components/schemas/EncodedContractByteArray'
+      required:
+      - caller_id
+      - contract_id
+      - abi_version
+      - fee
+      - amount
+      - gas
+      - gas_price
+      - call_data
+    TTL:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - delta
+          - block
+        value:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - type
+      - value
+    KeyBlock:
+      type: object
+      properties:
+        hash:
+          $ref: '#/components/schemas/EncodedHash'
+        height:
+          $ref: '#/components/schemas/UInt64'
+        prev_hash:
+          $ref: '#/components/schemas/EncodedHash'
+        prev_key_hash:
+          $ref: '#/components/schemas/EncodedHash'
+        state_hash:
+          $ref: '#/components/schemas/EncodedHash'
+        miner:
+          $ref: '#/components/schemas/EncodedPubkey'
+        beneficiary:
+          $ref: '#/components/schemas/EncodedPubkey'
+        flags:
+          $ref: '#/components/schemas/EncodedByteArray'
+        target:
+          $ref: '#/components/schemas/UInt32'
+        pow:
+          $ref: '#/components/schemas/Pow'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        time:
+          $ref: '#/components/schemas/UInt64'
+        version:
+          $ref: '#/components/schemas/UInt32'
+        info:
+          $ref: '#/components/schemas/EncodedContractByteArray'
+      required:
+      - hash
+      - height
+      - prev_hash
+      - prev_key_hash
+      - state_hash
+      - miner
+      - beneficiary
+      - target
+      - time
+      - version
+      - info
+    UInt:
       oneOf:
       - type: integer
-        minimum: -1
-        maximum: 18446744073709552000
+        minimum: 0
       - type: string
-    OracleQueryTx:
+    UInt16:
+      oneOf:
+      - type: integer
+        minimum: 0
+        maximum: 65535
+      - type: string
+    GAMetaTx:
       type: object
       properties:
-        oracle_id:
+        ga_id:
           $ref: '#/components/schemas/EncodedPubkey'
-        query:
-          type: string
-        query_fee:
-          $ref: '#/components/schemas/UInt'
-        query_ttl:
-          $ref: '#/components/schemas/TTL'
-        response_ttl:
-          $ref: '#/components/schemas/RelativeTTL'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        sender_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-      required:
-      - oracle_id
-      - query
-      - query_fee
-      - query_ttl
-      - response_ttl
-      - fee
-      - sender_id
-    ChannelDepositTx:
-      type: object
-      properties:
-        channel_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        from_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        amount:
-          $ref: '#/components/schemas/UInt'
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-        state_hash:
-          $ref: '#/components/schemas/EncodedHash'
-        round:
-          $ref: '#/components/schemas/UInt64'
-      required:
-      - channel_id
-      - from_id
-      - amount
-      - fee
-      - nonce
-      - state_hash
-      - round
-    SpendTx:
-      allOf:
-      - $ref: '#/components/schemas/SpendTxInput'
-      - required:
-        - nonce
-    EncodedNameId:
-      description: Base58Check encoded AENS name hash
-      type: string
-      example: nm_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
-      pattern: ^nm_\w+$
-    SignedTxs:
-      type: object
-      properties:
-        transactions:
-          type: array
-          items:
-            $ref: '#/components/schemas/SignedTx'
-    CommitmentId:
-      type: object
-      properties:
-        commitment_id:
-          $ref: '#/components/schemas/EncodedCommitmentId'
-      required:
-      - commitment_id
-    DryRunAccount:
-      type: object
-      properties:
-        pub_key:
-          $ref: '#/components/schemas/EncodedPubkey'
-        amount:
-          $ref: '#/components/schemas/UInt'
-      required:
-      - pub_key
-      - amount
-    ChannelSnapshotSoloTx:
-      type: object
-      properties:
-        channel_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        from_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        payload:
-          description: Base64Check encoded byte array. Accepted on input as a plain 'ba_'-prefixed byte array (see aehttp_dispatch_int.erl's produce_tx(channel_snapshot_solo_tx, ...)), but returned by the node as a 'tx_'-prefixed transaction (see aesc_snapshot_solo_tx.erl) -- no single prefix pattern covers both.
-          type: string
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-      required:
-      - channel_id
-      - from_id
-      - payload
-      - fee
-    NameRevokeTx:
-      type: object
-      properties:
-        name_id:
-          $ref: '#/components/schemas/EncodedNameId'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        account_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-      required:
-      - name_id
-      - fee
-      - account_id
-    EncodedSignature:
-      description: Base58Check encoded signature
-      type: string
-      example: sg_8hhU15cVMbukFj4FbdrFwwYnbzXYPnstu9PDnWZGbfQNpeHcB6tK1F3wvG1MPYySARgDRJYUh3YPJD3HctFwg6Y4rUGSR
-      pattern: ^sg_\w+$
-    Peer:
-      type: string
-      description: Aeternity node
-    ChannelCreateTx:
-      type: object
-      properties:
-        initiator_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        initiator_amount:
-          $ref: '#/components/schemas/UInt'
-        responder_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        responder_amount:
-          $ref: '#/components/schemas/UInt'
-        channel_reserve:
-          $ref: '#/components/schemas/UInt'
-        lock_period:
-          $ref: '#/components/schemas/UInt64'
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-        state_hash:
-          $ref: '#/components/schemas/EncodedHash'
-        delegate_ids:
-          $ref: '#/components/schemas/Delegates'
-      required:
-      - initiator_id
-      - initiator_amount
-      - responder_id
-      - responder_amount
-      - channel_reserve
-      - lock_period
-      - fee
-      - state_hash
-    Error:
-      type: object
-      properties:
-        reason:
-          type: string
-        error_code:
-          type: string
-      required:
-      - reason
-    ChannelSettleTx:
-      type: object
-      properties:
-        channel_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        from_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        initiator_amount_final:
-          $ref: '#/components/schemas/UInt'
-        responder_amount_final:
-          $ref: '#/components/schemas/UInt'
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-      required:
-      - channel_id
-      - from_id
-      - initiator_amount_final
-      - responder_amount_final
-      - fee
-      - nonce
-    PeerDetails:
-      type: object
-      properties:
-        host:
-          description: Hostname of peer
-          type: string
-        port:
-          $ref: '#/components/schemas/UInt32'
-        first_seen:
-          $ref: '#/components/schemas/UInt32'
-        last_seen:
-          $ref: '#/components/schemas/UInt32'
-        genesis_hash:
-          $ref: '#/components/schemas/EncodedHash'
-        top_hash:
-          $ref: '#/components/schemas/EncodedHash'
-        top_difficulty:
-          $ref: '#/components/schemas/UInt64'
-        network_id:
-          type: string
-        node_version:
-          type: string
-        node_revision:
-          type: string
-        node_vendor:
-          type: string
-        node_os:
-          type: string
-      required:
-      - host
-      - port
-      - first_seen
-      - last_seen
-      - genesis_hash
-      - top_hash
-      - top_difficulty
-    ChannelCloseMutualTx:
-      type: object
-      properties:
-        channel_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        from_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        initiator_amount_final:
-          $ref: '#/components/schemas/UInt'
-        responder_amount_final:
-          $ref: '#/components/schemas/UInt'
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        fee:
-          $ref: '#/components/schemas/UInt64'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-      required:
-      - channel_id
-      - from_id
-      - initiator_amount_final
-      - responder_amount_final
-      - fee
-      - nonce
-    Peers:
-      type: object
-      properties:
-        peers:
-          type: array
-          description: All discovered peers
-          items:
-            $ref: '#/components/schemas/Peer'
-        blocked:
-          type: array
-          description: All blocked peers
-          items:
-            $ref: '#/components/schemas/Peer'
-      required:
-      - peers
-      - blocked
-    GAAttachTx:
-      type: object
-      properties:
-        owner_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-        code:
-          $ref: '#/components/schemas/EncodedContractByteArray'
-        vm_version:
-          $ref: '#/components/schemas/UInt16'
         abi_version:
           $ref: '#/components/schemas/UInt16'
         gas:
@@ -1496,261 +1317,18 @@ components:
           $ref: '#/components/schemas/UInt'
         ttl:
           $ref: '#/components/schemas/UInt64'
-        call_data:
+        auth_data:
           $ref: '#/components/schemas/EncodedContractByteArray'
-        auth_fun:
-          description: Contract authorization function hash (hex encoded)
-          type: string
-          pattern: ^(0x|0X)?[a-fA-F0-9]+$
+        tx:
+          $ref: '#/components/schemas/SignedTx'
       required:
-      - owner_id
-      - code
-      - vm_version
+      - ga_id
       - abi_version
       - gas
       - gas_price
       - fee
-      - call_data
-      - auth_fun
-    PayingForTx:
-      type: object
-      properties:
-        payer_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-        tx:
-          $ref: '#/components/schemas/SignedTx'
-      required:
-      - payer_id
-      - fee
+      - auth_data
       - tx
-    OracleExtendTx:
-      type: object
-      properties:
-        fee:
-          $ref: '#/components/schemas/UInt'
-        oracle_ttl:
-          $ref: '#/components/schemas/RelativeTTL'
-        oracle_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-      required:
-      - fee
-      - oracle_ttl
-      - oracle_id
-    EncodedStateTrees:
-      description: Base64Check encoded state trees
-      type: string
-      pattern: ^ss_[0-9A-Za-z+/=]+$
-    EncodedHash:
-      description: Base58Check encoded tagged hash
-      type: string
-    UInt:
-      oneOf:
-      - type: integer
-        minimum: 0
-      - type: string
-    EncodedOracleQueryId:
-      description: Base58Check encoded oracle query id
-      type: string
-      example: oq_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
-      pattern: ^oq_\w+$
-    ChannelForceProgressTx:
-      type: object
-      properties:
-        channel_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        from_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        payload:
-          $ref: '#/components/schemas/EncodedTxByteArray'
-        round:
-          $ref: '#/components/schemas/UInt64'
-        update:
-          $ref: '#/components/schemas/OffChainUpdate'
-        state_hash:
-          $ref: '#/components/schemas/EncodedHash'
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-        offchain_trees:
-          $ref: '#/components/schemas/EncodedStateTrees'
-      required:
-      - channel_id
-      - from_id
-      - payload
-      - round
-      - update
-      - state_hash
-      - fee
-    TokenSupply:
-      type: object
-      properties:
-        accounts:
-          $ref: '#/components/schemas/UInt'
-        contracts:
-          $ref: '#/components/schemas/UInt'
-        contract_oracles:
-          $ref: '#/components/schemas/UInt'
-        locked:
-          $ref: '#/components/schemas/UInt'
-        oracles:
-          $ref: '#/components/schemas/UInt'
-        oracle_queries:
-          $ref: '#/components/schemas/UInt'
-        pending_rewards:
-          $ref: '#/components/schemas/UInt'
-        total:
-          $ref: '#/components/schemas/UInt'
-    DryRunInputItem:
-      type: object
-      properties:
-        tx:
-          $ref: '#/components/schemas/EncodedTxByteArray'
-        tx_hash:
-          $ref: '#/components/schemas/EncodedTxHash'
-        call_req:
-          $ref: '#/components/schemas/DryRunCallReq'
-    DryRunResult:
-      type: object
-      properties:
-        type:
-          type: string
-        result:
-          type: string
-        reason:
-          type: string
-        call_obj:
-          $ref: '#/components/schemas/ContractCallObject'
-      required:
-      - type
-      - result
-    ChannelSetDelegatesTx:
-      type: object
-      properties:
-        channel_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        from_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        initiator_delegate_ids:
-          type: array
-          items:
-            $ref: '#/components/schemas/EncodedPubkey'
-        responder_delegate_ids:
-          type: array
-          items:
-            $ref: '#/components/schemas/EncodedPubkey'
-        state_hash:
-          $ref: '#/components/schemas/EncodedPubkey'
-        round:
-          $ref: '#/components/schemas/UInt64'
-        payload:
-          description: Base64Check encoded byte array. Accepted on input as a plain 'ba_'-prefixed byte array (see aehttp_dispatch_int.erl's produce_tx(channel_set_delegates_tx, ...)), but returned by the node as a 'tx_'-prefixed transaction (see aesc_set_delegates_tx.erl) -- no single prefix pattern covers both.
-          type: string
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-      required:
-      - channel_id
-      - from_id
-      - initiator_delegate_ids
-      - responder_delegate_ids
-      - state_hash
-      - round
-      - payload
-      - fee
-    ChannelCloseSoloTx:
-      type: object
-      properties:
-        channel_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        from_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        payload:
-          description: Base64Check encoded byte array. Accepted on input as a plain 'ba_'-prefixed byte array (see aehttp_dispatch_int.erl's produce_tx(channel_close_solo_tx, ...)), but returned by the node as a 'tx_'-prefixed transaction (see aesc_close_solo_tx.erl) -- no single prefix pattern covers both.
-          type: string
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-        poi:
-          $ref: '#/components/schemas/EncodedProofOfInclusion'
-      required:
-      - channel_id
-      - from_id
-      - payload
-      - fee
-      - poi
-    ChannelSlashTx:
-      type: object
-      properties:
-        channel_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        from_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        payload:
-          description: Base64Check encoded byte array. Accepted on input as a plain 'ba_'-prefixed byte array (see aehttp_dispatch_int.erl's produce_tx(channel_slash_tx, ...)), but returned by the node as a 'tx_'-prefixed transaction (see aesc_slash_tx.erl) -- no single prefix pattern covers both.
-          type: string
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-        poi:
-          $ref: '#/components/schemas/EncodedProofOfInclusion'
-      required:
-      - channel_id
-      - from_id
-      - payload
-      - fee
-      - poi
-    Delegates:
-      oneOf:
-      - type: array
-        items:
-          $ref: '#/components/schemas/EncodedPubkey'
-      - type: object
-        properties:
-          initiator:
-            type: array
-            items:
-              $ref: '#/components/schemas/EncodedPubkey'
-          responder:
-            type: array
-            items:
-              $ref: '#/components/schemas/EncodedPubkey'
-    PubKey:
-      type: object
-      properties:
-        pub_key:
-          $ref: '#/components/schemas/EncodedPubkey'
-      required:
-      - pub_key
-    EncodedTxByteArray:
-      description: Base64Check encoded transaction
-      type: string
-      example: tx_+E8hAaEB4TK48d23oE5jt/qWR5pUu8UlpTGn8bwM5JISGQMGf7ABoQOvDVCf43V7alNbsUvTarXaCf7rjtWX36YLS4+JTa4jn4YPHaUyOAAAxRZ6Sg==
-      pattern: ^tx_[0-9A-Za-z+/=]+$
-    EncodedContractByteArray:
-      description: Base64Check encoded contract byte array
-      type: string
-      example: cb_AAAAAfy4hFE=
-      pattern: ^cb_[0-9A-Za-z+/=]+$
     CountResponse:
       type: object
       properties:
@@ -1758,6 +1336,17 @@ components:
           $ref: '#/components/schemas/UInt32'
       required:
       - count
+    SpendTx:
+      allOf:
+      - $ref: '#/components/schemas/SpendTxInput'
+      - required:
+        - nonce
+    UInt64:
+      oneOf:
+      - type: integer
+        minimum: 0
+        maximum: 18446744073709552000
+      - type: string
     ContractCreateTx:
       type: object
       properties:
@@ -1796,230 +1385,14 @@ components:
       - gas_price
       - fee
       - call_data
-    OffChainUpdate:
-      type: object
-      discriminator:
-        propertyName: op
-      properties:
-        op:
-          type: string
-      required:
-      - op
-    PeerCount:
-      type: object
-      properties:
-        connected:
-          type: object
-          properties:
-            inbound:
-              $ref: '#/components/schemas/UInt64'
-            outbound:
-              $ref: '#/components/schemas/UInt64'
-        available:
-          type: object
-          properties:
-            verified:
-              $ref: '#/components/schemas/UInt64'
-            unverified:
-              $ref: '#/components/schemas/UInt64'
-        blocked:
-          $ref: '#/components/schemas/UInt64'
-      required:
-      - connected
-      - available
-      - blocked
-    DryRunResults:
-      type: object
-      properties:
-        results:
-          type: array
-          description: results
-          items:
-            $ref: '#/components/schemas/DryRunResult'
-        tx_events:
-          type: array
-          description: on-chain tx events
-          items:
-            $ref: '#/components/schemas/TxEvent'
-      required:
-      - results
-    NameUpdateTx:
-      type: object
-      properties:
-        name_id:
-          $ref: '#/components/schemas/EncodedNameId'
-        name_ttl:
-          $ref: '#/components/schemas/UInt64'
-        pointers:
-          type: array
-          items:
-            $ref: '#/components/schemas/NamePointer'
-        client_ttl:
-          $ref: '#/components/schemas/UInt64'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        account_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-      required:
-      - name_id
-      - name_ttl
-      - client_ttl
-      - pointers
-      - fee
-      - account_id
-    OracleRespondTx:
-      type: object
-      properties:
-        query_id:
-          $ref: '#/components/schemas/EncodedOracleQueryId'
-        response:
-          type: string
-        response_ttl:
-          $ref: '#/components/schemas/RelativeTTL'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        oracle_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-      required:
-      - query_id
-      - response
-      - response_ttl
-      - fee
-      - oracle_id
-    NamePreclaimTx:
-      type: object
-      properties:
-        commitment_id:
-          $ref: '#/components/schemas/EncodedCommitmentId'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        account_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-      required:
-      - commitment_id
-      - fee
-      - account_id
-    GAMetaTx:
-      type: object
-      properties:
-        ga_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        abi_version:
-          $ref: '#/components/schemas/UInt16'
-        gas:
-          $ref: '#/components/schemas/UInt64'
-        gas_price:
-          $ref: '#/components/schemas/UInt'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        auth_data:
-          $ref: '#/components/schemas/EncodedContractByteArray'
-        tx:
-          $ref: '#/components/schemas/SignedTx'
-      required:
-      - ga_id
-      - abi_version
-      - gas
-      - gas_price
-      - fee
-      - auth_data
-      - tx
-    UnsignedTx:
-      $ref: '#/components/schemas/EncodedTx'
-    TTL:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - delta
-          - block
-        value:
-          $ref: '#/components/schemas/UInt64'
-      required:
-      - type
-      - value
-    CheckTxInPoolResponse:
-      type: object
-      properties:
-        status:
-          type: string
-      required:
-      - status
-    ContractCallTx:
-      type: object
-      properties:
-        caller_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-        contract_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        abi_version:
-          $ref: '#/components/schemas/UInt16'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        amount:
-          $ref: '#/components/schemas/UInt'
-        gas:
-          $ref: '#/components/schemas/UInt64'
-        gas_price:
-          $ref: '#/components/schemas/UInt'
-        call_data:
-          $ref: '#/components/schemas/EncodedContractByteArray'
-      required:
-      - caller_id
-      - contract_id
-      - abi_version
-      - fee
-      - amount
-      - gas
-      - gas_price
-      - call_data
-    OracleRegisterTx:
-      type: object
-      properties:
-        query_format:
-          type: string
-        response_format:
-          type: string
-        query_fee:
-          $ref: '#/components/schemas/UInt'
-        oracle_ttl:
-          $ref: '#/components/schemas/TTL'
-        account_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-        fee:
-          $ref: '#/components/schemas/UInt'
-        ttl:
-          $ref: '#/components/schemas/UInt64'
-        abi_version:
-          $ref: '#/components/schemas/UInt16'
-      required:
-      - query_format
-      - response_format
-      - query_fee
-      - fee
-      - oracle_ttl
-      - account_id
+    EncodedPubkey:
+      description: Base58Check encoded tagged pubkey
+      type: string
+    EncodedTxHash:
+      description: Base58Check encoded transaction hash
+      type: string
+      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^th_\w+$
     Tx:
       allOf:
       - type: object
@@ -2085,30 +1458,173 @@ components:
         - $ref: '#/components/schemas/GAAttachTx'
         - $ref: '#/components/schemas/GAMetaTx'
         - $ref: '#/components/schemas/PayingForTx'
+    CheckTxInPoolResponse:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+      - status
+    SignedTx:
+      type: object
+      properties:
+        tx:
+          $ref: '#/components/schemas/Tx'
+        block_height:
+          $ref: '#/components/schemas/TxBlockHeight'
+        block_hash:
+          $ref: '#/components/schemas/EncodedHash'
+        hash:
+          $ref: '#/components/schemas/EncodedTxHash'
+        encoded_tx:
+          $ref: '#/components/schemas/EncodedTxByteArray'
+        signatures:
+          description: At least one signature is required unless for Generalized Account Meta transactions
+          type: array
+          minItems: 0
+          items:
+            $ref: '#/components/schemas/EncodedSignature'
+      required:
+      - tx
+    DryRunCallContext:
+      type: object
+      properties:
+        tx:
+          $ref: '#/components/schemas/EncodedTxByteArray'
+        tx_hash:
+          $ref: '#/components/schemas/EncodedTxHash'
+        stateful:
+          description: This call will have effects on the next call in this dry-run (or not)
+          type: boolean
+    PubKey:
+      type: object
+      properties:
+        pub_key:
+          $ref: '#/components/schemas/EncodedPubkey'
+      required:
+      - pub_key
+    EncodedHash:
+      description: Base58Check encoded tagged hash
+      type: string
+    EncodedTx:
+      type: object
+      properties:
+        tx:
+          $ref: '#/components/schemas/EncodedTxByteArray'
+      required:
+      - tx
+    ChannelWithdrawTx:
+      type: object
+      properties:
+        channel_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        to_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        amount:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        state_hash:
+          $ref: '#/components/schemas/EncodedHash'
+        round:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - channel_id
+      - to_id
+      - amount
+      - fee
+      - nonce
+      - state_hash
+      - round
     NetworkStatus:
       type: object
       additionalProperties:
         $ref: '#/components/schemas/PeerDetails'
-    Pow:
-      type: array
-      items:
-        $ref: '#/components/schemas/UInt32'
-      minItems: 42
-      maxItems: 42
-    EncodedPubkey:
-      description: Base58Check encoded tagged pubkey
-      type: string
-    CreateContractUnsignedTx:
-      allOf:
-      - $ref: '#/components/schemas/UnsignedTx'
-      - type: object
-        properties:
-          contract_id:
-            $ref: '#/components/schemas/EncodedPubkey'
-        required:
-        - contract_id
-    TxEvent:
+    DryRunCallReq:
       type: object
+      properties:
+        calldata:
+          $ref: '#/components/schemas/EncodedContractByteArray'
+        contract:
+          $ref: '#/components/schemas/EncodedPubkey'
+        amount:
+          $ref: '#/components/schemas/UInt'
+        gas:
+          $ref: '#/components/schemas/UInt'
+        caller:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        abi_version:
+          $ref: '#/components/schemas/UInt16'
+        context:
+          $ref: '#/components/schemas/DryRunCallContext'
+      required:
+      - calldata
+      - contract
+    OffChainUpdate:
+      type: object
+      discriminator:
+        propertyName: op
+      properties:
+        op:
+          type: string
+      required:
+      - op
+    PeerCount:
+      type: object
+      properties:
+        connected:
+          type: object
+          properties:
+            inbound:
+              $ref: '#/components/schemas/UInt64'
+            outbound:
+              $ref: '#/components/schemas/UInt64'
+        available:
+          type: object
+          properties:
+            verified:
+              $ref: '#/components/schemas/UInt64'
+            unverified:
+              $ref: '#/components/schemas/UInt64'
+        blocked:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - connected
+      - available
+      - blocked
+    ChannelSettleTx:
+      type: object
+      properties:
+        channel_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        from_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        initiator_amount_final:
+          $ref: '#/components/schemas/UInt'
+        responder_amount_final:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - channel_id
+      - from_id
+      - initiator_amount_final
+      - responder_amount_final
+      - fee
+      - nonce
+    Peer:
+      type: string
+      description: Aeternity node
     ContractCallObject:
       type: object
       properties:
@@ -2147,62 +1663,544 @@ components:
       - log
       - return_value
       - return_type
-    DryRunCallReq:
+    EncodedByteArray:
+      description: Base64Check encoded byte array
+      type: string
+      example: ba_AAAAAfy4hFE=
+      pattern: ^ba_[0-9A-Za-z+/=]+$
+    OracleExtendTx:
       type: object
       properties:
-        calldata:
-          $ref: '#/components/schemas/EncodedContractByteArray'
-        contract:
-          $ref: '#/components/schemas/EncodedPubkey'
-        amount:
+        fee:
           $ref: '#/components/schemas/UInt'
-        gas:
-          $ref: '#/components/schemas/UInt'
-        caller:
+        oracle_ttl:
+          $ref: '#/components/schemas/RelativeTTL'
+        oracle_id:
           $ref: '#/components/schemas/EncodedPubkey'
         nonce:
           $ref: '#/components/schemas/UInt64'
-        abi_version:
-          $ref: '#/components/schemas/UInt16'
-        context:
-          $ref: '#/components/schemas/DryRunCallContext'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
       required:
-      - calldata
-      - contract
-    SignedTx:
+      - fee
+      - oracle_ttl
+      - oracle_id
+    EncodedStateTrees:
+      description: Base64Check encoded state trees
+      type: string
+      pattern: ^ss_[0-9A-Za-z+/=]+$
+    Error:
       type: object
       properties:
-        tx:
-          $ref: '#/components/schemas/Tx'
-        block_height:
-          $ref: '#/components/schemas/TxBlockHeight'
-        block_hash:
-          $ref: '#/components/schemas/EncodedHash'
-        hash:
-          $ref: '#/components/schemas/EncodedTxHash'
-        encoded_tx:
-          $ref: '#/components/schemas/EncodedTxByteArray'
-        signatures:
-          description: At least one signature is required unless for Generalized Account Meta transactions
-          type: array
-          minItems: 0
-          items:
-            $ref: '#/components/schemas/EncodedSignature'
+        reason:
+          type: string
+        error_code:
+          type: string
       required:
+      - reason
+    ChannelSlashTx:
+      type: object
+      properties:
+        channel_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        from_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        payload:
+          description: Base64Check encoded byte array. Accepted on input as a plain 'ba_'-prefixed byte array (see aehttp_dispatch_int.erl's produce_tx(channel_slash_tx, ...)), but returned by the node as a 'tx_'-prefixed transaction (see aesc_slash_tx.erl) -- no single prefix pattern covers both.
+          type: string
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        poi:
+          $ref: '#/components/schemas/EncodedProofOfInclusion'
+      required:
+      - channel_id
+      - from_id
+      - payload
+      - fee
+      - poi
+    DryRunResults:
+      type: object
+      properties:
+        results:
+          type: array
+          description: results
+          items:
+            $ref: '#/components/schemas/DryRunResult'
+        tx_events:
+          type: array
+          description: on-chain tx events
+          items:
+            $ref: '#/components/schemas/TxEvent'
+      required:
+      - results
+    ChannelSnapshotSoloTx:
+      type: object
+      properties:
+        channel_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        from_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        payload:
+          description: Base64Check encoded byte array. Accepted on input as a plain 'ba_'-prefixed byte array (see aehttp_dispatch_int.erl's produce_tx(channel_snapshot_solo_tx, ...)), but returned by the node as a 'tx_'-prefixed transaction (see aesc_snapshot_solo_tx.erl) -- no single prefix pattern covers both.
+          type: string
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - channel_id
+      - from_id
+      - payload
+      - fee
+    Peers:
+      type: object
+      properties:
+        peers:
+          type: array
+          description: All discovered peers
+          items:
+            $ref: '#/components/schemas/Peer'
+        blocked:
+          type: array
+          description: All blocked peers
+          items:
+            $ref: '#/components/schemas/Peer'
+      required:
+      - peers
+      - blocked
+    UnsignedTx:
+      $ref: '#/components/schemas/EncodedTx'
+    EncodedTxByteArray:
+      description: Base64Check encoded transaction
+      type: string
+      example: tx_+E8hAaEB4TK48d23oE5jt/qWR5pUu8UlpTGn8bwM5JISGQMGf7ABoQOvDVCf43V7alNbsUvTarXaCf7rjtWX36YLS4+JTa4jn4YPHaUyOAAAxRZ6Sg==
+      pattern: ^tx_[0-9A-Za-z+/=]+$
+    OracleRegisterTx:
+      type: object
+      properties:
+        query_format:
+          type: string
+        response_format:
+          type: string
+        query_fee:
+          $ref: '#/components/schemas/UInt'
+        oracle_ttl:
+          $ref: '#/components/schemas/TTL'
+        account_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        abi_version:
+          $ref: '#/components/schemas/UInt16'
+      required:
+      - query_format
+      - response_format
+      - query_fee
+      - fee
+      - oracle_ttl
+      - account_id
+    ChannelForceProgressTx:
+      type: object
+      properties:
+        channel_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        from_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        payload:
+          $ref: '#/components/schemas/EncodedTxByteArray'
+        round:
+          $ref: '#/components/schemas/UInt64'
+        update:
+          $ref: '#/components/schemas/OffChainUpdate'
+        state_hash:
+          $ref: '#/components/schemas/EncodedHash'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        offchain_trees:
+          $ref: '#/components/schemas/EncodedStateTrees'
+      required:
+      - channel_id
+      - from_id
+      - payload
+      - round
+      - update
+      - state_hash
+      - fee
+    ChannelCreateTx:
+      type: object
+      properties:
+        initiator_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        initiator_amount:
+          $ref: '#/components/schemas/UInt'
+        responder_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        responder_amount:
+          $ref: '#/components/schemas/UInt'
+        channel_reserve:
+          $ref: '#/components/schemas/UInt'
+        lock_period:
+          $ref: '#/components/schemas/UInt64'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        state_hash:
+          $ref: '#/components/schemas/EncodedHash'
+        delegate_ids:
+          $ref: '#/components/schemas/Delegates'
+      required:
+      - initiator_id
+      - initiator_amount
+      - responder_id
+      - responder_amount
+      - channel_reserve
+      - lock_period
+      - fee
+      - state_hash
+    SignedTxs:
+      type: object
+      properties:
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/SignedTx'
+    NameClaimTx:
+      type: object
+      properties:
+        name:
+          type: string
+        name_salt:
+          $ref: '#/components/schemas/UInt'
+        name_fee:
+          $ref: '#/components/schemas/UInt'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        account_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - name
+      - name_salt
+      - fee
+      - account_id
+    PayingForTx:
+      type: object
+      properties:
+        payer_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        tx:
+          $ref: '#/components/schemas/SignedTx'
+      required:
+      - payer_id
+      - fee
       - tx
-    UInt16:
+    CommitmentId:
+      type: object
+      properties:
+        commitment_id:
+          $ref: '#/components/schemas/EncodedCommitmentId'
+      required:
+      - commitment_id
+    PeerDetails:
+      type: object
+      properties:
+        host:
+          description: Hostname of peer
+          type: string
+        port:
+          $ref: '#/components/schemas/UInt32'
+        first_seen:
+          $ref: '#/components/schemas/UInt32'
+        last_seen:
+          $ref: '#/components/schemas/UInt32'
+        genesis_hash:
+          $ref: '#/components/schemas/EncodedHash'
+        top_hash:
+          $ref: '#/components/schemas/EncodedHash'
+        top_difficulty:
+          $ref: '#/components/schemas/UInt64'
+        network_id:
+          type: string
+        node_version:
+          type: string
+        node_revision:
+          type: string
+        node_vendor:
+          type: string
+        node_os:
+          type: string
+      required:
+      - host
+      - port
+      - first_seen
+      - last_seen
+      - genesis_hash
+      - top_hash
+      - top_difficulty
+    TokenSupply:
+      type: object
+      properties:
+        accounts:
+          $ref: '#/components/schemas/UInt'
+        contracts:
+          $ref: '#/components/schemas/UInt'
+        contract_oracles:
+          $ref: '#/components/schemas/UInt'
+        locked:
+          $ref: '#/components/schemas/UInt'
+        oracles:
+          $ref: '#/components/schemas/UInt'
+        oracle_queries:
+          $ref: '#/components/schemas/UInt'
+        pending_rewards:
+          $ref: '#/components/schemas/UInt'
+        total:
+          $ref: '#/components/schemas/UInt'
+    EncodedContractByteArray:
+      description: Base64Check encoded contract byte array
+      type: string
+      example: cb_AAAAAfy4hFE=
+      pattern: ^cb_[0-9A-Za-z+/=]+$
+    NameUpdateTx:
+      type: object
+      properties:
+        name_id:
+          $ref: '#/components/schemas/EncodedNameId'
+        name_ttl:
+          $ref: '#/components/schemas/UInt64'
+        pointers:
+          type: array
+          items:
+            $ref: '#/components/schemas/NamePointer'
+        client_ttl:
+          $ref: '#/components/schemas/UInt64'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        account_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - name_id
+      - name_ttl
+      - client_ttl
+      - pointers
+      - fee
+      - account_id
+    CreateContractUnsignedTx:
+      allOf:
+      - $ref: '#/components/schemas/UnsignedTx'
+      - type: object
+        properties:
+          contract_id:
+            $ref: '#/components/schemas/EncodedPubkey'
+        required:
+        - contract_id
+    TxEvent:
+      type: object
+    NamePointer:
+      type: object
+      properties:
+        key:
+          type: string
+        encoded_key:
+          $ref: '#/components/schemas/EncodedByteArray'
+        id:
+          $ref: '#/components/schemas/EncodedPubkey'
+      required:
+      - key
+      - id
+    RelativeTTL:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - delta
+        value:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - type
+      - value
+    Event:
+      type: object
+      properties:
+        address:
+          $ref: '#/components/schemas/EncodedPubkey'
+        topics:
+          description: Event topics
+          type: array
+          items:
+            $ref: '#/components/schemas/UInt'
+        data:
+          $ref: '#/components/schemas/EncodedContractByteArray'
+      required:
+      - address
+      - topics
+      - data
+    NameRevokeTx:
+      type: object
+      properties:
+        name_id:
+          $ref: '#/components/schemas/EncodedNameId'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        account_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - name_id
+      - fee
+      - account_id
+    DryRunAccount:
+      type: object
+      properties:
+        pub_key:
+          $ref: '#/components/schemas/EncodedPubkey'
+        amount:
+          $ref: '#/components/schemas/UInt'
+      required:
+      - pub_key
+      - amount
+    OracleQueryTx:
+      type: object
+      properties:
+        oracle_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        query:
+          type: string
+        query_fee:
+          $ref: '#/components/schemas/UInt'
+        query_ttl:
+          $ref: '#/components/schemas/TTL'
+        response_ttl:
+          $ref: '#/components/schemas/RelativeTTL'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        sender_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - oracle_id
+      - query
+      - query_fee
+      - query_ttl
+      - response_ttl
+      - fee
+      - sender_id
+    ChannelSetDelegatesTx:
+      type: object
+      properties:
+        channel_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        from_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        initiator_delegate_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/EncodedPubkey'
+        responder_delegate_ids:
+          type: array
+          items:
+            $ref: '#/components/schemas/EncodedPubkey'
+        state_hash:
+          $ref: '#/components/schemas/EncodedPubkey'
+        round:
+          $ref: '#/components/schemas/UInt64'
+        payload:
+          description: Base64Check encoded byte array. Accepted on input as a plain 'ba_'-prefixed byte array (see aehttp_dispatch_int.erl's produce_tx(channel_set_delegates_tx, ...)), but returned by the node as a 'tx_'-prefixed transaction (see aesc_set_delegates_tx.erl) -- no single prefix pattern covers both.
+          type: string
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - channel_id
+      - from_id
+      - initiator_delegate_ids
+      - responder_delegate_ids
+      - state_hash
+      - round
+      - payload
+      - fee
+    UInt32:
       oneOf:
       - type: integer
         minimum: 0
-        maximum: 65535
+        maximum: 4294967295
       - type: string
-    EncodedTx:
+    Delegates:
+      oneOf:
+      - type: array
+        items:
+          $ref: '#/components/schemas/EncodedPubkey'
+      - type: object
+        properties:
+          initiator:
+            type: array
+            items:
+              $ref: '#/components/schemas/EncodedPubkey'
+          responder:
+            type: array
+            items:
+              $ref: '#/components/schemas/EncodedPubkey'
+    Pow:
+      type: array
+      items:
+        $ref: '#/components/schemas/UInt32'
+      minItems: 42
+      maxItems: 42
+    NamePreclaimTx:
       type: object
       properties:
-        tx:
-          $ref: '#/components/schemas/EncodedTxByteArray'
+        commitment_id:
+          $ref: '#/components/schemas/EncodedCommitmentId'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        account_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
       required:
-      - tx
+      - commitment_id
+      - fee
+      - account_id
     SpendTxInput:
       type: object
       properties:
@@ -2226,44 +2224,130 @@ components:
       - fee
       - sender_id
       - payload
-    NameTransferTx:
+    GAAttachTx:
       type: object
       properties:
-        name_id:
-          $ref: '#/components/schemas/EncodedNameId'
-        recipient_id:
+        owner_id:
           $ref: '#/components/schemas/EncodedPubkey'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        code:
+          $ref: '#/components/schemas/EncodedContractByteArray'
+        vm_version:
+          $ref: '#/components/schemas/UInt16'
+        abi_version:
+          $ref: '#/components/schemas/UInt16'
+        gas:
+          $ref: '#/components/schemas/UInt64'
+        gas_price:
+          $ref: '#/components/schemas/UInt'
         fee:
           $ref: '#/components/schemas/UInt'
         ttl:
           $ref: '#/components/schemas/UInt64'
-        account_id:
-          $ref: '#/components/schemas/EncodedPubkey'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-      required:
-      - name_id
-      - recipient_id
-      - fee
-      - account_id
-    NamePointer:
-      type: object
-      properties:
-        key:
+        call_data:
+          $ref: '#/components/schemas/EncodedContractByteArray'
+        auth_fun:
+          description: Contract authorization function hash (hex encoded)
           type: string
-        encoded_key:
-          $ref: '#/components/schemas/EncodedByteArray'
-        id:
-          $ref: '#/components/schemas/EncodedPubkey'
+          pattern: ^(0x|0X)?[a-fA-F0-9]+$
       required:
-      - key
-      - id
-    ChannelWithdrawTx:
+      - owner_id
+      - code
+      - vm_version
+      - abi_version
+      - gas
+      - gas_price
+      - fee
+      - call_data
+      - auth_fun
+    EncodedOracleQueryId:
+      description: Base58Check encoded oracle query id
+      type: string
+      example: oq_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^oq_\w+$
+    EncodedProofOfInclusion:
+      description: Base64Check encoded proof of inclusion
+      type: string
+      pattern: ^pi_[0-9A-Za-z+/=]+$
+    EncodedSignature:
+      description: Base58Check encoded signature
+      type: string
+      example: sg_8hhU15cVMbukFj4FbdrFwwYnbzXYPnstu9PDnWZGbfQNpeHcB6tK1F3wvG1MPYySARgDRJYUh3YPJD3HctFwg6Y4rUGSR
+      pattern: ^sg_\w+$
+    ChannelCloseSoloTx:
       type: object
       properties:
         channel_id:
           $ref: '#/components/schemas/EncodedPubkey'
-        to_id:
+        from_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        payload:
+          description: Base64Check encoded byte array. Accepted on input as a plain 'ba_'-prefixed byte array (see aehttp_dispatch_int.erl's produce_tx(channel_close_solo_tx, ...)), but returned by the node as a 'tx_'-prefixed transaction (see aesc_close_solo_tx.erl) -- no single prefix pattern covers both.
+          type: string
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        fee:
+          $ref: '#/components/schemas/UInt'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        poi:
+          $ref: '#/components/schemas/EncodedProofOfInclusion'
+      required:
+      - channel_id
+      - from_id
+      - payload
+      - fee
+      - poi
+    EncodedCommitmentId:
+      description: Base58Check encoded AENS commitment
+      type: string
+      example: cm_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^cm_\w+$
+    DryRunResult:
+      type: object
+      properties:
+        type:
+          type: string
+        result:
+          type: string
+        reason:
+          type: string
+        call_obj:
+          $ref: '#/components/schemas/ContractCallObject'
+      required:
+      - type
+      - result
+    ChannelCloseMutualTx:
+      type: object
+      properties:
+        channel_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        from_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        initiator_amount_final:
+          $ref: '#/components/schemas/UInt'
+        responder_amount_final:
+          $ref: '#/components/schemas/UInt'
+        ttl:
+          $ref: '#/components/schemas/UInt64'
+        fee:
+          $ref: '#/components/schemas/UInt64'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+      required:
+      - channel_id
+      - from_id
+      - initiator_amount_final
+      - responder_amount_final
+      - fee
+      - nonce
+    ChannelDepositTx:
+      type: object
+      properties:
+        channel_id:
+          $ref: '#/components/schemas/EncodedPubkey'
+        from_id:
           $ref: '#/components/schemas/EncodedPubkey'
         amount:
           $ref: '#/components/schemas/UInt'
@@ -2279,130 +2363,73 @@ components:
           $ref: '#/components/schemas/UInt64'
       required:
       - channel_id
-      - to_id
+      - from_id
       - amount
       - fee
       - nonce
       - state_hash
       - round
-    KeyBlock:
+    OracleRespondTx:
       type: object
       properties:
-        hash:
-          $ref: '#/components/schemas/EncodedHash'
-        height:
-          $ref: '#/components/schemas/UInt64'
-        prev_hash:
-          $ref: '#/components/schemas/EncodedHash'
-        prev_key_hash:
-          $ref: '#/components/schemas/EncodedHash'
-        state_hash:
-          $ref: '#/components/schemas/EncodedHash'
-        miner:
-          $ref: '#/components/schemas/EncodedPubkey'
-        beneficiary:
-          $ref: '#/components/schemas/EncodedPubkey'
-        flags:
-          $ref: '#/components/schemas/EncodedByteArray'
-        target:
-          $ref: '#/components/schemas/UInt32'
-        pow:
-          $ref: '#/components/schemas/Pow'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-        time:
-          $ref: '#/components/schemas/UInt64'
-        version:
-          $ref: '#/components/schemas/UInt32'
-        info:
-          $ref: '#/components/schemas/EncodedContractByteArray'
-      required:
-      - hash
-      - height
-      - prev_hash
-      - prev_key_hash
-      - state_hash
-      - miner
-      - beneficiary
-      - target
-      - time
-      - version
-      - info
-    UInt32:
-      oneOf:
-      - type: integer
-        minimum: 0
-        maximum: 4294967295
-      - type: string
-    RelativeTTL:
-      type: object
-      properties:
-        type:
+        query_id:
+          $ref: '#/components/schemas/EncodedOracleQueryId'
+        response:
           type: string
-          enum:
-          - delta
-        value:
-          $ref: '#/components/schemas/UInt64'
-      required:
-      - type
-      - value
-    EncodedProofOfInclusion:
-      description: Base64Check encoded proof of inclusion
-      type: string
-      pattern: ^pi_[0-9A-Za-z+/=]+$
-    DryRunCallContext:
-      type: object
-      properties:
-        tx:
-          $ref: '#/components/schemas/EncodedTxByteArray'
-        tx_hash:
-          $ref: '#/components/schemas/EncodedTxHash'
-        stateful:
-          description: This call will have effects on the next call in this dry-run (or not)
-          type: boolean
-    Event:
-      type: object
-      properties:
-        address:
-          $ref: '#/components/schemas/EncodedPubkey'
-        topics:
-          description: Event topics
-          type: array
-          items:
-            $ref: '#/components/schemas/UInt'
-        data:
-          $ref: '#/components/schemas/EncodedContractByteArray'
-      required:
-      - address
-      - topics
-      - data
-    NameClaimTx:
-      type: object
-      properties:
-        name:
-          type: string
-        name_salt:
-          $ref: '#/components/schemas/UInt'
-        name_fee:
-          $ref: '#/components/schemas/UInt'
+        response_ttl:
+          $ref: '#/components/schemas/RelativeTTL'
         fee:
           $ref: '#/components/schemas/UInt'
         ttl:
           $ref: '#/components/schemas/UInt64'
-        account_id:
+        oracle_id:
           $ref: '#/components/schemas/EncodedPubkey'
         nonce:
           $ref: '#/components/schemas/UInt64'
       required:
-      - name
-      - name_salt
+      - query_id
+      - response
+      - response_ttl
       - fee
-      - account_id
-    EncodedTxHash:
-      description: Base58Check encoded transaction hash
+      - oracle_id
+    TxBlockHeight:
+      oneOf:
+      - type: integer
+        minimum: -1
+        maximum: 18446744073709552000
+      - type: string
+    EncodedNameId:
+      description: Base58Check encoded AENS name hash
       type: string
-      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
-      pattern: ^th_\w+$
+      example: nm_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^nm_\w+$
+  parameters:
+    intAsString:
+      in: query
+      name: int-as-string
+      description: If this flag is set to true, the response will have all integers set as strings
+      required: false
+      schema:
+        type: boolean
+        default: false
+    txHash:
+      in: path
+      name: hash
+      description: The hash of the transaction
+      required: true
+      schema:
+        type: string
+        example: th_2w75xjDjHEmphsHDSXrThRnPx6hSUiS7hhSRcuytJABZZ2KkdG
+    height:
+      in: path
+      name: height
+      description: The height
+      required: true
+      schema:
+        type: integer
+        minimum: 0
+        maximum: 18446744073709552000
+        example: 42
   responses:
     ServiceUnavailable:
       description: 'The node is temporarily unable to handle the request: either its request queues are saturated (overload protection) or it has not yet reached a stable mode. Overload protection is applied to every endpoint, so this response can be returned by any operation. The Retry-After header tells the client how long to back off before retrying.'
@@ -2417,33 +2444,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-  parameters:
-    height:
-      in: path
-      name: height
-      description: The height
-      required: true
-      schema:
-        type: integer
-        minimum: 0
-        maximum: 18446744073709552000
-        example: 42
-    txHash:
-      in: path
-      name: hash
-      description: The hash of the transaction
-      required: true
-      schema:
-        type: string
-        example: th_2w75xjDjHEmphsHDSXrThRnPx6hSUiS7hhSRcuytJABZZ2KkdG
-    intAsString:
-      in: query
-      name: int-as-string
-      description: If this flag is set to true, the response will have all integers set as strings
-      required: false
-      schema:
-        type: boolean
-        default: false
 externalDocs:
   description: Find out more about Aeternity
   url: http://www.aeternity.com

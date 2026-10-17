@@ -130,23 +130,102 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    Pow:
-      type: array
-      items:
-        $ref: '#/components/schemas/UInt32'
-      minItems: 42
-      maxItems: 42
+    UInt32:
+      oneOf:
+      - type: integer
+        minimum: 0
+        maximum: 4294967295
+      - type: string
+    KeyBlock:
+      type: object
+      properties:
+        hash:
+          $ref: '#/components/schemas/EncodedHash'
+        height:
+          $ref: '#/components/schemas/UInt64'
+        prev_hash:
+          $ref: '#/components/schemas/EncodedHash'
+        prev_key_hash:
+          $ref: '#/components/schemas/EncodedHash'
+        state_hash:
+          $ref: '#/components/schemas/EncodedHash'
+        miner:
+          $ref: '#/components/schemas/EncodedPubkey'
+        beneficiary:
+          $ref: '#/components/schemas/EncodedPubkey'
+        flags:
+          $ref: '#/components/schemas/EncodedByteArray'
+        target:
+          $ref: '#/components/schemas/UInt32'
+        pow:
+          $ref: '#/components/schemas/Pow'
+        nonce:
+          $ref: '#/components/schemas/UInt64'
+        time:
+          $ref: '#/components/schemas/UInt64'
+        version:
+          $ref: '#/components/schemas/UInt32'
+        info:
+          $ref: '#/components/schemas/EncodedContractByteArray'
+      required:
+      - hash
+      - height
+      - prev_hash
+      - prev_key_hash
+      - state_hash
+      - miner
+      - beneficiary
+      - target
+      - time
+      - version
+      - info
     EncodedByteArray:
       description: Base64Check encoded byte array
       type: string
       example: ba_AAAAAfy4hFE=
       pattern: ^ba_[0-9A-Za-z+/=]+$
+    KeyBlockHash:
+      description: Key block hash
+      type: string
+      example: kh_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^kh_\w{38,50}$
+    EncodedContractByteArray:
+      description: Base64Check encoded contract byte array
+      type: string
+      example: cb_AAAAAfy4hFE=
+      pattern: ^cb_[0-9A-Za-z+/=]+$
+    ByteArray:
+      type: string
+      example: ba_wAAAAKv2ZV4=
+      pattern: ^ba_\w+$
     UInt64:
       oneOf:
       - type: integer
         minimum: 0
         maximum: 18446744073709552000
       - type: string
+    Pow:
+      type: array
+      items:
+        $ref: '#/components/schemas/UInt32'
+      minItems: 42
+      maxItems: 42
+    PaginatedResponse:
+      type: object
+      properties:
+        next:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=123
+        prev:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=234
+      required:
+      - next
+      - prev
     MicroBlockHeader:
       type: object
       properties:
@@ -189,29 +268,23 @@ components:
     EncodedPubkey:
       description: Base58Check encoded tagged pubkey
       type: string
-    EncodedHash:
-      description: Base58Check encoded tagged hash
-      type: string
-    PaginatedResponse:
+    ErrorResponse:
+      description: Error response from the API
       type: object
+      example:
+        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
       properties:
-        next:
-          type:
-          - string
-          - 'null'
-          example: /blocks?cursor=123
-        prev:
-          type:
-          - string
-          - 'null'
-          example: /blocks?cursor=234
+        error:
+          description: The message of the error raised
+          type: string
       required:
-      - next
-      - prev
-    ByteArray:
+      - error
+      title: Error response
+    EncodedSignature:
+      description: Base58Check encoded signature
       type: string
-      example: ba_wAAAAKv2ZV4=
-      pattern: ^ba_\w+$
+      example: sg_8hhU15cVMbukFj4FbdrFwwYnbzXYPnstu9PDnWZGbfQNpeHcB6tK1F3wvG1MPYySARgDRJYUh3YPJD3HctFwg6Y4rUGSR
+      pattern: ^sg_\w+$
     KeyBlockExtended:
       example:
         beneficiary: ak_2MR38Zf355m6JtP13T3WEcUcSLVLCxjGvjk6zG95S2mfKohcSS
@@ -293,60 +366,6 @@ components:
           transactions_count:
             description: The number of transactions
             type: integer
-    KeyBlock:
-      type: object
-      properties:
-        hash:
-          $ref: '#/components/schemas/EncodedHash'
-        height:
-          $ref: '#/components/schemas/UInt64'
-        prev_hash:
-          $ref: '#/components/schemas/EncodedHash'
-        prev_key_hash:
-          $ref: '#/components/schemas/EncodedHash'
-        state_hash:
-          $ref: '#/components/schemas/EncodedHash'
-        miner:
-          $ref: '#/components/schemas/EncodedPubkey'
-        beneficiary:
-          $ref: '#/components/schemas/EncodedPubkey'
-        flags:
-          $ref: '#/components/schemas/EncodedByteArray'
-        target:
-          $ref: '#/components/schemas/UInt32'
-        pow:
-          $ref: '#/components/schemas/Pow'
-        nonce:
-          $ref: '#/components/schemas/UInt64'
-        time:
-          $ref: '#/components/schemas/UInt64'
-        version:
-          $ref: '#/components/schemas/UInt32'
-        info:
-          $ref: '#/components/schemas/EncodedContractByteArray'
-      required:
-      - hash
-      - height
-      - prev_hash
-      - prev_key_hash
-      - state_hash
-      - miner
-      - beneficiary
-      - target
-      - time
-      - version
-      - info
-    EncodedSignature:
-      description: Base58Check encoded signature
-      type: string
-      example: sg_8hhU15cVMbukFj4FbdrFwwYnbzXYPnstu9PDnWZGbfQNpeHcB6tK1F3wvG1MPYySARgDRJYUh3YPJD3HctFwg6Y4rUGSR
-      pattern: ^sg_\w+$
-    UInt32:
-      oneOf:
-      - type: integer
-        minimum: 0
-        maximum: 4294967295
-      - type: string
     MicroBlockExtended:
       example:
         micro_block_index: 64
@@ -383,23 +402,9 @@ components:
             type: integer
           flags:
             $ref: '#/components/schemas/ByteArray'
-    ErrorResponse:
-      description: Error response from the API
-      type: object
-      example:
-        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
-      properties:
-        error:
-          description: The message of the error raised
-          type: string
-      required:
-      - error
-      title: Error response
-    KeyBlockHash:
-      description: Key block hash
+    EncodedHash:
+      description: Base58Check encoded tagged hash
       type: string
-      example: kh_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
-      pattern: ^kh_\w{38,50}$
     NotFoundResponse:
       description: Resource not found on the API
       type: object
@@ -412,11 +417,6 @@ components:
       required:
       - error
       title: Not found response
-    EncodedContractByteArray:
-      description: Base64Check encoded contract byte array
-      type: string
-      example: cb_AAAAAfy4hFE=
-      pattern: ^cb_[0-9A-Za-z+/=]+$
   parameters:
     LimitParam:
       in: query

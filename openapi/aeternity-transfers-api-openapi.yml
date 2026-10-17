@@ -48,22 +48,21 @@ paths:
       x-summary-source: derived
 components:
   schemas:
-    PaginatedResponse:
-      type: object
-      properties:
-        next:
-          type:
-          - string
-          - 'null'
-          example: /blocks?cursor=123
-        prev:
-          type:
-          - string
-          - 'null'
-          example: /blocks?cursor=234
-      required:
-      - next
-      - prev
+    MicroBlockHash:
+      description: Micro block hash
+      type: string
+      example: mh_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^mh_\w{38,50}$
+    TransferRefTxType:
+      type:
+      - string
+      - 'null'
+      example: OracleQueryTx
+      enum:
+      - ContractCallTx
+      - NameClaimTx
+      - OracleQueryTx
+      - null
     ErrorResponse:
       description: Error response from the API
       type: object
@@ -76,6 +75,16 @@ components:
       required:
       - error
       title: Error response
+    TransactionHash:
+      description: Transaction hash
+      type: string
+      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
+      pattern: ^th_\w{38,50}$
+    AccountAddress:
+      description: Account address
+      type: string
+      example: ak_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
+      pattern: ^ak_\w{38,50}$
     Transfer:
       type: object
       required:
@@ -106,31 +115,22 @@ components:
           $ref: '#/components/schemas/TransactionHash'
         ref_tx_type:
           $ref: '#/components/schemas/TransferRefTxType'
-    AccountAddress:
-      description: Account address
-      type: string
-      example: ak_psy8tRXPzGxh6975H7K6XQcMFVsdrxJMt7YkzMY8oUTevutzw
-      pattern: ^ak_\w{38,50}$
-    TransferRefTxType:
-      type:
-      - string
-      - 'null'
-      example: OracleQueryTx
-      enum:
-      - ContractCallTx
-      - NameClaimTx
-      - OracleQueryTx
-      - null
-    TransactionHash:
-      description: Transaction hash
-      type: string
-      example: th_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
-      pattern: ^th_\w{38,50}$
-    MicroBlockHash:
-      description: Micro block hash
-      type: string
-      example: mh_2Zfo2ALfRkKQxEaUj3HhcUGyMrTqYpDMgr2u15fPanYD1d55kz
-      pattern: ^mh_\w{38,50}$
+    PaginatedResponse:
+      type: object
+      properties:
+        next:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=123
+        prev:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=234
+      required:
+      - next
+      - prev
   parameters:
     ScopeParam:
       in: query

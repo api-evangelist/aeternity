@@ -280,6 +280,39 @@ paths:
       x-summary-source: derived
 components:
   schemas:
+    ErrorResponse:
+      description: Error response from the API
+      type: object
+      example:
+        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
+      properties:
+        error:
+          description: The message of the error raised
+          type: string
+      required:
+      - error
+      title: Error response
+    Delegate:
+      description: Delegate information
+      type: object
+      properties:
+        epoch:
+          type: integer
+          example: 1
+        delegate:
+          type: string
+          example: ak_1111111111111111111111111111111111111111111111111
+        stake:
+          type: integer
+          example: 1000000000000000000
+        validator:
+          type: string
+          example: ak_1111111111111111111111111111111111111111111111111
+      required:
+      - epoch
+      - delegate
+      - stake
+      - validator
     Validator:
       description: Validator information
       type: object
@@ -313,34 +346,6 @@ components:
       - delegates
       - rewards_earned
       - pinning_history
-    PaginatedResponse:
-      type: object
-      properties:
-        next:
-          type:
-          - string
-          - 'null'
-          example: /blocks?cursor=123
-        prev:
-          type:
-          - string
-          - 'null'
-          example: /blocks?cursor=234
-      required:
-      - next
-      - prev
-    ErrorResponse:
-      description: Error response from the API
-      type: object
-      example:
-        error: 'invalid id: th_2Twp3pJeVuwQ7cMSdPQRfpAUWwdMiwx6coVMpRaNSuzFRnDZF'
-      properties:
-        error:
-          description: The message of the error raised
-          type: string
-      required:
-      - error
-      title: Error response
     AccountAddress:
       description: Account address
       type: string
@@ -412,35 +417,23 @@ components:
       required:
       - height
       - leader
-    Delegate:
-      description: Delegate information
+    PaginatedResponse:
       type: object
       properties:
-        epoch:
-          type: integer
-          example: 1
-        delegate:
-          type: string
-          example: ak_1111111111111111111111111111111111111111111111111
-        stake:
-          type: integer
-          example: 1000000000000000000
-        validator:
-          type: string
-          example: ak_1111111111111111111111111111111111111111111111111
+        next:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=123
+        prev:
+          type:
+          - string
+          - 'null'
+          example: /blocks?cursor=234
       required:
-      - epoch
-      - delegate
-      - stake
-      - validator
+      - next
+      - prev
   parameters:
-    HyperchainScopeParam:
-      in: query
-      name: scope
-      description: Scopes results in a hyperchain epoch range
-      schema:
-        type: string
-        pattern: (epoch):\d+(-\d+)?
     DirectionParam:
       in: query
       name: direction
@@ -450,6 +443,13 @@ components:
         enum:
         - forward
         - backward
+    HyperchainScopeParam:
+      in: query
+      name: scope
+      description: Scopes results in a hyperchain epoch range
+      schema:
+        type: string
+        pattern: (epoch):\d+(-\d+)?
     LimitParam:
       in: query
       name: limit
