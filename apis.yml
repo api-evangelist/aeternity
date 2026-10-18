@@ -262,9 +262,10 @@ apis:
   humanURL: https://api-docs.aeternity.io/
   baseURL: https://mainnet.aeternity.io/v3
   tags:
-  - DEX
+  - Decentralized Exchange
   tags_raw:
   - Dex
+  - DEX
   properties:
   - type: OpenAPI
     url: openapi/aeternity-dex-api-openapi.yml
